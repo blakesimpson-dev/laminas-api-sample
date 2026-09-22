@@ -5,4 +5,4 @@
 unresolved-member-access = true
 
 [indexing]
-strategy = "composer"
+strategy = "full"
