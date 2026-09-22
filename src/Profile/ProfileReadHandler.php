@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample;
+namespace LaminasApiSample\Profile;
 
+use LaminasApiSample\Handler;
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 
-final class ProfileHandler extends RouteHandler
+final class ProfileReadHandler extends Handler
 {
     public function __invoke(array $params): HttpResponse
     {
