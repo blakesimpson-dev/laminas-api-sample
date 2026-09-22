@@ -1,0 +1,8 @@
+[php]
+# version = "8.5.10"
+
+[diagnostics]
+unresolved-member-access = true
+
+[indexing]
+strategy = "composer"

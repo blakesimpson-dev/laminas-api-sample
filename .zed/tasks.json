@@ -1,0 +1,30 @@
+[
+    {
+        "label": "clear-config-cache",
+        "command": "composer clear-config-cache",
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "shell": "system",
+        "reveal": "always",
+    },
+    {
+        "label": "cs-check",
+        "command": "composer cs-check",
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "shell": "system",
+        "reveal": "always",
+    },
+    {
+        "label": "cs-fix",
+        "command": "composer cs-fix",
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "shell": "system",
+        "reveal": "always",
+    },
+    {
+        "label": "serve",
+        "command": "composer serve",
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "shell": "system",
+        "reveal": "always",
+    },
+]
