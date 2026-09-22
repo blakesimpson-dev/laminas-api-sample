@@ -1,10 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
-$finder = Finder::create()->in(__DIR__ . "/src");
+$finder = Finder::create()->in([
+    __DIR__ . "/src",
+    __DIR__ . "/public",
+]);
 $config = new Config();
 
 return $config
