@@ -1,8 +1,6 @@
 .DS_Store
-
-*.cache
-
 local.php
-*.local.php
+**/*.local.php
+**/*.cache
 
-vendor/**
+/vendor/
