@@ -4,6 +4,4 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Profile;
 
-use LaminasApiSample\AbstractService;
-
-final class ProfileService extends AbstractService {}
+final class ProfileService {}

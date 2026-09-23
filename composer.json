@@ -46,8 +46,8 @@
     "scripts": {
         "analyze": "mago analyze",
         "clear-config-cache": "php bin/clear-config-cache.php",
-        "format": "mago fmt",
-        "format:check": "mago fmt --dry-run",
+        "format": "mago format",
+        "format:check": "mago format --dry-run",
         "lint": "mago lint",
         "serve": [
             "Composer\\Config::disableProcessTimeout",

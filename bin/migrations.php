@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__) . "/vendor/autoload.php";
 
 use Doctrine\Migrations\Configuration\EntityManager\ExistingEntityManager;
 use Doctrine\Migrations\Configuration\Migration\ConfigurationArray;
 use Doctrine\Migrations\DependencyFactory;
 use Doctrine\Migrations\MigratorConfiguration;
 use Laminas\ServiceManager\ServiceManager;
+use LaminasApiSample\DoctrineEntityManagerFactory as DoctrineEMF;
 
 /** @var ServiceManager $serviceManager */
-$serviceManager = require dirname(__DIR__) . '/config/service-manager.php';
+$serviceManager = require dirname(__DIR__) . "/config/service-manager.php";
 
 /** @var Doctrine\ORM\EntityManager $entityManager */
-$entityManager = $serviceManager->get('doctrine.entity_manager.orm_default');
+$entityManager = $serviceManager->get(DoctrineEMF::SERVICE_NAME);
 
 /**
  * @var array{
@@ -25,27 +26,26 @@ $entityManager = $serviceManager->get('doctrine.entity_manager.orm_default');
  *     },
  * } $doctrineConfig
  */
-$doctrineConfig = require dirname(__DIR__) . '/config/doctrine.php';
+$doctrineConfig = require dirname(__DIR__) . "/config/doctrine.php";
 
 $dependencyFactory = DependencyFactory::fromEntityManager(
     new ConfigurationArray(
-        $doctrineConfig['doctrine']['migrations']['orm_default'],
+        $doctrineConfig["doctrine"]["migrations"]["orm_default"],
     ),
     new ExistingEntityManager($entityManager),
 );
 
 $migrationClassName = $dependencyFactory
     ->getClassNameGenerator()
-    ->generateClassName('LaminasApiSample\\Migrations');
+    ->generateClassName("LaminasApiSample\\Migrations");
 
-$migrationPath = $dependencyFactory->getDiffGenerator()->generate(
-    $migrationClassName,
-    null,
-);
+$migrationPath = $dependencyFactory
+    ->getDiffGenerator()
+    ->generate($migrationClassName, null);
 
 $latestVersion = $dependencyFactory
     ->getVersionAliasResolver()
-    ->resolveVersionAlias('latest');
+    ->resolveVersionAlias("latest");
 
 $migrationPlan = $dependencyFactory
     ->getMigrationPlanCalculator()

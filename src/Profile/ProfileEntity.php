@@ -9,13 +9,14 @@ use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
+use LaminasApiSample\Profile\Embedded\TwitchEmbeddable;
 use Ramsey\Uuid\Uuid;
 
 #[Entity(repositoryClass: ProfileRepository::class)]
-#[Table(name: 'profile')]
+#[Table(name: "profile")]
 final class ProfileEntity
 {
-    #[Column(type: 'guid'), Id]
+    #[Column(type: "guid"), Id]
     private readonly string $uuid;
 
     #[Column]
@@ -24,13 +25,14 @@ final class ProfileEntity
     #[Column(nullable: true)]
     private readonly ?string $locale;
 
-    #[Embedded(class: Twitch::class)]
-    private readonly ?Twitch $twitch;
+    #[Embedded(class: TwitchEmbeddable::class)]
+    private readonly ?TwitchEmbeddable $twitch;
 
-    public function __construct(string $name, ?string $locale, ?Twitch $twitch)
-    {
-        // TODO(Blake): Generating a Uuid outside of the ORM could lead to a
-        // clash... likely needs to change
+    public function __construct(
+        string $name,
+        ?string $locale,
+        ?TwitchEmbeddable $twitch,
+    ) {
         $this->uuid = Uuid::uuid4()->toString();
         $this->name = $name;
         $this->locale = $locale;
@@ -52,7 +54,7 @@ final class ProfileEntity
         return $this->locale;
     }
 
-    public function getTwitch(): ?Twitch
+    public function getTwitch(): ?TwitchEmbeddable
     {
         return $this->twitch;
     }
