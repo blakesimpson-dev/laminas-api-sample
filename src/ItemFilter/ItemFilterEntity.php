@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\ItemFilter;
 
-use LaminasApiSample\Entity;
+use LaminasApiSample\AbstractEntity;
 
-final class ItemFilterEntity extends Entity {}
+final class ItemFilterEntity extends AbstractEntity {}

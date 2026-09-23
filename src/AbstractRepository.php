@@ -4,6 +4,4 @@ declare(strict_types=1);
 
 namespace LaminasApiSample;
 
-abstract class Repository
-{
-}
+abstract class AbstractRepository {}
