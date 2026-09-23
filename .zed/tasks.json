@@ -34,4 +34,11 @@
         "shell": "system",
         "reveal": "always",
     },
+    {
+        "label": "db:reset",
+        "command": "composer db:reset",
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "shell": "system",
+        "reveal": "always",
+    },
 ]
