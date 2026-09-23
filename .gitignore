@@ -1,6 +1,5 @@
 .DS_Store
 local.php
 **/*.local.php
-**/*.cache
 
 /vendor/

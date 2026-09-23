@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Profile;
 
-use LaminasApiSample\AbstractHandler;
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
+use LaminasApiSample\AbstractHandler;
+use Override;
 
 final class ProfileReadHandler extends AbstractHandler
 {
+    #[Override]
     public function __invoke(array $params): HttpResponse
     {
         $response = new HttpResponse();
