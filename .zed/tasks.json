@@ -28,6 +28,13 @@
         "reveal": "always",
     },
     {
+        "label": "print-width:check",
+        "command": "grep -rn '.\\{81,\\}' src test bin config public --include='*.php'",
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "shell": "system",
+        "reveal": "always",
+    },
+    {
         "label": "serve",
         "command": "composer serve",
         "cwd": "$ZED_WORKTREE_ROOT",

@@ -8,19 +8,13 @@ use Laminas\Router\Http\Literal;
 
 return new TreeRouteStack()
     ->addRoute(
-        'character',
-        new Segment(
-            '/character[/:realm]/:name',
-            ['realm' => 'xbox|sony'],
-        ),
+        "character",
+        new Segment("/character[/:realm]/:name", ["realm" => "xbox|sony"]),
     )
     ->addRoute(
-        'character-list',
-        new Segment(
-            '/character[/:realm]',
-            ['realm' => 'xbox|sony'],
-        ),
+        "character-list",
+        new Segment("/character[/:realm]", ["realm" => "xbox|sony"]),
     )
-    ->addRoute('item-filter', new Segment('/item-filter/:id'))
-    ->addRoute('item-filter-list', new Segment('/item-filter'))
-    ->addRoute('profile', new Literal('/profile'));
+    ->addRoute("item-filter", new Segment("/item-filter/:id"))
+    ->addRoute("item-filter-list", new Segment("/item-filter"))
+    ->addRoute("profile", new Literal("/profile"));

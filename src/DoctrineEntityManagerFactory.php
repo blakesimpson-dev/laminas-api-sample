@@ -9,12 +9,14 @@ use Doctrine\ORM\EntityManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Override;
 use Psr\Container\ContainerInterface;
-use Roave\PsrContainerDoctrine\EntityManagerFactory as RoaveEntityManagerFactory;
+use Roave\PsrContainerDoctrine\EntityManagerFactory as RoaveEMF;
 use RuntimeException;
 use ValueError;
 
 final class DoctrineEntityManagerFactory implements FactoryInterface
 {
+    public const string SERVICE_NAME = "doctrine.entity_manager.orm_default";
+
     /**
      * @throws RuntimeException
      * @throws ValueError
@@ -26,14 +28,16 @@ final class DoctrineEntityManagerFactory implements FactoryInterface
         $requestedName,
         ?array $options = null,
     ): EntityManager {
-        $entity_manager = (new RoaveEntityManagerFactory())($container);
+        $entity_manager = new RoaveEMF()($container);
 
         if (!$entity_manager instanceof EntityManager) {
-            throw new RuntimeException(sprintf(
-                'Expected %s, got %s.',
-                EntityManager::class,
-                get_debug_type($entity_manager),
-            ));
+            throw new RuntimeException(
+                sprintf(
+                    "Expected %s, got %s.",
+                    EntityManager::class,
+                    get_debug_type($entity_manager),
+                ),
+            );
         }
 
         return $entity_manager;

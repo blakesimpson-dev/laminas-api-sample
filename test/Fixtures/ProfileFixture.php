@@ -6,8 +6,8 @@ namespace LaminasApiSampleTest\Fixtures;
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use LaminasApiSample\Profile\Embedded\TwitchEmbeddable;
 use LaminasApiSample\Profile\ProfileEntity;
-use LaminasApiSample\Profile\Twitch;
 use Override;
 
 final class ProfileFixture implements FixtureInterface
@@ -18,9 +18,9 @@ final class ProfileFixture implements FixtureInterface
         // TODO(Blake): Hydration script
         $manager->persist(
             new ProfileEntity(
-                'KATAPLEXIA',
-                'en_AU',
-                new Twitch('Kataplexia_AU', null),
+                "KATAPLEXIA",
+                "en_AU",
+                new TwitchEmbeddable("Kataplexia_AU", null),
             ),
         );
         $manager->flush();

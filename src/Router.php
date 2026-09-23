@@ -24,13 +24,12 @@ final class Router
         $routeMatch = $this->routeStack->match($request);
 
         $response = new HttpResponse();
-        $response->getHeaders()->addHeaderLine(
-            'Content-Type',
-            'application/json',
-        );
+        $response
+            ->getHeaders()
+            ->addHeaderLine("Content-Type", "application/json");
         if (!$routeMatch) {
             $response->setStatusCode(404);
-            $response->setContent(json_encode(['error' => 'Not Found']));
+            $response->setContent(json_encode(["error" => "Not Found"]));
             return $response;
         }
 
@@ -41,13 +40,15 @@ final class Router
             );
         } catch (ServiceNotFoundException) {
             $response->setStatusCode(501);
-            $response->setContent(json_encode(['error' => 'Not Implemented']));
+            $response->setContent(json_encode(["error" => "Not Implemented"]));
             return $response;
         } catch (ContainerExceptionInterface) {
             $response->setStatusCode(500);
-            $response->setContent(json_encode([
-                'error' => 'Internal Server Error',
-            ]));
+            $response->setContent(
+                json_encode([
+                    "error" => "Internal Server Error",
+                ]),
+            );
             return $response;
         }
 
