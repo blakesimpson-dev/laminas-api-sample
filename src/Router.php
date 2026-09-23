@@ -14,21 +14,21 @@ use Psr\Container\ContainerExceptionInterface;
 final class Router
 {
     public function __construct(
-        private TreeRouteStack $route_stack,
-        private ServiceManager $service_manager,
+        private TreeRouteStack $routeStack,
+        private ServiceManager $serviceManager,
     ) {}
 
     public function dispatch(): HttpResponse
     {
         $request = new HttpRequest();
-        $route_match = $this->route_stack->match($request);
+        $routeMatch = $this->routeStack->match($request);
 
         $response = new HttpResponse();
         $response->getHeaders()->addHeaderLine(
             'Content-Type',
             'application/json',
         );
-        if (!$route_match) {
+        if (!$routeMatch) {
             $response->setStatusCode(404);
             $response->setContent(json_encode(['error' => 'Not Found']));
             return $response;
@@ -36,8 +36,8 @@ final class Router
 
         try {
             /** @var AbstractHandler $handler */
-            $handler = $this->service_manager->get(
-                $route_match->getMatchedRouteName(),
+            $handler = $this->serviceManager->get(
+                $routeMatch->getMatchedRouteName(),
             );
         } catch (ServiceNotFoundException) {
             $response->setStatusCode(501);
@@ -51,6 +51,6 @@ final class Router
             return $response;
         }
 
-        return $handler($route_match->getParams());
+        return $handler($routeMatch->getParams());
     }
 }
