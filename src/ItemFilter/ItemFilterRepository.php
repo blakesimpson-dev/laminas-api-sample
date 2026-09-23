@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\ItemFilter;
 
-use LaminasApiSample\Repository;
+use LaminasApiSample\AbstractRepository;
 
-final class ItemFilterRepository extends Repository
-{
-}
+final class ItemFilterRepository extends AbstractRepository {}

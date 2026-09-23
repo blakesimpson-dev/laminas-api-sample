@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\ItemFilter;
 
-use LaminasApiSample\Service;
+use LaminasApiSample\AbstractService;
 
-final class ItemFilterService extends Service
-{
-}
+final class ItemFilterService extends AbstractService {}
