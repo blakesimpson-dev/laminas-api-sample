@@ -10,6 +10,7 @@ use LaminasApiSample\ItemFilter\Handlers\ItemFilterReadHandler;
 use LaminasApiSample\ItemFilter\Handlers\ItemFilterReadManyHandler;
 use LaminasApiSample\Profile\ProfileReadHandler;
 
+/** @throws Psr\Container\ContainerExceptionInterface */
 return new ServiceManager([
     'factories' => [
         CharacterReadHandler::class => InvokableFactory::class,

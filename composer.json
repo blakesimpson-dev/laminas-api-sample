@@ -27,7 +27,7 @@
         "roave/psr-container-doctrine": "^6.2"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.95",
+        "carthage-software/mago": "^1.50.0",
         "phpunit/phpunit": "^13.3"
     },
     "autoload": {
@@ -41,18 +41,21 @@
         }
     },
     "scripts": {
+        "analyze": "mago analyze",
         "clear-config-cache": "php bin/clear-config-cache.php",
-        "cs-check": "php-cs-fixer fix --dry-run --diff",
-        "cs-fix": "php-cs-fixer fix",
+        "format": "mago fmt",
+        "format:check": "mago fmt --dry-run",
+        "lint": "mago lint",
         "serve": [
             "Composer\\Config::disableProcessTimeout",
             "php -S 0.0.0.0:8080 -t public public/index.php"
         ]
     },
     "scripts-descriptions": {
-        "clear-config-cache": "Clears merged config cache. Required for config changes to be applied.",
-        "cs-check": "Run coding standards checks.",
-        "cs-fix": "Automatically fix coding standard issues.",
+        "analyze": "Run Mago's static analyzer.",
+        "format": "Automatically format code with Mago.",
+        "format:check": "Check formatting with Mago without writing changes.",
+        "lint": "Run Mago's linter.",
         "serve": "Start the built-in PHP web server and serve the API sample."
     },
     "config": {
