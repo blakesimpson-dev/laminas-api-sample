@@ -6,7 +6,7 @@ namespace LaminasApiSample;
 
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 
-abstract class Handler
+abstract class AbstractHandler
 {
     abstract public function __invoke(array $params): HttpResponse;
 }

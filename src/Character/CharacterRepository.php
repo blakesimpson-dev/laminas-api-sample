@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Character;
 
-use LaminasApiSample\Repository;
+use LaminasApiSample\AbstractRepository;
 
-final class CharacterRepository extends Repository
-{
-}
+final class CharacterRepository extends AbstractRepository {}
