@@ -20,4 +20,6 @@ $loader = new Loader();
 $loader->addFixture(new ProfileFixture());
 
 $executor = new ORMExecutor($entityManager, new ORMPurger());
+echo "Loading fixtures...\n";
 $executor->execute($loader->getFixtures());
+echo "Done.\n";

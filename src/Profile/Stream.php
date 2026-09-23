@@ -11,13 +11,13 @@ use Doctrine\ORM\Mapping\Embeddable;
 final class Stream
 {
     public function __construct(
-        #[Column]
+        #[Column(nullable: true)]
         public readonly string $name,
 
-        #[Column]
+        #[Column(nullable: true)]
         public readonly string $image,
 
-        #[Column]
+        #[Column(nullable: true)]
         public readonly string $status,
     ) {}
 

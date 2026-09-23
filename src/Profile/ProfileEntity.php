@@ -21,7 +21,7 @@ final class ProfileEntity
     #[Column]
     private readonly string $name;
 
-    #[Column]
+    #[Column(nullable: true)]
     private readonly ?string $locale;
 
     #[Embedded(class: Twitch::class)]

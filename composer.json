@@ -52,14 +52,16 @@
         "serve": [
             "Composer\\Config::disableProcessTimeout",
             "php -S 0.0.0.0:8080 -t public public/index.php"
-        ]
+        ],
+        "db:reset": "docker compose down -v && docker compose up -d --wait && rm -f migrations/*.php && php bin/migrations.php"
     },
     "scripts-descriptions": {
         "analyze": "Run Mago's static analyzer.",
         "format": "Automatically format code with Mago.",
         "format:check": "Check formatting with Mago without writing changes.",
         "lint": "Run Mago's linter.",
-        "serve": "Start the built-in PHP web server and serve the API sample."
+        "serve": "Start the built-in PHP web server and serve the API sample.",
+        "db:reset": "Wipe and rebuild the local database: drops volumes, recreates containers, regenerates and runs migrations."
     },
     "config": {
         "sort-packages": true,

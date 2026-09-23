@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping\Embedded;
 final class Twitch
 {
     public function __construct(
-        #[Column]
+        #[Column(nullable: true)]
         public readonly string $name,
 
         #[Embedded(class: Stream::class)]
