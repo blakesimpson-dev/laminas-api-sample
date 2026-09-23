@@ -9,6 +9,7 @@ use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 use Laminas\Router\Http\TreeRouteStack;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\ServiceManager\ServiceManager;
+use Psr\Container\ContainerExceptionInterface;
 
 final class Router
 {
@@ -34,12 +35,19 @@ final class Router
         }
 
         try {
+            /** @var AbstractHandler $handler */
             $handler = $this->service_manager->get(
                 $route_match->getMatchedRouteName(),
             );
         } catch (ServiceNotFoundException) {
             $response->setStatusCode(501);
             $response->setContent(json_encode(['error' => 'Not Implemented']));
+            return $response;
+        } catch (ContainerExceptionInterface) {
+            $response->setStatusCode(500);
+            $response->setContent(json_encode([
+                'error' => 'Internal Server Error',
+            ]));
             return $response;
         }
 
