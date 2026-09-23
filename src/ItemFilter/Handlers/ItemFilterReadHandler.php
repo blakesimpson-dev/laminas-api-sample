@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\ItemFilter\Handlers;
 
-use LaminasApiSample\AbstractHandler;
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
+use LaminasApiSample\AbstractHandler;
+use Override;
 
 final class ItemFilterReadHandler extends AbstractHandler
 {
+    #[Override]
     public function __invoke(array $params): HttpResponse
     {
         $response = new HttpResponse();
