@@ -53,4 +53,9 @@ $migrationPlan = $dependencyFactory
 
 $migrationConfig = new MigratorConfiguration()->setAllOrNothing(true);
 
+$dependencyFactory->getMetadataStorage()->ensureInitialized();
+
+echo "Generated migration: {$migrationPath}\n";
+echo "Applying migrations...\n";
 $dependencyFactory->getMigrator()->migrate($migrationPlan, $migrationConfig);
+echo "Done.\n";
