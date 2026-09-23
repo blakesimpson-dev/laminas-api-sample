@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Character;
 
-use LaminasApiSample\AbstractRepository;
+use Doctrine\ORM\EntityRepository;
 
-final class CharacterRepository extends AbstractRepository {}
+/** @extends EntityRepository<CharacterEntity> */
+final class CharacterRepository extends EntityRepository {}
