@@ -33,8 +33,7 @@ final class ProfileReadHandler extends AbstractHandler
             return $response;
         }
 
-        // $twitch = $profile->getTwitch();
-        $twitch = $this->mapTwitchEmbeddable();
+        $twitch = $this->mapTwitch($profile->getTwitchEmbeddable());
 
         $response->setStatusCode(200);
         $response->setContent(
@@ -50,37 +49,37 @@ final class ProfileReadHandler extends AbstractHandler
     }
 
     /** @return null|array<string, mixed> */
-    private function mapTwitchEmbeddable(
-        ?TwitchEmbeddable $embeddable = null,
+    private function mapTwitch(
+        ?TwitchEmbeddable $twitchEmbeddable = null,
     ): ?array {
-        if (!$embeddable) {
+        if (!$twitchEmbeddable) {
             return null;
         }
 
-        $stream = $this->mapStreamEmbeddable($embeddable->getStream());
+        $stream = $this->mapStream($twitchEmbeddable->getStreamEmbeddable());
 
         return [
-            "name" => $embeddable->getName(),
-            ...$stream === null ? [] : ["stream" => $stream],
+            "name" => $twitchEmbeddable->getName(),
+            ...!$stream ? [] : ["stream" => $stream],
         ];
     }
 
-    /** @return null|list<?string> */
-    private function mapStreamEmbeddable(
-        ?StreamEmbeddable $embeddable = null,
+    /** @return null|array<string, mixed> */
+    private function mapStream(
+        ?StreamEmbeddable $streamEmbeddable = null,
     ): ?array {
-        if (!$embeddable) {
+        if (!$streamEmbeddable) {
             return null;
         }
 
-        $name = $embeddable->getName();
-        $image = $embeddable->getImage();
-        $status = $embeddable->getStatus();
+        $name = $streamEmbeddable->getName();
+        $image = $streamEmbeddable->getImage();
+        $status = $streamEmbeddable->getStatus();
 
         return [
-            ...$name ? ["name" => $name] : [],
-            ...$image ? ["image" => $image] : [],
-            ...$status ? ["status" => $status] : [],
+            ...!$name ? [] : ["name" => $name],
+            ...!$image ? [] : ["image" => $image],
+            ...!$status ? [] : ["status" => $status],
         ];
     }
 }
