@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Profile;
 
-use LaminasApiSample\Repository;
+use LaminasApiSample\AbstractRepository;
 
-final class ProfileRepository extends Repository
-{
-}
+final class ProfileRepository extends AbstractRepository {}

@@ -15,6 +15,7 @@ return $config
     ->setRules([
         "@PER-CS2x0" => true,
         "declare_strict_types" => true,
+        "no_unused_imports" => true,
     ])
     ->setFinder($finder)
     ->setRiskyAllowed(true);

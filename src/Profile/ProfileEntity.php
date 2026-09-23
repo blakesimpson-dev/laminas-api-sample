@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Profile;
 
-use LaminasApiSample\Entity;
+use LaminasApiSample\AbstractEntity;
 
-final class ProfileEntity extends Entity {}
+final class ProfileEntity extends AbstractEntity {}
