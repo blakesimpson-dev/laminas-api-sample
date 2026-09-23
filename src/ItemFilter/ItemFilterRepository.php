@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\ItemFilter;
 
-use LaminasApiSample\AbstractRepository;
+use Doctrine\ORM\EntityRepository;
 
-final class ItemFilterRepository extends AbstractRepository {}
+/** @extends EntityRepository<ItemFilterEntity> */
+final class ItemFilterRepository extends EntityRepository {}

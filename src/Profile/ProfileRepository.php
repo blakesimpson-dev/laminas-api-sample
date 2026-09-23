@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Profile;
 
-use LaminasApiSample\AbstractRepository;
+use Doctrine\ORM\EntityRepository;
 
-final class ProfileRepository extends AbstractRepository {}
+/** @extends EntityRepository<ProfileEntity> */
+final class ProfileRepository extends EntityRepository {}
