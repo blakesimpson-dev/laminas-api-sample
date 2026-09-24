@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace LaminasApiSample\Character\Handlers;
 
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
-use LaminasApiSample\AbstractHandler;
+use LaminasApiSample\HandlerInterface;
 use Override;
 
-final class CharacterReadHandler extends AbstractHandler
+final class CharacterReadHandler implements HandlerInterface
 {
     /** @param ?array<array-key, mixed> $params */
     #[Override]

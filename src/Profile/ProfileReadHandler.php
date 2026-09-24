@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace LaminasApiSample\Profile;
 
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
-use LaminasApiSample\AbstractHandler;
+use LaminasApiSample\HandlerInterface;
 use LaminasApiSample\Profile\Embedded\StreamEmbeddable;
 use LaminasApiSample\Profile\Embedded\TwitchEmbeddable;
 use Override;
 
-final class ProfileReadHandler extends AbstractHandler
+final class ProfileReadHandler implements HandlerInterface
 {
     public function __construct(
         private readonly ProfileRepository $profileRepo,

@@ -28,7 +28,7 @@ final class Router
         }
 
         try {
-            /** @var AbstractHandler $handler */
+            /** @var HandlerInterface $handler */
             $handler = $this->serviceManager->get(
                 $routeMatch->getMatchedRouteName(),
             );
