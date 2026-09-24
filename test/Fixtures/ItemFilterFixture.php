@@ -14,39 +14,41 @@ final class ItemFilterFixture implements FixtureInterface
     #[Override]
     public function load(ObjectManager $manager): void
     {
-        $manager->persist(new ItemFilterEntity(
-            name: 'FilterBlade_1_Regular.filter',
-            realm: 'pc',
-            filter: '# VERSION:  8.20\n# TYPE:     1-REGULAR\n...',
-            description: 'FilterBlade Regular',
-            version: '3.29.3b',
-        ));
+        // @mago-expect lint:no-shorthand-ternary
+        foreach (glob(__DIR__ . '/Data/*.filter') ?: [] as $path) {
+            $content = file_get_contents($path);
+            if (!$content) {
+                continue;
+            }
 
-        $manager->persist(new ItemFilterEntity(
-            name: 'FilterBlade_2_SemiStrict.filter',
-            realm: 'pc',
-            filter: '# VERSION:  8.20\n# TYPE:     2-SEMI-STRICT\n...',
-            description: 'FilterBlade Regular',
-            version: '3.29.3b',
-        ));
+            $matches = null;
+            preg_match_all('/^#\s*([A-Z]+):\s*(.+)$/m', $content, $matches);
 
-        $manager->persist(new ItemFilterEntity(
-            name: 'FilterBlade_3_Strict.filter',
-            realm: 'pc',
-            filter: '# VERSION:  8.20\n# TYPE:     3-STRICT\n...',
-            description: 'FilterBlade Regular',
-            version: '3.29.3b',
-            public: true,
-        ));
+            $headerKeys = $matches[1] ?? null;
+            $headerValues = $matches[2] ?? null;
+            if (!$headerKeys || !$headerValues) {
+                continue;
+            }
 
-        $manager->persist(new ItemFilterEntity(
-            name: 'Kataplexia_OohDisMyShip_RSSF.ruthlessfilter',
-            realm: 'pc',
-            filter: 'Tink for Alchemy Orb\nTink for Orb of Alteration\n...',
-            version: '3.29.3b',
-            type: 'Ruthless',
-            public: true,
-        ));
+            $header = array_combine($headerKeys, array_map(
+                'trim',
+                $headerValues,
+            ));
+
+            $description = implode(' - ', [
+                $header['AUTHOR'] ?? 'AUTHOR',
+                $header['TYPE'] ?? 'TYPE',
+                $header['STYLE'] ?? 'STYLE',
+            ]);
+
+            $manager->persist(new ItemFilterEntity(
+                name: basename($path),
+                realm: 'pc',
+                filter: $content,
+                description: $description,
+                version: $header['VERSION'] ?? 'VERSION',
+            ));
+        }
 
         $manager->flush();
     }
