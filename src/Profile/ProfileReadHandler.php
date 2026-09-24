@@ -26,7 +26,7 @@ final class ProfileReadHandler implements HandlerInterface
             return Router::buildNotFoundResponse();
         }
 
-        $twitch = $this->mapTwitchData($profile->getTwitchEmbeddable());
+        $twitch = $this->mapTwitchData($profile->getTwitch());
         return Router::buildResponse([
             'uuid' => $profile->getUuid(),
             'name' => $profile->getName(),
@@ -36,30 +36,30 @@ final class ProfileReadHandler implements HandlerInterface
     }
 
     /** @return null|array<string, mixed> */
-    private function mapTwitchData(?TwitchEmbeddable $embedded = null): ?array
+    private function mapTwitchData(?TwitchEmbeddable $data = null): ?array
     {
-        if (!$embedded || !$embedded->getName()) {
+        if (!$data || !$data->getName()) {
             return null;
         }
 
-        $stream = $this->mapStreamData($embedded->getStreamEmbeddable());
+        $stream = $this->mapStreamData($data->getStream());
 
         return [
-            'name' => $embedded->getName(),
+            'name' => $data->getName(),
             ...(!$stream ? [] : ['stream' => $stream]),
         ];
     }
 
     /** @return null|array<string, mixed> */
-    private function mapStreamData(?StreamEmbeddable $embedded = null): ?array
+    private function mapStreamData(?StreamEmbeddable $data = null): ?array
     {
-        if (!$embedded) {
+        if (!$data) {
             return null;
         }
 
-        $name = $embedded->getName();
-        $image = $embedded->getImage();
-        $status = $embedded->getStatus();
+        $name = $data->getName();
+        $image = $data->getImage();
+        $status = $data->getStatus();
 
         return [
             ...(!$name ? [] : ['name' => $name]),

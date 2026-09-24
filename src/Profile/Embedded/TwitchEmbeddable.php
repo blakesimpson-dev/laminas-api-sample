@@ -11,23 +11,19 @@ use Doctrine\ORM\Mapping\Embedded;
 #[Embeddable]
 final class TwitchEmbeddable
 {
-    #[Embedded(class: StreamEmbeddable::class)]
-    private readonly ?StreamEmbeddable $stream;
-
     public function __construct(
         #[Column(nullable: true)]
         private readonly ?string $name,
-        ?StreamEmbeddable $stream,
-    ) {
-        $this->stream = $stream;
-    }
+        #[Embedded(class: StreamEmbeddable::class)]
+        private readonly ?StreamEmbeddable $stream,
+    ) {}
 
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function getStreamEmbeddable(): ?StreamEmbeddable
+    public function getStream(): ?StreamEmbeddable
     {
         return $this->stream;
     }

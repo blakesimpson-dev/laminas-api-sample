@@ -54,7 +54,7 @@ final class ProfileEntity
         return $this->locale;
     }
 
-    public function getTwitchEmbeddable(): ?TwitchEmbeddable
+    public function getTwitch(): ?TwitchEmbeddable
     {
         return $this->twitch;
     }
