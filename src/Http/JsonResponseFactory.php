@@ -18,6 +18,20 @@ final class JsonResponseFactory
         return $response;
     }
 
+    public static function badRequest(): HttpResponse
+    {
+        return self::error(status: 400, code: 2, message: 'Invalid query');
+    }
+
+    public static function unsupportedContentType(): HttpResponse
+    {
+        return self::error(
+            status: 400,
+            code: 5,
+            message: 'Unexpected content type',
+        );
+    }
+
     public static function notFound(): HttpResponse
     {
         return self::error(status: 404, code: 1, message: 'Resource not found');
@@ -29,7 +43,7 @@ final class JsonResponseFactory
         $response = self::error(
             status: 405,
             code: 9,
-            message: 'Method not allowed.',
+            message: 'Method not allowed',
         );
 
         $response->getHeaders()->addHeaderLine('Allow', implode(

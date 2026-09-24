@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Domains\ItemFilter\Handlers;
 
+use Laminas\Http\PhpEnvironment\Request as HttpRequest;
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterAdapter;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterRepository;
@@ -18,9 +19,9 @@ final class ItemFilterReadManyHandler implements HandlerInterface
         private readonly ItemFilterAdapter $adapter,
     ) {}
 
-    /** @param ?array<string, string> $params */
+    /** @param array<string, string> $params */
     #[Override]
-    public function __invoke(?array $params = null): HttpResponse
+    public function __invoke(HttpRequest $request, array $params): HttpResponse
     {
         $entities = $this->repository->findAll();
         return JsonResponseFactory::ok([

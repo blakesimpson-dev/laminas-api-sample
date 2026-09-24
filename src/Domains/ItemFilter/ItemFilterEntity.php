@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
+use DomainException;
 use Ramsey\Uuid\Uuid;
 
 #[Entity(repositoryClass: ItemFilterRepository::class)]
@@ -18,33 +19,33 @@ final class ItemFilterEntity
     private readonly string $id;
 
     #[Column(name: 'filter_name')]
-    private readonly string $name;
+    private string $name;
 
     #[Column]
-    private readonly string $realm;
+    private string $realm;
 
     #[Column(type: 'text', nullable: true)]
-    private readonly ?string $filter;
+    private ?string $filter;
 
     #[Column]
-    private readonly string $description;
+    private string $description;
 
     #[Column]
-    private readonly string $version;
+    private string $version;
 
     #[Column]
-    private readonly string $type;
+    private string $type;
 
     #[Column]
-    private readonly bool $public;
+    private bool $public;
 
     // @mago-expect lint:excessive-parameter-list
     public function __construct(
         string $name,
-        string $realm = 'pc',
+        string $realm,
         ?string $filter = null,
         string $description = '',
-        string $version = '3.29.3b', // This should be set using latest...
+        string $version = '',
         string $type = 'Normal',
         bool $public = false,
     ) {
@@ -56,6 +57,34 @@ final class ItemFilterEntity
         $this->version = $version;
         $this->type = $type;
         $this->public = $public;
+    }
+
+    /**
+     * @param array{
+     *     filter_name?: string,
+     *     realm?: string,
+     *     filter?: string,
+     *     description?: string,
+     *     version?: string,
+     *     type?: string,
+     *     public?: bool,
+     * } $updated
+     */
+    public function update(array $updated): void
+    {
+        if (($updated['public'] ?? null) === false && $this->public) {
+            throw new DomainException(
+                'A public filter cannot be made private.',
+            );
+        }
+
+        $this->name = $updated['filter_name'] ?? $this->name;
+        $this->realm = $updated['realm'] ?? $this->realm;
+        $this->filter = $updated['filter'] ?? $this->filter;
+        $this->description = $updated['description'] ?? $this->description;
+        $this->version = $updated['version'] ?? $this->version;
+        $this->type = $updated['type'] ?? $this->type;
+        $this->public = $updated['public'] ?? $this->public;
     }
 
     public function getId(): string

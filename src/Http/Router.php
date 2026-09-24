@@ -27,19 +27,28 @@ final class Router
             return JsonResponseFactory::notFound();
         }
 
+        $allParams = $routeMatch->getParams();
+
+        /** @var array<string, string> $handlers */
+        $handlers = $allParams['handlers'] ?? [];
+
+        /** @var array<string, string> $params */
+        $params = array_diff_key($allParams, ['handlers' => true]);
+
+        $serviceName = $handlers[$request->getMethod()] ?? null;
+        if (!$serviceName) {
+            return JsonResponseFactory::methodNotAllowed(array_keys($handlers));
+        }
+
         try {
             /** @var HandlerInterface $handler */
-            $handler = $this->serviceManager->get(
-                $routeMatch->getMatchedRouteName(),
-            );
+            $handler = $this->serviceManager->get($serviceName);
         } catch (ServiceNotFoundException $e) {
             $detail = implode(' - ', [$e::class, $e->getMessage()]);
             error_log("Error: \n{$detail}\n");
             return JsonResponseFactory::notImplemented();
         }
 
-        /** @var array<string, string> $params */
-        $params = $routeMatch->getParams();
-        return $handler($params);
+        return $handler($request, $params);
     }
 }
