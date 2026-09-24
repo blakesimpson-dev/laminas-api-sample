@@ -8,60 +8,74 @@ use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 
 final class JsonResponseFactory
 {
-    public static function setHeaders(HttpResponse $response): HttpResponse
-    {
-        $response->getHeaders()->addHeaderLine(
-            'Content-Type',
-            'application/json',
-        );
-
-        return $response;
-    }
-
     /** @param array<string, mixed> $data */
     public static function ok(array $data): HttpResponse
     {
-        $response = JsonResponseFactory::setHeaders(new HttpResponse());
+        $response = self::withHeaders(new HttpResponse());
         $response->setStatusCode(200);
         $response->setContent(json_encode($data, JSON_THROW_ON_ERROR));
 
         return $response;
     }
 
-    public static function badRequest(): HttpResponse
+    public static function notFound(): HttpResponse
     {
-        $response = JsonResponseFactory::setHeaders(new HttpResponse());
-        $response->setStatusCode(400);
-        $response->setContent(json_encode(['error' => 'Bad Request.']));
+        return self::error(status: 404, code: 1, message: 'Resource not found');
+    }
+
+    /** @param list<string> $allowed $allowed */
+    public static function methodNotAllowed(array $allowed): HttpResponse
+    {
+        $response = self::error(
+            status: 405,
+            code: 9,
+            message: 'Method not allowed.',
+        );
+
+        $response->getHeaders()->addHeaderLine('Allow', implode(
+            ', ',
+            $allowed,
+        ));
 
         return $response;
     }
 
-    public static function notFound(): HttpResponse
+    public static function unprocessable(string $message): HttpResponse
     {
-        $response = JsonResponseFactory::setHeaders(new HttpResponse());
-        $response->setStatusCode(404);
-        $response->setContent(json_encode(['error' => 'Not Found.']));
-
-        return $response;
+        return self::error(status: 422, code: 10, message: $message);
     }
 
     public static function serverError(): HttpResponse
     {
-        $response = JsonResponseFactory::setHeaders(new HttpResponse());
-        $response->setStatusCode(500);
-        $response->setContent(json_encode([
-            'error' => 'Internal Server Error.',
-        ]));
-
-        return $response;
+        return self::error(status: 500, code: 4, message: 'Internal error');
     }
 
     public static function notImplemented(): HttpResponse
     {
-        $response = JsonResponseFactory::setHeaders(new HttpResponse());
-        $response->setStatusCode(501);
-        $response->setContent(json_encode(['error' => 'Not Implemented.']));
+        return self::error(status: 501, code: 4, message: 'Internal error');
+    }
+
+    private static function error(
+        int $status,
+        int $code,
+        string $message,
+    ): HttpResponse {
+        $response = self::withHeaders(new HttpResponse());
+        $response->setStatusCode($status);
+        $response->setContent(json_encode(['error' => [
+            'code' => $code,
+            'message' => $message,
+        ]], JSON_THROW_ON_ERROR));
+
+        return $response;
+    }
+
+    private static function withHeaders(HttpResponse $response): HttpResponse
+    {
+        $response->getHeaders()->addHeaderLine(
+            'Content-Type',
+            'application/json',
+        );
 
         return $response;
     }
