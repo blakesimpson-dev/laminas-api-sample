@@ -44,8 +44,8 @@ final class ItemFilterEntity
         string $realm = 'pc',
         ?string $filter = null,
         string $description = '',
-        string $version = '',
-        string $type = 'Normale',
+        string $version = '3.29.3b', // This should be set using latest...
+        string $type = 'Normal',
         bool $public = false,
     ) {
         $this->id = Uuid::uuid4()->toString();
