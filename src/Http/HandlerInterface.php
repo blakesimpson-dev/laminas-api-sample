@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample;
+namespace LaminasApiSample\Http;
 
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample\Profile;
+namespace LaminasApiSample\Domains\Profile;
 
 use Doctrine\ORM\EntityRepository;
 

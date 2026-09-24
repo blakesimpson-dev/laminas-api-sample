@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample\ItemFilter;
+namespace LaminasApiSample\Domains\ItemFilter;
 
 final class ItemFilterAdapter
 {

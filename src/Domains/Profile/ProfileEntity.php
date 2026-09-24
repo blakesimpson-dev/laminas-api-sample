@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample\Profile;
+namespace LaminasApiSample\Domains\Profile;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
-use LaminasApiSample\Profile\Embedded\TwitchEmbeddable;
+use LaminasApiSample\Domains\Profile\Embedded\TwitchEmbeddable;
 use Ramsey\Uuid\Uuid;
 
 #[Entity(repositoryClass: ProfileRepository::class)]

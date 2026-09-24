@@ -2,28 +2,27 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample\Profile;
+namespace LaminasApiSample\Domains\ItemFilter\Factories;
 
 use Doctrine\ORM\EntityManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use LaminasApiSample\DoctrineEntityManagerFactory as DoctrineEMF;
+use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
+use LaminasApiSample\Domains\ItemFilter\ItemFilterRepository;
 use Override;
 use Psr\Container\ContainerInterface;
 
-final class ProfileReadHandlerFactory implements FactoryInterface
+final class ItemFilterRepositoryFactory implements FactoryInterface
 {
     #[Override]
     public function __invoke(
         ContainerInterface $container,
         $requestedName,
         ?array $options = null,
-    ): ProfileReadHandler {
+    ): ItemFilterRepository {
         /** @var EntityManager $entityManager */
         $entityManager = $container->get(DoctrineEMF::SERVICE_NAME);
-        /** @var ProfileRepository $repository */
-        $repository = $entityManager->getRepository(ProfileEntity::class);
-        $adapter = new ProfileAdapter();
-
-        return new ProfileReadHandler($repository, $adapter);
+        /** @var ItemFilterRepository */
+        return $entityManager->getRepository(ItemFilterEntity::class);
     }
 }

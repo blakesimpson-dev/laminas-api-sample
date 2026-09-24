@@ -6,8 +6,8 @@ namespace LaminasApiSampleTest\Fixtures;
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use LaminasApiSample\Profile\Embedded\TwitchEmbeddable;
-use LaminasApiSample\Profile\ProfileEntity;
+use LaminasApiSample\Domains\Profile\Embedded\TwitchEmbeddable;
+use LaminasApiSample\Domains\Profile\ProfileEntity;
 use Override;
 
 final class ProfileFixture implements FixtureInterface
