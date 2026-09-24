@@ -26,7 +26,7 @@ final class TwitchEmbeddable
         return $this->name;
     }
 
-    public function getStream(): ?StreamEmbeddable
+    public function getStreamEmbeddable(): ?StreamEmbeddable
     {
         return $this->stream;
     }
