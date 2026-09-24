@@ -15,7 +15,7 @@ use ValueError;
 
 final class DoctrineEntityManagerFactory implements FactoryInterface
 {
-    public const string SERVICE_NAME = "doctrine.entity_manager.orm_default";
+    public const string SERVICE_NAME = 'doctrine.entity_manager.orm_default';
 
     /**
      * @throws RuntimeException
@@ -28,16 +28,14 @@ final class DoctrineEntityManagerFactory implements FactoryInterface
         $requestedName,
         ?array $options = null,
     ): EntityManager {
-        $entity_manager = new RoaveEMF()($container);
+        $entity_manager = (new RoaveEMF())($container);
 
         if (!$entity_manager instanceof EntityManager) {
-            throw new RuntimeException(
-                sprintf(
-                    "Expected %s, got %s.",
-                    EntityManager::class,
-                    get_debug_type($entity_manager),
-                ),
-            );
+            throw new RuntimeException(sprintf(
+                'Expected %s, got %s.',
+                EntityManager::class,
+                get_debug_type($entity_manager),
+            ));
         }
 
         return $entity_manager;

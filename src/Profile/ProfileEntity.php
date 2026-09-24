@@ -13,10 +13,10 @@ use LaminasApiSample\Profile\Embedded\TwitchEmbeddable;
 use Ramsey\Uuid\Uuid;
 
 #[Entity(repositoryClass: ProfileRepository::class)]
-#[Table(name: "profile")]
+#[Table(name: 'profile')]
 final class ProfileEntity
 {
-    #[Column(type: "guid"), Id]
+    #[Column(type: 'guid'), Id]
     private readonly string $uuid;
 
     #[Column]
@@ -54,7 +54,7 @@ final class ProfileEntity
         return $this->locale;
     }
 
-    public function getTwitchEmbeddable(): ?TwitchEmbeddable
+    public function getTwitch(): ?TwitchEmbeddable
     {
         return $this->twitch;
     }

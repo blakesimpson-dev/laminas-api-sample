@@ -6,7 +6,7 @@ namespace LaminasApiSample\Profile;
 
 use Doctrine\ORM\EntityManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use LaminasApiSample\DoctrineEntityManagerFactory as DoctrineEntityManagerFactory;
+use LaminasApiSample\DoctrineEntityManagerFactory as DoctrineEMF;
 use Override;
 use Psr\Container\ContainerInterface;
 
@@ -19,15 +19,11 @@ final class ProfileReadHandlerFactory implements FactoryInterface
         ?array $options = null,
     ): ProfileReadHandler {
         /** @var EntityManager $entityManager */
-        $entityManager = $container->get(
-            DoctrineEntityManagerFactory::SERVICE_NAME,
-        );
+        $entityManager = $container->get(DoctrineEMF::SERVICE_NAME);
 
-        /** @var ProfileRepository $profileRepository */
-        $profileRepository = $entityManager->getRepository(
-            ProfileEntity::class,
-        );
+        /** @var ProfileRepository $profileRepo */
+        $profileRepo = $entityManager->getRepository(ProfileEntity::class);
 
-        return new ProfileReadHandler($profileRepository);
+        return new ProfileReadHandler($profileRepo);
     }
 }

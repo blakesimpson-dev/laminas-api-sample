@@ -28,7 +28,7 @@ final class Router
         }
 
         try {
-            /** @var AbstractHandler $handler */
+            /** @var HandlerInterface $handler */
             $handler = $this->serviceManager->get(
                 $routeMatch->getMatchedRouteName(),
             );
@@ -51,11 +51,12 @@ final class Router
         return $response;
     }
 
-    public static function buildResponse(mixed $content): HttpResponse
+    /** @param array<string, mixed> $data */
+    public static function buildResponse(array $data): HttpResponse
     {
         $response = Router::setResponseHeaders(new HttpResponse());
         $response->setStatusCode(200);
-        $response->setContent($content);
+        $response->setContent(json_encode($data, JSON_THROW_ON_ERROR));
 
         return $response;
     }
