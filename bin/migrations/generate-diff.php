@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-require dirname(__DIR__, 2) . "/vendor/autoload.php";
-
 use Doctrine\Migrations\DependencyFactory;
 use Doctrine\Migrations\Generator\Exception\NoChangesDetected;
 
 try {
+    require dirname(__DIR__, 2) . '/bootstrap.php';
     generate_diff();
-} catch (NoChangesDetected $e) {
-    fwrite(STDOUT, "Generate diff status: {$e->getMessage()}\n");
+} catch (NoChangesDetected) {
+    fwrite(STDOUT, 'No changes detected.\n');
     exit(0);
 } catch (Throwable $e) {
-    fwrite(STDERR, "Generate diff failed: {$e->getMessage()}\n");
+    $detail = implode(' - ', [$e::class, $e->getMessage()]);
+    fwrite(STDERR, "Generate diff failed: \n{$detail}\n");
     exit(1);
 }
 
@@ -21,28 +21,27 @@ try {
  * @throws NoChangesDetected
  * @throws RuntimeException
  */
-function generate_diff(): string
+function generate_diff(): void
 {
     /** @var DependencyFactory $dependencyFactory */
-    $dependencyFactory = require dirname(__DIR__, 2) .
-        "/bin/migrations/config/dependency-factory.php";
+    $dependencyFactory = require __DIR__ . '/config/dependency-factory.php';
 
     $migrationClassNamespace = array_key_first(
         $dependencyFactory->getConfiguration()->getMigrationDirectories(),
     );
 
     if (!$migrationClassNamespace) {
-        throw new RuntimeException("Migration namespace not found.");
+        throw new RuntimeException('Migration namespace not found.');
     }
 
     $migrationClassName = $dependencyFactory
         ->getClassNameGenerator()
         ->generateClassName($migrationClassNamespace);
 
-    $resultingPath = $dependencyFactory
-        ->getDiffGenerator()
-        ->generate($migrationClassName, null);
+    $resultingPath = $dependencyFactory->getDiffGenerator()->generate(
+        $migrationClassName,
+        null,
+    );
 
     echo "Generated migration: {$resultingPath}\n";
-    return $resultingPath;
 }

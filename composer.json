@@ -45,7 +45,6 @@
     },
     "scripts": {
         "analyze": "mago analyze",
-        "clear-config-cache": "php bin/clear-config-cache.php",
         "format": "mago format",
         "format:check": "mago format --dry-run",
         "lint": "mago lint",
@@ -53,7 +52,10 @@
             "Composer\\Config::disableProcessTimeout",
             "php -S 0.0.0.0:8080 -t public public/index.php"
         ],
-        "db:reset": "docker compose down -v && docker compose up -d --wait && rm -f migrations/*.php && php bin/migrations.php"
+        "migrations:diff": "php bin/migrations/generate-diff.php",
+        "migrations:migrate": "php bin/migrations/migrate.php",
+        "fixtures:load": "php bin/fixtures/load.php",
+        "db:reset": "docker compose down -v && docker compose up -d --wait && php bin/migrations/migrate.php"
     },
     "scripts-descriptions": {
         "analyze": "Run Mago's static analyzer.",
@@ -61,7 +63,10 @@
         "format:check": "Check formatting with Mago without writing changes.",
         "lint": "Run Mago's linter.",
         "serve": "Start the built-in PHP web server and serve the API sample.",
-        "db:reset": "Wipe and rebuild the local database: drops volumes, recreates containers, regenerates and runs migrations."
+        "migrations:diff": "Generate a new migration from differences between the entity mapping and the database schema.",
+        "migrations:migrate": "Apply all pending migrations to the database.",
+        "fixtures:load": "Purge the database and load all fixtures from test/Fixtures.",
+        "db:reset": "Wipe and rebuild the local database: drops volumes, recreates containers, applies migrations."
     },
     "config": {
         "sort-packages": true,

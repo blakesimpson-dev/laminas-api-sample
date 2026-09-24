@@ -35,6 +35,27 @@
         "reveal": "always",
     },
     {
+        "label": "migrations:diff",
+        "command": "composer migrations:diff",
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "shell": "system",
+        "reveal": "always",
+    },
+    {
+        "label": "migrations:migrate",
+        "command": "composer migrations:migrate",
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "shell": "system",
+        "reveal": "always",
+    },
+    {
+        "label": "fixtures:load",
+        "command": "composer fixtures:load",
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "shell": "system",
+        "reveal": "always",
+    },
+    {
         "label": "db:reset",
         "command": "composer db:reset",
         "cwd": "$ZED_WORKTREE_ROOT",

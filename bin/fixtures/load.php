@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-require dirname(__DIR__, 2) . "/vendor/autoload.php";
-
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
@@ -13,16 +11,18 @@ use LaminasApiSample\DoctrineEntityManagerFactory as DoctrineEMF;
 use Psr\Container\ContainerExceptionInterface;
 
 try {
+    require dirname(__DIR__, 2) . '/bootstrap.php';
     load_fixtures(build_loader());
 } catch (Throwable $e) {
-    fwrite(STDERR, "Loading fixtures failed: {$e->getMessage()}\n");
+    $detail = implode(' - ', [$e::class, $e->getMessage()]);
+    fwrite(STDERR, "Loading fixtures failed: \n{$detail}\n");
     exit(1);
 }
 
 function build_loader(): Loader
 {
     $loader = new Loader();
-    $loader->loadFromDirectory(dirname(__DIR__, 2) . "/test/Fixtures");
+    $loader->loadFromDirectory(dirname(__DIR__, 2) . '/test/Fixtures');
 
     return $loader;
 }
@@ -31,8 +31,8 @@ function build_loader(): Loader
 function load_fixtures(Loader $loader): void
 {
     /** @var ServiceManager $serviceManager */
-    $serviceManager = require dirname(__DIR__, 2) .
-        "/config/service-manager.php";
+    $serviceManager = require
+        dirname(__DIR__, 2) . '/config/service-manager.php';
 
     /** @var EntityManager $entityManager */
     $entityManager = $serviceManager->get(DoctrineEMF::SERVICE_NAME);
