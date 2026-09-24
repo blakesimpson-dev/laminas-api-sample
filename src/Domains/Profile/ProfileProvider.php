@@ -26,7 +26,7 @@ final class ProfileProvider
                     Factories\ProfileReadHandlerFactory::class,
             ],
             'aliases' => [
-                'profile' => Handlers\ProfileReadHandler::class,
+                'profile.read' => Handlers\ProfileReadHandler::class,
             ],
         ];
     }
