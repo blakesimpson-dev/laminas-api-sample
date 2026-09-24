@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample\Profile;
+namespace LaminasApiSample\Domains\Profile\Handlers;
 
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
-use LaminasApiSample\HandlerInterface;
-use LaminasApiSample\Router;
+use LaminasApiSample\Domains\Profile\ProfileAdapter;
+use LaminasApiSample\Domains\Profile\ProfileRepository;
+use LaminasApiSample\Http\HandlerInterface;
+use LaminasApiSample\Http\JsonResponseFactory;
 use Override;
 
 final class ProfileReadHandler implements HandlerInterface
@@ -22,9 +24,9 @@ final class ProfileReadHandler implements HandlerInterface
     {
         $entity = $this->repository->findOneBy([]);
         if (!$entity) {
-            return Router::buildNotFoundResponse();
+            return JsonResponseFactory::notFound();
         }
 
-        return Router::buildResponse($this->adapter->mapResponse($entity));
+        return JsonResponseFactory::ok($this->adapter->mapResponse($entity));
     }
 }

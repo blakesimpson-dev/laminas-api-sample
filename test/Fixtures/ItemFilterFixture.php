@@ -6,7 +6,7 @@ namespace LaminasApiSampleTest\Fixtures;
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use LaminasApiSample\ItemFilter\ItemFilterEntity;
+use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
 use Override;
 
 final class ItemFilterFixture implements FixtureInterface

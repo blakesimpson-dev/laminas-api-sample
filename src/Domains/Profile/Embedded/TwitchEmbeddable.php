@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample\Profile\Embedded;
+namespace LaminasApiSample\Domains\Profile\Embedded;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Embeddable;

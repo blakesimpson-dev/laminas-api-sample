@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample\ItemFilter\Handlers;
+namespace LaminasApiSample\Domains\ItemFilter\Handlers;
 
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
-use LaminasApiSample\HandlerInterface;
-use LaminasApiSample\ItemFilter\ItemFilterAdapter;
-use LaminasApiSample\ItemFilter\ItemFilterRepository;
-use LaminasApiSample\Router;
+use LaminasApiSample\Domains\ItemFilter\ItemFilterAdapter;
+use LaminasApiSample\Domains\ItemFilter\ItemFilterRepository;
+use LaminasApiSample\Http\HandlerInterface;
+use LaminasApiSample\Http\JsonResponseFactory;
 use Override;
 
 final class ItemFilterReadHandler implements HandlerInterface
@@ -24,14 +24,14 @@ final class ItemFilterReadHandler implements HandlerInterface
     {
         $id = $params['id'] ?? null;
         if (!$id) {
-            return Router::buildBadRequestResponse();
+            return JsonResponseFactory::badRequest();
         }
 
         $entity = $this->repository->find($id);
         if (!$entity) {
-            return Router::buildNotFoundResponse();
+            return JsonResponseFactory::notFound();
         }
 
-        return Router::buildResponse($this->adapter->mapResponse($entity));
+        return JsonResponseFactory::ok($this->adapter->mapResponse($entity));
     }
 }

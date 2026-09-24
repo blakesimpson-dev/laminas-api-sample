@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample\ItemFilter;
+namespace LaminasApiSample\Domains\ItemFilter;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 use Laminas\Router\Http\TreeRouteStack;
 use Laminas\ServiceManager\ServiceManager;
-use LaminasApiSample\Router;
+use LaminasApiSample\Http\JsonResponseFactory;
+use LaminasApiSample\Http\Router;
 use Psr\Container\ContainerExceptionInterface;
 
 try {
@@ -13,7 +14,7 @@ try {
 } catch (Throwable $e) {
     $detail = implode(' - ', [$e::class, $e->getMessage()]);
     error_log($detail);
-    Router::buildServerErrorResponse()->send();
+    JsonResponseFactory::serverError()->send();
 }
 
 /** @throws ContainerExceptionInterface */
