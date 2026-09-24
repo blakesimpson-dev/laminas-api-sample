@@ -16,8 +16,8 @@ use Ramsey\Uuid\Uuid;
 #[Table(name: 'profile')]
 final class ProfileEntity
 {
-    #[Column(type: 'guid'), Id]
-    private readonly string $uuid;
+    #[Column(name: 'uuid', type: 'guid'), Id]
+    private readonly string $id;
 
     #[Column]
     private readonly string $name;
@@ -33,15 +33,15 @@ final class ProfileEntity
         ?string $locale,
         ?TwitchEmbeddable $twitch,
     ) {
-        $this->uuid = Uuid::uuid4()->toString();
+        $this->id = Uuid::uuid4()->toString();
         $this->name = $name;
         $this->locale = $locale;
         $this->twitch = $twitch;
     }
 
-    public function getUuid(): string
+    public function getId(): string
     {
-        return $this->uuid;
+        return $this->id;
     }
 
     public function getName(): string

@@ -26,31 +26,60 @@ final class ProfileReadHandler implements HandlerInterface
             return Router::buildNotFoundResponse();
         }
 
+        return Router::buildResponse($this->mapResponseData($profile));
+    }
+
+    /**
+     * @return array{
+     *     uuid: string,
+     *     name: string,
+     *     locale: ?string,
+     *     twitch?: array{
+     *         name: string,
+     *         stream?: array{name?: string, image?: string, status?: string},
+     *     },
+     * }
+     */
+    private function mapResponseData(ProfileEntity $profile): array
+    {
         $twitch = $this->mapTwitchData($profile->getTwitch());
-        return Router::buildResponse([
-            'uuid' => $profile->getUuid(),
+
+        return [
+            'uuid' => $profile->getId(),
             'name' => $profile->getName(),
             'locale' => $profile->getLocale(),
             ...($twitch ? ['twitch' => $twitch] : []),
-        ]);
+        ];
     }
 
-    /** @return null|array<string, mixed> */
+    /**
+     * @return null|array{
+     *     name: string,
+     *     stream?: array{name?: string, image?: string, status?: string},
+     * }
+     */
     private function mapTwitchData(?TwitchEmbeddable $data = null): ?array
     {
-        if (!$data || !$data->getName()) {
+        $name = $data?->getName();
+        if (!$data || !$name) {
             return null;
         }
 
         $stream = $this->mapStreamData($data->getStream());
 
         return [
-            'name' => $data->getName(),
+            'name' => $name,
             ...(!$stream ? [] : ['stream' => $stream]),
         ];
     }
 
-    /** @return null|array<string, mixed> */
+    /**
+     * @return null|array{
+     *     name?: string,
+     *     image?: string,
+     *     status?: string,
+     * }
+     */
     private function mapStreamData(?StreamEmbeddable $data = null): ?array
     {
         if (!$data) {
