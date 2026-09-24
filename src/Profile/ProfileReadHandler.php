@@ -8,6 +8,7 @@ use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 use LaminasApiSample\HandlerInterface;
 use LaminasApiSample\Profile\Embedded\StreamEmbeddable;
 use LaminasApiSample\Profile\Embedded\TwitchEmbeddable;
+use LaminasApiSample\Router;
 use Override;
 
 final class ProfileReadHandler implements HandlerInterface
@@ -20,62 +21,45 @@ final class ProfileReadHandler implements HandlerInterface
     #[Override]
     public function __invoke(?array $params = null): HttpResponse
     {
-        $response = new HttpResponse();
-
-        // TODO(Blake Simpson): Since there is currently no auth scope (ie.
-        // there is only one profile to fetch by scope) the following will need
-        // to change once account:profile scope exists
         $profile = $this->profileRepo->findOneBy([]);
-
         if (!$profile) {
-            // TODO(Blake Simpson): Building a 404 should become a shared
-            // function
-            $response->setStatusCode(404);
-            $response->setContent(json_encode(['error' => 'Not Found']));
-            return $response;
+            return Router::buildNotFoundResponse();
         }
 
-        $twitch = $this->map_twitch_fields($profile->getTwitchEmbeddable());
-
-        // TODO(Blake Simpson): Building a 200 should become a shared function
-        $response->setStatusCode(200);
-        $response->setContent(json_encode([
+        $twitch = $this->mapTwitchData($profile->getTwitchEmbeddable());
+        return Router::buildResponse([
             'uuid' => $profile->getUuid(),
             'name' => $profile->getName(),
             'locale' => $profile->getLocale(),
             ...($twitch ? ['twitch' => $twitch] : []),
-        ]));
-
-        return $response;
+        ]);
     }
 
     /** @return null|array<string, mixed> */
-    private function map_twitch_fields(?TwitchEmbeddable $twitchEmbeddable = null): ?array
+    private function mapTwitchData(?TwitchEmbeddable $embedded = null): ?array
     {
-        if (!$twitchEmbeddable) {
+        if (!$embedded || !$embedded->getName()) {
             return null;
         }
 
-        $stream = $this->mapStreamFields(
-            $twitchEmbeddable->getStreamEmbeddable(),
-        );
+        $stream = $this->mapStreamData($embedded->getStreamEmbeddable());
 
         return [
-            'name' => $twitchEmbeddable->getName(),
+            'name' => $embedded->getName(),
             ...(!$stream ? [] : ['stream' => $stream]),
         ];
     }
 
     /** @return null|array<string, mixed> */
-    private function mapStreamFields(?StreamEmbeddable $streamEmbeddable = null): ?array
+    private function mapStreamData(?StreamEmbeddable $embedded = null): ?array
     {
-        if (!$streamEmbeddable) {
+        if (!$embedded) {
             return null;
         }
 
-        $name = $streamEmbeddable->getName();
-        $image = $streamEmbeddable->getImage();
-        $status = $streamEmbeddable->getStatus();
+        $name = $embedded->getName();
+        $image = $embedded->getImage();
+        $status = $embedded->getStatus();
 
         return [
             ...(!$name ? [] : ['name' => $name]),
