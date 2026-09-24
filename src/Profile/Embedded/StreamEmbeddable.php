@@ -11,9 +11,12 @@ use Doctrine\ORM\Mapping\Embeddable;
 final class StreamEmbeddable
 {
     public function __construct(
-        #[Column(nullable: true)] private readonly ?string $name,
-        #[Column(nullable: true)] private readonly ?string $image,
-        #[Column(nullable: true)] private readonly ?string $status,
+        #[Column(nullable: true)]
+        private readonly ?string $name,
+        #[Column(nullable: true)]
+        private readonly ?string $image,
+        #[Column(nullable: true)]
+        private readonly ?string $status,
     ) {}
 
     public function getName(): ?string

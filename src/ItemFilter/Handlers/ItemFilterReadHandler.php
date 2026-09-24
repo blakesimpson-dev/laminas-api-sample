@@ -16,12 +16,10 @@ final class ItemFilterReadHandler extends AbstractHandler
     {
         $response = new HttpResponse();
         $response->setStatusCode(200);
-        $response->setContent(
-            json_encode([
-                "handler" => static::class,
-                "params" => $params,
-            ]),
-        );
+        $response->setContent(json_encode([
+            'handler' => static::class,
+            'params' => $params,
+        ]));
 
         return $response;
     }

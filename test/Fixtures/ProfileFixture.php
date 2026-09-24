@@ -15,12 +15,11 @@ final class ProfileFixture implements FixtureInterface
     #[Override]
     public function load(ObjectManager $manager): void
     {
-        // TODO(Blake): Hydration script
         $manager->persist(
             new ProfileEntity(
-                "KATAPLEXIA",
-                "en_AU",
-                new TwitchEmbeddable("Kataplexia_AU", null),
+                'KATAPLEXIA',
+                'en_AU',
+                new TwitchEmbeddable('Kataplexia_AU', null),
             ),
         );
         $manager->flush();

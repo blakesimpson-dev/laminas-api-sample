@@ -15,7 +15,8 @@ final class TwitchEmbeddable
     private readonly ?StreamEmbeddable $stream;
 
     public function __construct(
-        #[Column(nullable: true)] private readonly ?string $name,
+        #[Column(nullable: true)]
+        private readonly ?string $name,
         ?StreamEmbeddable $stream,
     ) {
         $this->stream = $stream;
