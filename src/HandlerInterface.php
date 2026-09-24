@@ -8,6 +8,6 @@ use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 
 interface HandlerInterface
 {
-    /** @param ?array<array-key, mixed> $params */
+    /** @param ?array<string, string> $params */
     public function __invoke(?array $params = null): HttpResponse;
 }

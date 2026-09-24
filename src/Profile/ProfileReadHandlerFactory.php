@@ -20,10 +20,10 @@ final class ProfileReadHandlerFactory implements FactoryInterface
     ): ProfileReadHandler {
         /** @var EntityManager $entityManager */
         $entityManager = $container->get(DoctrineEMF::SERVICE_NAME);
+        /** @var ProfileRepository $repository */
+        $repository = $entityManager->getRepository(ProfileEntity::class);
+        $adapter = new ProfileAdapter();
 
-        /** @var ProfileRepository $profileRepo */
-        $profileRepo = $entityManager->getRepository(ProfileEntity::class);
-
-        return new ProfileReadHandler($profileRepo);
+        return new ProfileReadHandler($repository, $adapter);
     }
 }

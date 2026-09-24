@@ -38,7 +38,9 @@ final class Router
             return Router::buildNotImplementedResponse();
         }
 
-        return $handler($routeMatch->getParams());
+        /** @var array<string, string> $params */
+        $params = $routeMatch->getParams();
+        return $handler($params);
     }
 
     public static function setResponseHeaders(HttpResponse $response): HttpResponse
@@ -57,6 +59,15 @@ final class Router
         $response = Router::setResponseHeaders(new HttpResponse());
         $response->setStatusCode(200);
         $response->setContent(json_encode($data, JSON_THROW_ON_ERROR));
+
+        return $response;
+    }
+
+    public static function buildBadRequestResponse(): HttpResponse
+    {
+        $response = Router::setResponseHeaders(new HttpResponse());
+        $response->setStatusCode(400);
+        $response->setContent(json_encode(['error' => 'Bad Request']));
 
         return $response;
     }

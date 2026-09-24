@@ -9,10 +9,6 @@ use LaminasApiSample\Profile\Embedded\TwitchEmbeddable;
 
 final class ProfileAdapter
 {
-    public function __construct(
-        private readonly ProfileEntity $profile,
-    ) {}
-
     /**
      * @return array{
      *     uuid: string,
@@ -24,14 +20,14 @@ final class ProfileAdapter
      *     },
      * }
      */
-    public function mapResponse(): array
+    public function mapResponse(ProfileEntity $entity): array
     {
-        $twitch = $this->mapTwitchData($this->profile->getTwitch());
+        $twitch = $this->mapTwitchData($entity->getTwitch());
 
         return [
-            'uuid' => $this->profile->getId(),
-            'name' => $this->profile->getName(),
-            'locale' => $this->profile->getLocale(),
+            'uuid' => $entity->getId(),
+            'name' => $entity->getName(),
+            'locale' => $entity->getLocale(),
             ...($twitch ? ['twitch' => $twitch] : []),
         ];
     }
@@ -42,14 +38,14 @@ final class ProfileAdapter
      *     stream?: array{name?: string, image?: string, status?: string},
      * }
      */
-    private function mapTwitchData(?TwitchEmbeddable $data = null): ?array
+    private function mapTwitchData(?TwitchEmbeddable $embedded = null): ?array
     {
-        $name = $data?->getName();
-        if (!$data || !$name) {
+        $name = $embedded?->getName();
+        if (!$embedded || !$name) {
             return null;
         }
 
-        $stream = $this->mapStreamData($data->getStream());
+        $stream = $this->mapStreamData($embedded->getStream());
 
         return [
             'name' => $name,
@@ -64,15 +60,15 @@ final class ProfileAdapter
      *     status?: string,
      * }
      */
-    private function mapStreamData(?StreamEmbeddable $data = null): ?array
+    private function mapStreamData(?StreamEmbeddable $embedded = null): ?array
     {
-        if (!$data) {
+        if (!$embedded) {
             return null;
         }
 
-        $name = $data->getName();
-        $image = $data->getImage();
-        $status = $data->getStatus();
+        $name = $embedded->getName();
+        $image = $embedded->getImage();
+        $status = $embedded->getStatus();
 
         return [
             ...($name ? ['name' => $name] : []),

@@ -12,19 +12,19 @@ use Override;
 final class ProfileReadHandler implements HandlerInterface
 {
     public function __construct(
-        private readonly ProfileRepository $profileRepo,
+        private readonly ProfileRepository $repository,
+        private readonly ProfileAdapter $adapter,
     ) {}
 
-    /** @param ?array<array-key, mixed> $params */
+    /** @param ?array<string, string> $params */
     #[Override]
     public function __invoke(?array $params = null): HttpResponse
     {
-        $profile = $this->profileRepo->findOneBy([]);
-        if (!$profile) {
+        $entity = $this->repository->findOneBy([]);
+        if (!$entity) {
             return Router::buildNotFoundResponse();
         }
 
-        $adapter = new ProfileAdapter($profile);
-        return Router::buildResponse($adapter->mapResponse());
+        return Router::buildResponse($this->adapter->mapResponse($entity));
     }
 }

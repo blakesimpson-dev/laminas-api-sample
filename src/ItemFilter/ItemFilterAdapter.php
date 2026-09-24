@@ -4,14 +4,8 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\ItemFilter;
 
-use LaminasApiSample\HandlerType;
-
 final class ItemFilterAdapter
 {
-    public function __construct(
-        private readonly ItemFilterEntity $itemFilter,
-    ) {}
-
     /**
      * @return array{
      *     id: string,
@@ -24,17 +18,17 @@ final class ItemFilterAdapter
      *     public: bool,
      * }
      */
-    public function mapResponse(): array
+    public function mapResponse(ItemFilterEntity $entity): array
     {
         return [
-            'id' => $this->itemFilter->getId(),
-            'filter_name' => $this->itemFilter->getName(),
-            'realm' => $this->itemFilter->getRealm(),
-            'filter' => $this->itemFilter->getFilter(),
-            'description' => $this->itemFilter->getDescription(),
-            'version' => $this->itemFilter->getVersion(),
-            'type' => $this->itemFilter->getType(),
-            'public' => $this->itemFilter->isPublic(),
+            'id' => $entity->getId(),
+            'filter_name' => $entity->getName(),
+            'realm' => $entity->getRealm(),
+            'filter' => $entity->getFilter(),
+            'description' => $entity->getDescription(),
+            'version' => $entity->getVersion(),
+            'type' => $entity->getType(),
+            'public' => $entity->isPublic(),
         ];
     }
 
@@ -49,16 +43,16 @@ final class ItemFilterAdapter
      *     public: bool,
      * }
      */
-    public function mapListResponseItem(): array
+    public function mapListResponseItem(ItemFilterEntity $entity): array
     {
         return [
-            'id' => $this->itemFilter->getId(),
-            'filter_name' => $this->itemFilter->getName(),
-            'realm' => $this->itemFilter->getRealm(),
-            'description' => $this->itemFilter->getDescription(),
-            'version' => $this->itemFilter->getVersion(),
-            'type' => $this->itemFilter->getType(),
-            'public' => $this->itemFilter->isPublic(),
+            'id' => $entity->getId(),
+            'filter_name' => $entity->getName(),
+            'realm' => $entity->getRealm(),
+            'description' => $entity->getDescription(),
+            'version' => $entity->getVersion(),
+            'type' => $entity->getType(),
+            'public' => $entity->isPublic(),
         ];
     }
 }
