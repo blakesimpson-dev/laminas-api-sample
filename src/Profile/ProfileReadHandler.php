@@ -13,7 +13,7 @@ use Override;
 final class ProfileReadHandler extends AbstractHandler
 {
     public function __construct(
-        private readonly ProfileRepository $profileRepository,
+        private readonly ProfileRepository $profileRepo,
     ) {}
 
     /** @param ?array<array-key, mixed> $params */
@@ -25,7 +25,7 @@ final class ProfileReadHandler extends AbstractHandler
         // TODO(Blake Simpson): Since there is currently no auth scope (ie.
         // there is only one profile to fetch by scope) the following will need
         // to change once account:profile scope exists
-        $profile = $this->profileRepository->findOneBy([]);
+        $profile = $this->profileRepo->findOneBy([]);
 
         if (!$profile) {
             // TODO(Blake Simpson): Building a 404 should become a shared
