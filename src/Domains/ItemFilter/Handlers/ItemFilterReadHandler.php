@@ -32,6 +32,8 @@ final class ItemFilterReadHandler implements HandlerInterface
             return JsonResponseFactory::notFound();
         }
 
-        return JsonResponseFactory::ok($this->adapter->mapResponse($entity));
+        return JsonResponseFactory::ok([
+            'filter' => $this->adapter->mapResponse($entity),
+        ]);
     }
 }
