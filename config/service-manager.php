@@ -13,11 +13,10 @@ use LaminasApiSample\Profile\ProfileReadHandler;
 use LaminasApiSample\Profile\ProfileReadHandlerFactory;
 
 /** @var array<string, mixed> $doctrineConfig */
-$doctrineConfig = require dirname(__DIR__) . "/config/doctrine.php";
+$doctrineConfig = require __DIR__ . '/doctrine.php';
 
-/** @throws Psr\Container\ContainerExceptionInterface */
 return new ServiceManager([
-    "factories" => [
+    'factories' => [
         CharacterReadHandler::class => InvokableFactory::class,
         CharacterReadManyHandler::class => InvokableFactory::class,
         ItemFilterReadHandler::class => InvokableFactory::class,
@@ -25,19 +24,20 @@ return new ServiceManager([
         ProfileReadHandler::class => ProfileReadHandlerFactory::class,
         DoctrineEMF::SERVICE_NAME => DoctrineEMF::class,
     ],
-    "aliases" => [
-        "character" => CharacterReadHandler::class,
-        "character-list" => CharacterReadManyHandler::class,
-        "item-filter" => ItemFilterReadHandler::class,
-        "item-filter-list" => ItemFilterReadManyHandler::class,
-        "profile" => ProfileReadHandler::class,
+    'aliases' => [
+        'character' => CharacterReadHandler::class,
+        'character-list' => CharacterReadManyHandler::class,
+        'item-filter' => ItemFilterReadHandler::class,
+        'item-filter-list' => ItemFilterReadManyHandler::class,
+        'profile' => ProfileReadHandler::class,
     ],
-    "services" => [
-        "config" => array_merge(
-            $doctrineConfig,
-            // ...
-            // TODO(Blake): Investigate additional config the application
-            // will require
-        ),
+    'services' => [
+        'config' =>
+            array_merge(
+                $doctrineConfig,
+                // ...
+                // TODO(Blake Simpson): Investigate additional config the API
+                // will require
+            ),
     ],
 ]);
