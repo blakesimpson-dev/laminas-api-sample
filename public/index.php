@@ -8,6 +8,7 @@ use Laminas\ServiceManager\ServiceManager;
 use LaminasApiSample\Http\JsonResponseFactory;
 use LaminasApiSample\Http\Router;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 try {
     require dirname(__DIR__) . '/bootstrap.php';
