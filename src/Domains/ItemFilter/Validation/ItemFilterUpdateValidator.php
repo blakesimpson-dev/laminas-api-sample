@@ -22,6 +22,8 @@ use Laminas\Validator\StringLength;
  */
 final class ItemFilterUpdateValidator extends InputFilter
 {
+    private const array REALMS = ['pc', 'xbox', 'sony', 'poe2'];
+    private const array TYPES = ['Normal', 'Ruthless'];
     private const string PUBLIC_LOCK = 'Public filters cannot be made private';
 
     public function __construct()
@@ -44,6 +46,10 @@ final class ItemFilterUpdateValidator extends InputFilter
                 'options' => [
                     'haystack' => ['pc', 'xbox', 'sony', 'poe2'],
                     'strict' => InArray::COMPARE_STRICT,
+                    'messages' => [
+                        InArray::NOT_IN_ARRAY =>
+                            'Must be one of: ' . implode(', ', self::REALMS),
+                    ],
                 ],
             ]],
         ]);
@@ -83,6 +89,10 @@ final class ItemFilterUpdateValidator extends InputFilter
                 'options' => [
                     'haystack' => ['Normal', 'Ruthless'],
                     'strict' => InArray::COMPARE_STRICT,
+                    'messages' => [
+                        InArray::NOT_IN_ARRAY =>
+                            'Must be one of: ' . implode(', ', self::TYPES),
+                    ],
                 ],
             ]],
         ]);
