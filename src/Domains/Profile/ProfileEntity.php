@@ -30,8 +30,8 @@ final class ProfileEntity
 
     public function __construct(
         string $name,
-        ?string $locale,
-        ?TwitchEmbeddable $twitch,
+        ?string $locale = null,
+        ?TwitchEmbeddable $twitch = null,
     ) {
         $this->id = Uuid::uuid4()->toString();
         $this->name = $name;

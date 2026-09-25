@@ -13,21 +13,22 @@ final class ProfileAdapter
      * @return array{
      *     uuid: string,
      *     name: string,
-     *     locale: ?string,
+     *     locale?: string,
      *     twitch?: array{
      *         name: string,
      *         stream?: array{name?: string, image?: string, status?: string},
      *     },
-     * }
+     *  }
      */
     public function mapResponse(ProfileEntity $entity): array
     {
+        $locale = $entity->getLocale();
         $twitch = $this->mapTwitchData($entity->getTwitch());
 
         return [
             'uuid' => $entity->getId(),
             'name' => $entity->getName(),
-            'locale' => $entity->getLocale(),
+            ...($locale ? ['locale' => $locale] : []),
             ...($twitch ? ['twitch' => $twitch] : []),
         ];
     }
@@ -62,18 +63,6 @@ final class ProfileAdapter
      */
     private function mapStreamData(?StreamEmbeddable $embedded = null): ?array
     {
-        if (!$embedded) {
-            return null;
-        }
-
-        $name = $embedded->getName();
-        $image = $embedded->getImage();
-        $status = $embedded->getStatus();
-
-        return [
-            ...($name ? ['name' => $name] : []),
-            ...($image ? ['image' => $image] : []),
-            ...($status ? ['status' => $status] : []),
-        ];
+        return $embedded ? array_filter($embedded->toArray()) : null;
     }
 }
