@@ -1,11 +1,5 @@
 [
-    {
-        "label": "lint",
-        "command": "composer lint",
-        "cwd": "$ZED_WORKTREE_ROOT",
-        "shell": "system",
-        "reveal": "always",
-    },
+
     {
         "label": "analyze",
         "command": "composer analyze",
@@ -23,6 +17,20 @@
     {
         "label": "format:check",
         "command": "composer format:check",
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "shell": "system",
+        "reveal": "always",
+    },
+    {
+        "label": "lint",
+        "command": "composer lint",
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "shell": "system",
+        "reveal": "always",
+    },
+    {
+        "label": "test",
+        "command": "compose test",
         "cwd": "$ZED_WORKTREE_ROOT",
         "shell": "system",
         "reveal": "always",

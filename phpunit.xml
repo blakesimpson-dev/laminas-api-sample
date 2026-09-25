@@ -14,7 +14,7 @@
          warnWhenPhpIsNotConfiguredForDevelopment="true">
     <testsuites>
         <testsuite name="unit">
-            <directory>/Unit</directory>
+            <directory>test/Unit</directory>
         </testsuite>
     </testsuites>
 
