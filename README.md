@@ -1,4 +1,7 @@
+
 # laminas-api-sample
+
+![CI](https://github.com/blakesimpson-dev/laminas-api-sample/actions/workflows/ci.yml/badge.svg)
 
 A learning project using PHP 8.5, Laminas and Doctrine: a small REST backend
 modelled on a slice of the

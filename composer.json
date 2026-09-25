@@ -44,10 +44,10 @@
         }
     },
     "scripts": {
-        "analyze": "mago analyze",
+        "analyze": "mago analyze --minimum-fail-level=warning",
+        "lint": "mago lint --minimum-fail-level=warning",
         "format": "mago format",
         "format:check": "mago format --dry-run",
-        "lint": "mago lint",
         "test": "phpunit",
         "serve": [
             "Composer\\Config::disableProcessTimeout",
