@@ -19,9 +19,8 @@ final class Router
     ) {}
 
     /** @throws ContainerExceptionInterface */
-    public function dispatch(): HttpResponse
+    public function dispatch(HttpRequest $request): HttpResponse
     {
-        $request = new HttpRequest();
         $routeMatch = $this->routeStack->match($request);
         if (!$routeMatch) {
             return JsonResponseFactory::notFound();

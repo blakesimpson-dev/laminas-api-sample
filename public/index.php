@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Laminas\Http\PhpEnvironment\Request as HttpRequest;
 use Laminas\Router\Http\TreeRouteStack;
 use Laminas\ServiceManager\ServiceManager;
 use LaminasApiSample\Http\JsonResponseFactory;
@@ -26,7 +27,7 @@ function handle_request(): void
     $serviceManager = require dirname(__DIR__) . '/config/service-manager.php';
 
     $router = new Router($routeStack, $serviceManager);
-    $response = $router->dispatch();
+    $response = $router->dispatch(new HttpRequest());
 
     $response->send();
 }
