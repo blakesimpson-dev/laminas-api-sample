@@ -22,6 +22,8 @@ reasoned for. The commit history follows that progression.
 - Doctrine entities, embeddables, and reviewed migrations
 - PostgreSQL in Docker Compose, credentials in shared environment from `.env`
 - Fixtures seeded from real data
+- PHPUnit testing for entities, domain endpoints, input validation, adapters
+  and the HTTP layer
 - Written with adherence to modern PHP conventions using strict static analysis
 
 > _*Auth is not implemented yet.* Every request is treated as already authorised
@@ -32,7 +34,7 @@ reasoned for. The commit history follows that progression.
 
 ## Roadmap
 
-- PHPUnit tests and GitHub Actions CI
+- GitHub Actions CI
 - Nginx + php-fpm in Docker Compose
 - Mocked OAuth bearer tokens with route scopes and ownership
 - OpenAPI spec with Swagger UI
@@ -76,6 +78,7 @@ curl localhost:8080/item-filter/<id>    # get one item filter
 | `composer migrations:diff` / `migrations:migrate` | Doctrine Migrations |
 | `composer fixtures:load` | Purge and reseed |
 | `composer db:reset` | Recreate Postgres and migrate |
+| `composer test` | Run the PHPUnit unit tests |
 
 ## Layout
 

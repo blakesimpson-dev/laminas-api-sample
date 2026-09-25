@@ -33,4 +33,16 @@ final class StreamEmbeddable
     {
         return $this->status;
     }
+
+    /**
+     * @return array{name: ?string, image: ?string, status: ?string}
+     */
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->getName(),
+            'image' => $this->getImage(),
+            'status' => $this->getStatus(),
+        ];
+    }
 }

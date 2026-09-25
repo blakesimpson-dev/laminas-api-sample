@@ -27,18 +27,16 @@ final class JsonBody
             throw new UnsupportedContentTypeException();
         }
 
+        $content = $request->getContent();
+
         try {
             // @mago-expect analysis:mixed-assignment
-            $data = json_decode(
-                $request->getContent(),
-                true,
-                flags: JSON_THROW_ON_ERROR,
-            );
+            $data = json_decode($content, true, flags: JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
             throw new MalformedJsonException($e->getMessage(), previous: $e);
         }
 
-        if (!is_array($data) || array_is_list($data)) {
+        if (!is_array($data) || !str_starts_with(ltrim($content), '{')) {
             throw new MalformedJsonException('Expected a JSON object.');
         }
 

@@ -8,13 +8,15 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
-use DomainException;
 use Ramsey\Uuid\Uuid;
 
 #[Entity(repositoryClass: ItemFilterRepository::class)]
 #[Table(name: 'item_filter')]
 final class ItemFilterEntity
 {
+    public const array REALMS = ['pc', 'xbox', 'sony', 'poe2'];
+    public const array TYPES = ['Normal', 'Ruthless'];
+
     #[Column(type: 'guid'), Id]
     private readonly string $id;
 
@@ -59,32 +61,19 @@ final class ItemFilterEntity
         $this->public = $public;
     }
 
-    /**
-     * @param array{
-     *     filter_name?: string,
-     *     realm?: string,
-     *     filter?: string,
-     *     description?: string,
-     *     version?: string,
-     *     type?: string,
-     *     public?: bool,
-     * } $updated
-     */
-    public function update(array $updated): void
+    public function update(ItemFilterPatch $patch): void
     {
-        if (($updated['public'] ?? null) === false && $this->public) {
-            throw new DomainException(
-                'A public filter cannot be made private.',
-            );
-        }
+        $this->name = $patch->name ?? $this->name;
+        $this->realm = $patch->realm ?? $this->realm;
+        $this->filter = $patch->filter ?? $this->filter;
+        $this->description = $patch->description ?? $this->description;
+        $this->version = $patch->version ?? $this->version;
+        $this->type = $patch->type ?? $this->type;
+    }
 
-        $this->name = $updated['filter_name'] ?? $this->name;
-        $this->realm = $updated['realm'] ?? $this->realm;
-        $this->filter = $updated['filter'] ?? $this->filter;
-        $this->description = $updated['description'] ?? $this->description;
-        $this->version = $updated['version'] ?? $this->version;
-        $this->type = $updated['type'] ?? $this->type;
-        $this->public = $updated['public'] ?? $this->public;
+    public function publish(): void
+    {
+        $this->public = true;
     }
 
     public function getId(): string

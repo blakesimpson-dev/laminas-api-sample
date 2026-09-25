@@ -22,7 +22,7 @@ $entityManager = $serviceManager->get(DoctrineEMF::SERVICE_NAME);
  *             orm_default: array<string, mixed>,
  *         },
  *     },
- * } $doctrineConfig
+ *  } $doctrineConfig
  */
 $doctrineConfig = $serviceManager->get('config');
 

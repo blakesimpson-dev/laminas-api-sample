@@ -11,20 +11,22 @@ final class ItemFilterAdapter
      *     id: string,
      *     filter_name: string,
      *     realm: string,
-     *     filter: ?string,
+     *     filter?: string,
      *     description: string,
      *     version: string,
      *     type: string,
      *     public: bool,
-     * }
+     *  }
      */
     public function mapResponse(ItemFilterEntity $entity): array
     {
+        $filter = $entity->getFilter();
+
         return [
             'id' => $entity->getId(),
             'filter_name' => $entity->getName(),
             'realm' => $entity->getRealm(),
-            'filter' => $entity->getFilter(),
+            ...($filter ? ['filter' => $filter] : []),
             'description' => $entity->getDescription(),
             'version' => $entity->getVersion(),
             'type' => $entity->getType(),
@@ -41,7 +43,7 @@ final class ItemFilterAdapter
      *     version: string,
      *     type: string,
      *     public: bool,
-     * }
+     *  }
      */
     public function mapListResponseItem(ItemFilterEntity $entity): array
     {

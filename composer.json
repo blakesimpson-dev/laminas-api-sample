@@ -48,6 +48,7 @@
         "format": "mago format",
         "format:check": "mago format --dry-run",
         "lint": "mago lint",
+        "test": "phpunit",
         "serve": [
             "Composer\\Config::disableProcessTimeout",
             "php -S 0.0.0.0:8080 -t public public/index.php"
@@ -62,6 +63,7 @@
         "format": "Automatically format code with Mago.",
         "format:check": "Check formatting with Mago without writing changes.",
         "lint": "Run Mago's linter.",
+        "test": "Run the PHPUnit unit tests.",
         "serve": "Start the built-in PHP web server and serve the API sample.",
         "migrations:diff": "Generate a new migration from differences between the entity mapping and the database schema.",
         "migrations:migrate": "Apply all pending migrations to the database.",
