@@ -7,3 +7,6 @@ local.php
 
 .env
 .env.local
+
+.php-cs-fixer.cache
+.phpunit.cache/
