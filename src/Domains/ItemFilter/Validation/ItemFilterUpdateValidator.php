@@ -9,6 +9,7 @@ use Laminas\InputFilter\InputFilter;
 use Laminas\Validator\InArray;
 use Laminas\Validator\StringLength;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
+use LaminasApiSample\Domains\ItemFilter\ItemFilterPatch;
 
 /**
  * @extends InputFilter<array{
@@ -19,10 +20,12 @@ use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
  *     version: ?string,
  *     type: ?string,
  *     public: ?bool,
- * }>
+ *  }>
  */
 final class ItemFilterUpdateValidator extends InputFilter
 {
+    private const string PUBLIC_LOCK = 'Public filters cannot be made private';
+
     public function __construct()
     {
         $this->add([
@@ -106,10 +109,29 @@ final class ItemFilterUpdateValidator extends InputFilter
                     'haystack' => [true],
                     'strict' => InArray::COMPARE_STRICT,
                     'messages' => [
-                        InArray::NOT_IN_ARRAY => ItemFilterEntity::PUBLIC_LOCK,
+                        InArray::NOT_IN_ARRAY => self::PUBLIC_LOCK,
                     ],
                 ],
             ]],
         ]);
+    }
+
+    public function getPatch(): ItemFilterPatch
+    {
+        $values = $this->getValues();
+
+        return new ItemFilterPatch(
+            name: $values['filter_name'],
+            realm: $values['realm'],
+            filter: $values['filter'],
+            description: $values['description'],
+            version: $values['version'],
+            type: $values['type'],
+        );
+    }
+
+    public function isPublishRequested(): bool
+    {
+        return $this->getValues()['public'] ?? false;
     }
 }

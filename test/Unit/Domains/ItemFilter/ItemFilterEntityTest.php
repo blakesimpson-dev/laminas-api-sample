@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace LaminasApiSampleTest\Unit\Domains\ItemFilter;
 
-use DomainException;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
+use LaminasApiSample\Domains\ItemFilter\ItemFilterPatch;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -36,7 +36,7 @@ final class ItemFilterEntityTest extends TestCase
     {
         return [
             'id' => $entity->getId(),
-            'filter_name' => $entity->getName(),
+            'name' => $entity->getName(),
             'realm' => $entity->getRealm(),
             'filter' => $entity->getFilter(),
             'description' => $entity->getDescription(),
@@ -46,103 +46,88 @@ final class ItemFilterEntityTest extends TestCase
         ];
     }
 
-    /**
-     * @return iterable<string, array{
-     *      array{
-     *          filter_name?: string,
-     *          realm?: string,
-     *          filter?: string,
-     *          description?: string,
-     *          version?: string,
-     *          type?: string,
-     *          public?: bool
-     *      }
-     * }>
-     */
-    public static function getDiscreteChangeset(): iterable
+    /** @return iterable<string, array{ItemFilterPatch, array<string, string>}> */
+    public static function getDiscretePatches(): iterable
     {
-        yield 'filter_name' => [['filter_name' => 'UpdatedName.filter']];
-        yield 'realm' => [['realm' => 'xbox']];
-        yield 'filter' => [['filter' => 'Updated filter content']];
-        yield 'description' => [[
-            'description' => 'Updated description content',
-        ]];
-        yield 'version' => [['version' => 'UpdatedVersion']];
-        yield 'type' => [['type' => 'Ruthless']];
-        yield 'public' => [['public' => true]];
+        yield 'update name' => [
+            new ItemFilterPatch(name: 'UpdatedName.filter'),
+            ['name' => 'UpdatedName.filter'],
+        ];
+        yield 'update realm' => [
+            new ItemFilterPatch(realm: 'xbox'),
+            ['realm' => 'xbox'],
+        ];
+        yield 'update filter' => [
+            new ItemFilterPatch(filter: 'Updated filter content'),
+            ['filter' => 'Updated filter content'],
+        ];
+        yield 'update description' => [
+            new ItemFilterPatch(description: 'Updated description content'),
+            ['description' => 'Updated description content'],
+        ];
+        yield 'update version' => [
+            new ItemFilterPatch(version: 'UpdatedVersion'),
+            ['version' => 'UpdatedVersion'],
+        ];
+        yield 'update type' => [
+            new ItemFilterPatch(type: 'Ruthless'),
+            ['type' => 'Ruthless'],
+        ];
     }
 
     /**
-     * @param array{
-     *      filter_name?: string,
-     *      realm?: string,
-     *      filter?: string,
-     *      description?: string,
-     *      version?: string,
-     *      type?: string,
-     *      public?: bool
-     * } $changeset
+     * @param array<string, string> $expected
      * @throws RuntimeException
      */
-    #[Test, DataProvider('getDiscreteChangeset')]
-    public function updateAffectsOnlyChangedFields(array $changeset): void
-    {
+    #[Test, DataProvider('getDiscretePatches')]
+    public function updateAffectsOnlyPatchedFields(
+        ItemFilterPatch $patch,
+        array $expected,
+    ): void {
         $entity = new ItemFilterEntity(name: 'TestFilter.filter', realm: 'pc');
         $before = self::getEntitySnapshot($entity);
 
-        $entity->update($changeset);
-        $after = self::getEntitySnapshot($entity);
+        $entity->update($patch);
 
-        static::assertSame(array_replace($before, $changeset), $after);
+        static::assertSame(
+            array_replace($before, $expected),
+            self::getEntitySnapshot($entity),
+        );
     }
 
     /** @throws RuntimeException */
     #[Test]
-    public function emptyUpdateHasNoEffect(): void
+    public function emptyPatchHasNoEffect(): void
     {
         $entity = new ItemFilterEntity(name: 'TestFilter.filter', realm: 'pc');
         $before = self::getEntitySnapshot($entity);
 
-        $entity->update([]);
-        $after = self::getEntitySnapshot($entity);
+        $entity->update(new ItemFilterPatch());
 
-        static::assertSame($before, $after);
+        static::assertSame($before, self::getEntitySnapshot($entity));
     }
 
     /** @throws RuntimeException */
     #[Test]
-    public function makePublic(): void
+    public function publish(): void
     {
         $entity = new ItemFilterEntity(name: 'TestFilter.filter', realm: 'pc');
-        $entity->update(['public' => true]);
+        $entity->publish();
 
         static::assertTrue($entity->isPublic());
     }
 
     /** @throws RuntimeException */
     #[Test]
-    public function failToMakePrivate(): void
+    public function publishWhenAlreadyPublicHasNoEffect(): void
     {
         $entity = new ItemFilterEntity(
             name: 'TestFilter.filter',
             realm: 'pc',
             public: true,
         );
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessageIs(ItemFilterEntity::PUBLIC_LOCK);
-        $entity->update(['public' => false]);
-    }
+        $entity->publish();
 
-    /** @throws RuntimeException */
-    #[Test]
-    public function remainPublicHasNoEffect(): void
-    {
-        $entity = new ItemFilterEntity(
-            name: 'TestFilter.filter',
-            realm: 'pc',
-            public: true,
-        );
-        $entity->update(['public' => true]);
         static::assertTrue($entity->isPublic());
     }
 }

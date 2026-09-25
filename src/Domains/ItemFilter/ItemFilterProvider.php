@@ -13,7 +13,7 @@ final class ItemFilterProvider
      * @return array{
      *     factories: array<class-string, class-string<FactoryInterface>>,
      *     aliases: array<string, class-string>,
-     * }
+     *  }
      */
     public function __invoke(): array
     {

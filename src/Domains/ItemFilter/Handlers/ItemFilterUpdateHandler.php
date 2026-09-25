@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Domains\ItemFilter\Handlers;
 
-use DomainException;
 use Laminas\Http\PhpEnvironment\Request as HttpRequest;
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 use Laminas\InputFilter\Exception\RuntimeException;
@@ -58,24 +57,9 @@ final class ItemFilterUpdateHandler implements HandlerInterface
             return JsonResponseFactory::badRequest();
         }
 
-        $updated = array_filter(
-            array_intersect_key($this->validation->getValues(), $data),
-            static fn(mixed $value): bool => $value !== null,
-        );
-
-        try {
-            /** @var array{
-             *     filter_name?: string,
-             *     realm?: string,
-             *     filter?: string,
-             *     description?: string,
-             *     version?: string,
-             *     type?: string,
-             *     public?: bool
-             * } $updated */
-            $entity->update($updated);
-        } catch (DomainException $e) {
-            return JsonResponseFactory::unprocessable($e->getMessage());
+        $entity->update($this->validation->getPatch());
+        if ($this->validation->isPublishRequested()) {
+            $entity->publish();
         }
 
         $this->repository->save($entity);

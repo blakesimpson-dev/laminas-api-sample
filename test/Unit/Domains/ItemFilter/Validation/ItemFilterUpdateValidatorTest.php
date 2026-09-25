@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace LaminasApiSampleTest\Unit\Domains\ItemFilter\Validation;
 
 use Laminas\Validator\InArray;
-use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
+use LaminasApiSample\Domains\ItemFilter\ItemFilterPatch;
 use LaminasApiSample\Domains\ItemFilter\Validation\ItemFilterUpdateValidator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -54,9 +54,10 @@ final class ItemFilterUpdateValidatorTest extends TestCase
 
         static::assertFalse($validator->isValid());
 
+        $notInArrayMessage = 'Public filters cannot be made private';
         static::assertSame(
             ['public' => [
-                InArray::NOT_IN_ARRAY => ItemFilterEntity::PUBLIC_LOCK,
+                InArray::NOT_IN_ARRAY => $notInArrayMessage,
             ]],
             $validator->getMessages(),
         );
@@ -71,5 +72,37 @@ final class ItemFilterUpdateValidatorTest extends TestCase
 
         static::assertFalse($validator->isValid());
         static::assertSame(['realm'], array_keys($validator->getMessages()));
+    }
+
+    /** @throws RuntimeException */
+    #[Test]
+    public function patchTranslatesApiNamesAndLeavesUnsentNull(): void
+    {
+        $validator = new ItemFilterUpdateValidator();
+        $validator->setData([
+            'filter_name' => 'Renamed.filter',
+            'realm' => 'xbox',
+        ]);
+
+        static::assertTrue($validator->isValid());
+        static::assertEquals(
+            new ItemFilterPatch(name: 'Renamed.filter', realm: 'xbox'),
+            $validator->getPatch(),
+        );
+    }
+
+    /** @throws RuntimeException */
+    #[Test]
+    public function publishRequestedOnlyWhenPublicTrue(): void
+    {
+        $validator = new ItemFilterUpdateValidator();
+
+        $validator->setData(['public' => true]);
+        static::assertTrue($validator->isValid());
+        static::assertTrue($validator->isPublishRequested());
+
+        $validator->setData([]);
+        static::assertTrue($validator->isValid());
+        static::assertFalse($validator->isPublishRequested());
     }
 }

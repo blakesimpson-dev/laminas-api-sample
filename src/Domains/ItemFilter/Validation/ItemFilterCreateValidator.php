@@ -19,7 +19,7 @@ use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
  *     version: ?string,
  *     type: ?string,
  *     public: ?bool,
- * }>
+ *  }>
  */
 final class ItemFilterCreateValidator extends InputFilter
 {

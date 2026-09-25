@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace LaminasApiSampleTest\Unit\Domains\ItemFilter;
 
-use DomainException;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterAdapter;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
-use Ramsey\Uuid\Uuid;
 use RuntimeException;
 
 #[CoversClass(ItemFilterAdapter::class), UsesClass(ItemFilterEntity::class)]
@@ -33,7 +30,6 @@ final class ItemFilterAdapterTest extends TestCase
                 'id',
                 'filter_name',
                 'realm',
-                'filter',
                 'description',
                 'version',
                 'type',
@@ -45,7 +41,7 @@ final class ItemFilterAdapterTest extends TestCase
 
     /** @throws RuntimeException */
     #[Test]
-    public function assertResponseValueContract(): void
+    public function assertResponseContract(): void
     {
         $entity = new ItemFilterEntity(
             name: 'TestFilter.filter',
