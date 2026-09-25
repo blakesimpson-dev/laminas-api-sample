@@ -3,9 +3,11 @@
 declare(strict_types=1);
 
 use Laminas\ServiceManager\ServiceManager;
-use LaminasApiSample\DoctrineEntityManagerFactory as DoctrineEMF;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterProvider;
 use LaminasApiSample\Domains\Profile\ProfileProvider;
+use LaminasApiSample\Platform\DoctrineEntityManagerFactory as DoctrineEMF;
+use LaminasApiSample\Platform\SystemClock;
+use Psr\Clock\ClockInterface;
 
 /** @var array<string, mixed> $doctrineConfig */
 $doctrineConfig = require __DIR__ . '/doctrine.php';
@@ -25,5 +27,8 @@ return new ServiceManager([
     ],
     'services' => [
         'config' => $doctrineConfig,
+    ],
+    'invokables' => [
+        ClockInterface::class => SystemClock::class,
     ],
 ]);

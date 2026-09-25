@@ -7,7 +7,7 @@ use Doctrine\Migrations\Configuration\Migration\ConfigurationArray;
 use Doctrine\Migrations\DependencyFactory;
 use Doctrine\ORM\EntityManager;
 use Laminas\ServiceManager\ServiceManager;
-use LaminasApiSample\DoctrineEntityManagerFactory as DoctrineEMF;
+use LaminasApiSample\Platform\DoctrineEntityManagerFactory as DoctrineEMF;
 
 /** @var ServiceManager $serviceManager */
 $serviceManager = require dirname(__DIR__, 3) . '/config/service-manager.php';
