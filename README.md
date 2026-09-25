@@ -37,7 +37,6 @@ reasoned for. The commit history follows that progression.
 
 ## Roadmap
 
-- GitHub Actions CI
 - Nginx + php-fpm in Docker Compose
 - Mocked OAuth bearer tokens with route scopes and ownership
 - OpenAPI spec with Swagger UI
