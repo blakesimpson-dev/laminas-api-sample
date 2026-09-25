@@ -22,6 +22,9 @@ use Laminas\Validator\StringLength;
  */
 final class ItemFilterCreateValidator extends InputFilter
 {
+    private const array REALMS = ['pc', 'xbox', 'sony', 'poe2'];
+    private const array TYPES = ['Normal', 'Ruthless'];
+
     public function __construct()
     {
         $this->add([
@@ -42,6 +45,10 @@ final class ItemFilterCreateValidator extends InputFilter
                 'options' => [
                     'haystack' => ['pc', 'xbox', 'sony', 'poe2'],
                     'strict' => InArray::COMPARE_STRICT,
+                    'messages' => [
+                        InArray::NOT_IN_ARRAY =>
+                            'Must be one of: ' . implode(', ', self::REALMS),
+                    ],
                 ],
             ]],
         ]);
@@ -81,6 +88,10 @@ final class ItemFilterCreateValidator extends InputFilter
                 'options' => [
                     'haystack' => ['Normal', 'Ruthless'],
                     'strict' => InArray::COMPARE_STRICT,
+                    'messages' => [
+                        InArray::NOT_IN_ARRAY =>
+                            'Must be one of: ' . implode(', ', self::TYPES),
+                    ],
                 ],
             ]],
         ]);
@@ -94,6 +105,9 @@ final class ItemFilterCreateValidator extends InputFilter
                 'options' => [
                     'haystack' => [true, false],
                     'strict' => InArray::COMPARE_STRICT,
+                    'messages' => [
+                        InArray::NOT_IN_ARRAY => 'Must be true or false',
+                    ],
                 ],
             ]],
         ]);
