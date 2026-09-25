@@ -15,6 +15,10 @@ use Ramsey\Uuid\Uuid;
 #[Table(name: 'item_filter')]
 final class ItemFilterEntity
 {
+    public const string PUBLIC_LOCK = 'Public filters cannot be made private';
+    public const array REALMS = ['pc', 'xbox', 'sony', 'poe2'];
+    public const array TYPES = ['Normal', 'Ruthless'];
+
     #[Column(type: 'guid'), Id]
     private readonly string $id;
 
@@ -61,21 +65,19 @@ final class ItemFilterEntity
 
     /**
      * @param array{
-     *     filter_name?: string,
-     *     realm?: string,
-     *     filter?: string,
-     *     description?: string,
-     *     version?: string,
-     *     type?: string,
-     *     public?: bool,
+     *      filter_name?: string,
+     *      realm?: string,
+     *      filter?: string,
+     *      description?: string,
+     *      version?: string,
+     *      type?: string,
+     *      public?: bool,
      * } $updated
      */
     public function update(array $updated): void
     {
         if (($updated['public'] ?? null) === false && $this->public) {
-            throw new DomainException(
-                'A public filter cannot be made private.',
-            );
+            throw new DomainException(self::PUBLIC_LOCK);
         }
 
         $this->name = $updated['filter_name'] ?? $this->name;

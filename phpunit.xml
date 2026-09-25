@@ -23,4 +23,8 @@
             <directory>src</directory>
         </include>
     </source>
+
+    <php>
+        <ini name="memory_limit" value="-1"/>
+    </php>
 </phpunit>

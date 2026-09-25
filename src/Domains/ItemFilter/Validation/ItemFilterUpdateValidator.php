@@ -8,6 +8,7 @@ use Laminas\Filter\StringTrim;
 use Laminas\InputFilter\InputFilter;
 use Laminas\Validator\InArray;
 use Laminas\Validator\StringLength;
+use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
 
 /**
  * @extends InputFilter<array{
@@ -22,10 +23,6 @@ use Laminas\Validator\StringLength;
  */
 final class ItemFilterUpdateValidator extends InputFilter
 {
-    private const array REALMS = ['pc', 'xbox', 'sony', 'poe2'];
-    private const array TYPES = ['Normal', 'Ruthless'];
-    private const string PUBLIC_LOCK = 'Public filters cannot be made private';
-
     public function __construct()
     {
         $this->add([
@@ -44,11 +41,12 @@ final class ItemFilterUpdateValidator extends InputFilter
             'validators' => [[
                 'name' => InArray::class,
                 'options' => [
-                    'haystack' => ['pc', 'xbox', 'sony', 'poe2'],
+                    'haystack' => ItemFilterEntity::REALMS,
                     'strict' => InArray::COMPARE_STRICT,
                     'messages' => [
                         InArray::NOT_IN_ARRAY =>
-                            'Must be one of: ' . implode(', ', self::REALMS),
+                            'Must be one of: '
+                                . implode(', ', ItemFilterEntity::REALMS),
                     ],
                 ],
             ]],
@@ -87,11 +85,12 @@ final class ItemFilterUpdateValidator extends InputFilter
             'validators' => [[
                 'name' => InArray::class,
                 'options' => [
-                    'haystack' => ['Normal', 'Ruthless'],
+                    'haystack' => ItemFilterEntity::TYPES,
                     'strict' => InArray::COMPARE_STRICT,
                     'messages' => [
                         InArray::NOT_IN_ARRAY =>
-                            'Must be one of: ' . implode(', ', self::TYPES),
+                            'Must be one of: '
+                                . implode(', ', ItemFilterEntity::TYPES),
                     ],
                 ],
             ]],
@@ -107,7 +106,7 @@ final class ItemFilterUpdateValidator extends InputFilter
                     'haystack' => [true],
                     'strict' => InArray::COMPARE_STRICT,
                     'messages' => [
-                        InArray::NOT_IN_ARRAY => self::PUBLIC_LOCK,
+                        InArray::NOT_IN_ARRAY => ItemFilterEntity::PUBLIC_LOCK,
                     ],
                 ],
             ]],
