@@ -22,6 +22,8 @@ use Laminas\Validator\StringLength;
  */
 final class ItemFilterUpdateValidator extends InputFilter
 {
+    private const string PUBLIC_LOCK = 'Public filters cannot be made private';
+
     public function __construct()
     {
         $this->add([
@@ -88,11 +90,15 @@ final class ItemFilterUpdateValidator extends InputFilter
         $this->add([
             'name' => 'public',
             'required' => false,
+            'continue_if_empty' => true,
             'validators' => [[
                 'name' => InArray::class,
                 'options' => [
                     'haystack' => [true],
                     'strict' => InArray::COMPARE_STRICT,
+                    'messages' => [
+                        InArray::NOT_IN_ARRAY => self::PUBLIC_LOCK,
+                    ],
                 ],
             ]],
         ]);

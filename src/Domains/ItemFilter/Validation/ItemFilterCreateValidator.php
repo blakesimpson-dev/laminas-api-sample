@@ -88,6 +88,7 @@ final class ItemFilterCreateValidator extends InputFilter
         $this->add([
             'name' => 'public',
             'required' => false,
+            'continue_if_empty' => true,
             'validators' => [[
                 'name' => InArray::class,
                 'options' => [
