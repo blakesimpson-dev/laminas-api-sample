@@ -68,7 +68,6 @@ composer serve          # http://localhost:8080
 | Script | Purpose |
 |--------|---------|
 | `composer serve` | PHP built-in server on port 8080 |
-| `composer format:check` / `lint` / `analyze` | Mago |
 | `composer migrations:diff` / `migrations:migrate` | Doctrine Migrations |
 | `composer fixtures:load` | Purge and reseed |
 | `composer db:reset` | Recreate Postgres and migrate |
@@ -82,7 +81,6 @@ composer serve          # http://localhost:8080
 | `config` | Routes, service manager, Doctrine |
 | `src/Http` | Router, request parsing, responses |
 | `src/Domains` | One folder per domain: entity, repository, adapter, handlers, validation, provider |
-| `docs` | README demo (`demo.tape` records `demo.gif` with VHS) |
 | `bin` | Migration and fixture runners |
 | `migrations` | Doctrine migrations |
 | `test/Fixtures` | Fixtures and filter files |
@@ -98,7 +96,6 @@ composer serve          # http://localhost:8080
 | ramsey/uuid | 4.9 | MIT |
 | vlucas/phpdotenv | 5.7 | BSD-3-Clause |
 | PostgreSQL (Docker) | 17 | PostgreSQL |
-| Mago (dev) | 1.50 | MIT / Apache-2.0 |
 
 ## Credits
 
