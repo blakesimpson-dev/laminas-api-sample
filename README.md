@@ -1,16 +1,15 @@
 # laminas-api-sample
 
-A learning project in PHP 8.5, Laminas and Doctrine: a small REST backend
+A learning project using PHP 8.5, Laminas and Doctrine: a small REST backend
 modelled on a slice of the
 [Path of Exile developer API](https://www.pathofexile.com/developer/docs/reference).
-Paths, response shapes and error codes follow the published docs, but it
-serves its own data and never calls GGG's API.
 
-The app is hand-wired from Laminas components rather than built from a
-skeleton, so each part can be understood and explained. The commit history
-follows that progression.
+Whilst paths, response shapes and error codes all follow the published docs,
+the application serves its own data and does not call GGG's API.
 
-This project isn't affiliated with or endorsed by Grinding Gear Games in any way.
+The app is hand-wired from Laminas components, rather than being built framework
+reliant or from an existing template, so that each part can be understood,
+explained, and reasoned for. The commit history follows that progression.
 
 ![Demo](docs/demo.gif)
 
@@ -18,19 +17,23 @@ This project isn't affiliated with or endorsed by Grinding Gear Games in any way
 
 - `GET /profile`, `GET|POST /item-filter`, `GET|POST /item-filter/{id}`, with
   documented response shapes
-- Create and partial update, validated with `laminas-inputfilter`, including
-  the rule that a public filter can't be made private
-- Documented error body `{"error": {"code", "message"}}`, with 405 + `Allow`
-  from per-route method maps
-- Doctrine entities, embeddables, UUID ids and reviewed migrations
-- Fixtures seeded from real item filter files
-- Mago formatting, linting and strict static analysis
+- Create and partial update with validation
+- Documented error responses
+- Doctrine entities, embeddables, and reviewed migrations
+- Fixtures seeded from real data
+- Written with adherence to modern PHP conventions using strict static analysis
+
+> _*Auth is not implemented yet.* Every request is treated as already authorised
+> with the scope the real API requires: `account:profile` for `/profile` and
+> `account:item_filter` for `/item-filter`. The roadmap below covers future
+> changes related to this._
+
 
 ## Roadmap
 
 - PHPUnit tests and GitHub Actions CI
 - Nginx + php-fpm in Docker Compose
-- Mocked OAuth bearer tokens with per-route scopes and ownership
+- Mocked OAuth bearer tokens with route scopes and ownership
 - OpenAPI spec with Swagger UI
 - Per-token rate limiting in Redis, with the documented headers
 
@@ -103,8 +106,11 @@ Item filter fixtures are
 [NeverSink's filters](https://github.com/NeverSinkDev/NeverSink-Filter)
 (MIT), exported from FilterBlade.
 
-The application code is my own (MIT, see [LICENSE](LICENSE)); an LLM was used
+The application code is my own (MIT, see [LICENSE](LICENSE)). An LLM was used
 for explanations and tooling configuration.
+
+This project isn't affiliated with or endorsed by Grinding Gear Games in any
+way.
 
 ## References
 
