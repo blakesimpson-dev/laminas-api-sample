@@ -7,9 +7,9 @@ modelled on a slice of the
 Whilst paths, response shapes and error codes all follow the published docs,
 the application serves its own data and does not call GGG's API.
 
-The app is hand-wired from Laminas components, rather than being built framework
-reliant or from an existing template, so that each part can be understood,
-explained, and reasoned for. The commit history follows that progression.
+The app is hand-wired from Laminas components, rather than a full framework
+or starter template. This way each part can be understood, explained, and
+reasoned for. The commit history follows that progression.
 
 ![Demo](docs/demo.gif)
 
@@ -20,6 +20,7 @@ explained, and reasoned for. The commit history follows that progression.
 - Create and partial update with validation
 - Documented error responses
 - Doctrine entities, embeddables, and reviewed migrations
+- PostgreSQL in Docker Compose, credentials in shared environment from `.env`
 - Fixtures seeded from real data
 - Written with adherence to modern PHP conventions using strict static analysis
 
@@ -59,10 +60,14 @@ Requires PHP 8.5 with `pdo_pgsql`, Composer and Docker.
 git clone https://github.com/blakesimpson-dev/laminas-api-sample.git
 cd laminas-api-sample
 composer install
-cp .env.example .env    # set DB_NAME, DB_USER, DB_PASSWORD
-composer db:reset       # Postgres + migrations
-composer fixtures:load
-composer serve          # http://localhost:8080
+cp .env.example .env              # set DB_NAME, DB_USER, DB_PASSWORD
+composer db:reset                 # docker compose: fresh Postgres + migrations
+composer fixtures:load            # seed DB
+composer serve                    # http://localhost:8080
+
+curl localhost:8080/profile             # get account profile
+curl localhost:8080/item-filter         # get a list of item filters
+curl localhost:8080/item-filter/<id>    # get one item filter
 ```
 
 | Script | Purpose |
@@ -78,6 +83,7 @@ composer serve          # http://localhost:8080
 |------|---------|
 | `public/index.php` | Front controller |
 | `bootstrap.php` | Autoload and validated `.env` |
+| `docker-compose.yml` | PostgreSQL service (Nginx + php-fpm on the roadmap) |
 | `config` | Routes, service manager, Doctrine |
 | `src/Http` | Router, request parsing, responses |
 | `src/Domains` | One folder per domain: entity, repository, adapter, handlers, validation, provider |
