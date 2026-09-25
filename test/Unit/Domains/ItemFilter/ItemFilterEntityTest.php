@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
 
-#[CoversClass(className: ItemFilterEntity::class)]
+#[CoversClass(ItemFilterEntity::class)]
 final class ItemFilterEntityTest extends TestCase
 {
     /** @throws RuntimeException */

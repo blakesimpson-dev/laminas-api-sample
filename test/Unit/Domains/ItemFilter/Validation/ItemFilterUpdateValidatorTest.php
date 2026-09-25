@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-#[CoversClass(className: ItemFilterUpdateValidator::class)]
+#[CoversClass(ItemFilterUpdateValidator::class)]
 final class ItemFilterUpdateValidatorTest extends TestCase
 {
     /** @throws RuntimeException */
