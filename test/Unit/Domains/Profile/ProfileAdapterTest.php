@@ -52,14 +52,7 @@ final class ProfileAdapterTest extends TestCase
                 'uuid' => $entity->getId(),
                 'name' => 'Profile name',
                 'locale' => 'Profile locale',
-                'twitch' => [
-                    'name' => 'Twitch name',
-                    'stream' => [
-                        'name' => 'Stream name',
-                        'image' => 'Stream image',
-                        'status' => 'Stream status',
-                    ],
-                ],
+                'twitch' => ['name' => 'Twitch name'],
             ],
             $response,
         );
@@ -107,22 +100,7 @@ final class ProfileAdapterTest extends TestCase
     /** @return iterable<string, array{TwitchEmbeddable, array<string, mixed>}> */
     public static function getDiscreteTwitchInclusion(): iterable
     {
-        yield 'twitch object included with stream object omitted' => [
-            new TwitchEmbeddable(name: 'Twitch name'),
-            ['name' => 'Twitch name'],
-        ];
-
-        yield 'twitch object included with empty stream object omitted' => [
-            new TwitchEmbeddable(name: 'Twitch name'),
-            ['name' => 'Twitch name'],
-        ];
-
-        yield 'twitch object included with partial stream object included' => [
-            new TwitchEmbeddable(name: 'Twitch name'),
-            ['name' => 'Twitch name'],
-        ];
-
-        yield 'full stream' => [
+        yield 'twitch object included' => [
             new TwitchEmbeddable(name: 'Twitch name'),
             ['name' => 'Twitch name'],
         ];
