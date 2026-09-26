@@ -98,6 +98,8 @@ curl localhost:8000/item-filter         # get a list of item filters
 curl localhost:8000/item-filter/<id>    # get one item filter
 ```
 
+## Scripts
+
 | Script                                            | Purpose                                                 |
 | ------------------------------------------------- | ------------------------------------------------------- |
 | `composer serve`                                  | PHP built-in server on port 8080                        |
