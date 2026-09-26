@@ -22,7 +22,7 @@ final class Router
     public function dispatch(HttpRequest $request): HttpResponse
     {
         $routeMatch = $this->routeStack->match($request);
-        if (!$routeMatch) {
+        if ($routeMatch === null) {
             return JsonResponseFactory::notFound();
         }
 
@@ -35,7 +35,7 @@ final class Router
         $params = array_diff_key($allParams, ['handlers' => true]);
 
         $serviceName = $handlers[$request->getMethod()] ?? null;
-        if (!$serviceName) {
+        if ($serviceName === null) {
             return JsonResponseFactory::methodNotAllowed(array_keys($handlers));
         }
 

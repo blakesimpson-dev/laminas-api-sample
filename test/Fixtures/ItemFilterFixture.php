@@ -18,16 +18,16 @@ final class ItemFilterFixture implements FixtureInterface
         // @mago-expect lint:no-shorthand-ternary
         foreach (glob(__DIR__ . '/Data/*.filter') ?: [] as $path) {
             $content = file_get_contents($path);
-            if (!$content) {
+            if ($content === false) {
                 continue;
             }
 
             $matches = null;
             preg_match_all('/^#\s*([A-Z]+):\s*(.+)$/m', $content, $matches);
 
-            $headerKeys = $matches[1] ?? null;
-            $headerValues = $matches[2] ?? null;
-            if (!$headerKeys || !$headerValues) {
+            $headerKeys = $matches[1] ?? [];
+            $headerValues = $matches[2] ?? [];
+            if ($headerKeys === [] || $headerValues === []) {
                 continue;
             }
 

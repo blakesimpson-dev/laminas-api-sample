@@ -30,7 +30,7 @@ function generate_diff(): void
         $dependencyFactory->getConfiguration()->getMigrationDirectories(),
     );
 
-    if (!$migrationClassNamespace) {
+    if ($migrationClassNamespace === null) {
         throw new RuntimeException('Migration namespace not found.');
     }
 
@@ -52,7 +52,7 @@ function generate_diff(): void
 function tidy_migration(string $path): void
 {
     $contents = file_get_contents($path);
-    if (!$contents) {
+    if ($contents === false) {
         throw new RuntimeException("Could not read {$path}.");
     }
 

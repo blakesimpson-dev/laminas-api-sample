@@ -24,7 +24,7 @@ final class ProfileReadHandler implements HandlerInterface
     public function __invoke(HttpRequest $request, array $params): HttpResponse
     {
         $entity = $this->repository->findOneBy([]);
-        if (!$entity) {
+        if ($entity === null) {
             return JsonResponseFactory::notFound();
         }
 

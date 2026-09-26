@@ -35,12 +35,12 @@ final class ItemFilterUpdateHandler implements HandlerInterface
     public function __invoke(HttpRequest $request, array $params): HttpResponse
     {
         $id = $params['id'] ?? null;
-        if (!$id) {
+        if ($id === null) {
             return JsonResponseFactory::badRequest();
         }
 
         $entity = $this->repository->find($id);
-        if (!$entity) {
+        if ($entity === null) {
             return JsonResponseFactory::notFound();
         }
 

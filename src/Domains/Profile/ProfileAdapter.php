@@ -35,7 +35,7 @@ final class ProfileAdapter
     private function mapTwitchData(?TwitchEmbeddable $embedded = null): ?array
     {
         $name = $embedded?->getName();
-        if (!$embedded || !$name) {
+        if ($name === null || $name === '') {
             return null;
         }
 
