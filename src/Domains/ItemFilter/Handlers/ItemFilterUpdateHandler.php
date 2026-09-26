@@ -16,6 +16,7 @@ use LaminasApiSample\Http\HandlerInterface;
 use LaminasApiSample\Http\JsonBody;
 use LaminasApiSample\Http\JsonResponseFactory;
 use Override;
+use Psr\Clock\ClockInterface;
 
 final class ItemFilterUpdateHandler implements HandlerInterface
 {
@@ -23,6 +24,7 @@ final class ItemFilterUpdateHandler implements HandlerInterface
         private readonly ItemFilterRepository $repository,
         private readonly ItemFilterAdapter $adapter,
         private readonly ItemFilterUpdateValidator $validation,
+        private readonly ClockInterface $clock,
     ) {}
 
     /**
@@ -57,9 +59,10 @@ final class ItemFilterUpdateHandler implements HandlerInterface
             return JsonResponseFactory::badRequest();
         }
 
-        $entity->update($this->validation->getPatch());
+        $now = $this->clock->now();
+        $entity->update($this->validation->getPatch(), $now);
         if ($this->validation->isPublishRequested()) {
-            $entity->publish();
+            $entity->publish($now);
         }
 
         $this->repository->save($entity);

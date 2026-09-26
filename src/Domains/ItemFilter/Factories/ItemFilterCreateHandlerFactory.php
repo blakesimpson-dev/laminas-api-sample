@@ -10,6 +10,7 @@ use LaminasApiSample\Domains\ItemFilter\ItemFilterAdapter;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterRepository;
 use LaminasApiSample\Domains\ItemFilter\Validation\ItemFilterCreateValidator;
 use Override;
+use Psr\Clock\ClockInterface;
 use Psr\Container\ContainerInterface;
 
 final class ItemFilterCreateHandlerFactory implements FactoryInterface
@@ -25,7 +26,14 @@ final class ItemFilterCreateHandlerFactory implements FactoryInterface
         /** @var ItemFilterAdapter $adapter */
         $adapter = $container->get(ItemFilterAdapter::class);
         $validator = new ItemFilterCreateValidator();
+        /** @var ClockInterface $clock */
+        $clock = $container->get(ClockInterface::class);
 
-        return new ItemFilterCreateHandler($repository, $adapter, $validator);
+        return new ItemFilterCreateHandler(
+            $repository,
+            $adapter,
+            $validator,
+            $clock,
+        );
     }
 }

@@ -4,35 +4,36 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Domains\Profile;
 
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 use LaminasApiSample\Domains\Profile\Embedded\TwitchEmbeddable;
+use LaminasApiSample\Domains\TimestampedEntity;
 use Ramsey\Uuid\Uuid;
 
 #[Entity(repositoryClass: ProfileRepository::class)]
 #[Table(name: 'profile')]
-final class ProfileEntity
+final class ProfileEntity extends TimestampedEntity
 {
     #[Column(name: 'uuid', type: 'guid'), Id]
     private readonly string $id;
-
     #[Column]
     private readonly string $name;
-
     #[Column(nullable: true)]
     private readonly ?string $locale;
-
     #[Embedded(class: TwitchEmbeddable::class)]
     private readonly ?TwitchEmbeddable $twitch;
 
     public function __construct(
+        DateTimeImmutable $createdAt,
         string $name,
         ?string $locale = null,
         ?TwitchEmbeddable $twitch = null,
     ) {
+        parent::__construct($createdAt);
         $this->id = Uuid::uuid4()->toString();
         $this->name = $name;
         $this->locale = $locale;
