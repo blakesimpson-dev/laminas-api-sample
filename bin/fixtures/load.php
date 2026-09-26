@@ -7,7 +7,7 @@ use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
 use Laminas\ServiceManager\ServiceManager;
-use LaminasApiSample\Platform\DoctrineEntityManagerFactory as DoctrineEMF;
+use LaminasApiSample\Infrastructure\DoctrineEntityManagerFactory as DoctrineEMF;
 use Psr\Container\ContainerExceptionInterface;
 
 try {

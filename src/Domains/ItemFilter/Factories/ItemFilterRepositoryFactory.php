@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterRepository;
-use LaminasApiSample\Platform\DoctrineEntityManagerFactory as DoctrineEMF;
+use LaminasApiSample\Infrastructure\DoctrineEntityManagerFactory as DoctrineEMF;
 use Override;
 use Psr\Container\ContainerInterface;
 
