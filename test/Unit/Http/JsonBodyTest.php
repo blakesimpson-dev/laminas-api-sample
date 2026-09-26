@@ -12,14 +12,14 @@ use LaminasApiSample\Http\JsonBody;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception as PHPUnitException;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 use Throwable;
 
 #[CoversClass(JsonBody::class)]
 final class JsonBodyTest extends TestCase
 {
-    /** @throws RuntimeException */
+    /** @throws PHPUnitException */
     private static function request(
         ?string $contentType,
         string $content,
@@ -35,11 +35,9 @@ final class JsonBodyTest extends TestCase
         return $request;
     }
 
-    /** @throws RuntimeException */
-
     /**
      * @return iterable<string, array{HttpRequest, array<string, mixed>}>
-     * @throws RuntimeException
+     * @throws PHPUnitException
      */
     public static function getValidBodies(): iterable
     {
@@ -62,9 +60,7 @@ final class JsonBodyTest extends TestCase
 
     /**
      * @param array<string, mixed> $expected
-     * @throws UnsupportedContentTypeException
-     * @throws MalformedJsonException
-     * @throws RuntimeException
+     * @throws PHPUnitException
      */
     #[Test, DataProvider('getValidBodies')]
     public function parsesJsonObject(
@@ -76,7 +72,7 @@ final class JsonBodyTest extends TestCase
 
     /**
      * @return iterable<string, array{HttpRequest, class-string<Throwable>}>
-     * @throws RuntimeException
+     * @throws PHPUnitException
      */
     public static function getInvalidBodies(): iterable
     {

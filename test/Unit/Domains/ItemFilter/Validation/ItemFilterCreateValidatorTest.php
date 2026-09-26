@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace LaminasApiSampleTest\Unit\Domains\ItemFilter\Validation;
 
+use Laminas\InputFilter\Exception\RuntimeException as InputFilterException;
 use Laminas\Validator\InArray;
 use LaminasApiSample\Domains\ItemFilter\Validation\ItemFilterCreateValidator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception as PHPUnitException;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 #[CoversClass(ItemFilterCreateValidator::class)]
 final class ItemFilterCreateValidatorTest extends TestCase
@@ -98,7 +99,10 @@ final class ItemFilterCreateValidatorTest extends TestCase
         ];
     }
 
-    /** @throws RuntimeException */
+    /**
+     * @throws PHPUnitException
+     * @throws InputFilterException
+     */
     #[Test]
     public function createWithMinimalValidBody(): void
     {
@@ -108,7 +112,10 @@ final class ItemFilterCreateValidatorTest extends TestCase
         static::assertTrue($validator->isValid());
     }
 
-    /** @throws RuntimeException */
+    /**
+     * @throws PHPUnitException
+     * @throws InputFilterException
+     */
     #[Test]
     public function createWithPopulatedValidBody(): void
     {
@@ -118,7 +125,10 @@ final class ItemFilterCreateValidatorTest extends TestCase
         static::assertTrue($validator->isValid());
     }
 
-    /** @throws RuntimeException */
+    /**
+     * @throws PHPUnitException
+     * @throws InputFilterException
+     */
     #[Test]
     public function createAsPublic(): void
     {
@@ -130,7 +140,8 @@ final class ItemFilterCreateValidatorTest extends TestCase
 
     /**
      * @param array<string, mixed> $body
-     * @throws RuntimeException
+     * @throws PHPUnitException
+     * @throws InputFilterException
      */
     #[Test, DataProvider('getInvalidBodies')]
     public function failToCreateWithInvalidField(
@@ -144,7 +155,10 @@ final class ItemFilterCreateValidatorTest extends TestCase
         static::assertSame([$field], array_keys($validator->getMessages()));
     }
 
-    /** @throws RuntimeException */
+    /**
+     * @throws PHPUnitException
+     * @throws InputFilterException
+     */
     #[Test]
     public function failToCreateWithInvalidRealmListsAllowedValues(): void
     {

@@ -15,9 +15,9 @@ use LaminasApiSample\Http\Router;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
+use PHPUnit\Framework\Exception as PHPUnitException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
-use RuntimeException;
 
 #[
     CoversClass(Router::class),
@@ -59,7 +59,7 @@ final class RouterTest extends TestCase
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws RuntimeException
+     * @throws PHPUnitException
      */
     #[Test]
     public function unknownPathIsNotFound(): void
@@ -72,7 +72,7 @@ final class RouterTest extends TestCase
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws RuntimeException
+     * @throws PHPUnitException
      */
     #[Test]
     public function paramFailingConstraintIsNotFound(): void
@@ -85,7 +85,7 @@ final class RouterTest extends TestCase
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws RuntimeException
+     * @throws PHPUnitException
      */
     #[Test]
     public function unmappedMethodIsNotAllowed(): void
@@ -102,7 +102,7 @@ final class RouterTest extends TestCase
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws RuntimeException
+     * @throws PHPUnitException
      */
     #[Test]
     public function unregisteredHandlerIsNotImplemented(): void
@@ -115,7 +115,7 @@ final class RouterTest extends TestCase
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws RuntimeException
+     * @throws PHPUnitException
      */
     #[Test]
     public function matchedRouteCallsHandlerWithParamsOnly(): void
