@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LaminasApiSample\Domains\ItemFilter;
 
 use DateTimeImmutable;
+use Doctrine\DBAL\Types\Types as DoctrineDBTypes;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
@@ -19,20 +20,27 @@ final class ItemFilterEntity extends TimestampedEntity
     public const array REALMS = ['pc', 'xbox', 'sony', 'poe2'];
     public const array TYPES = ['Normal', 'Ruthless'];
 
-    #[Column(type: 'guid'), Id]
+    #[Column(type: DoctrineDBTypes::GUID), Id]
     private readonly string $id;
+
     #[Column(name: 'filter_name')]
     private string $name;
+
     #[Column]
     private string $realm;
-    #[Column(type: 'text', nullable: true)]
+
+    #[Column(type: DoctrineDBTypes::TEXT, nullable: true)]
     private ?string $filter;
+
     #[Column]
     private string $description;
+
     #[Column]
     private string $version;
+
     #[Column]
     private string $type;
+
     #[Column]
     private bool $public;
 
