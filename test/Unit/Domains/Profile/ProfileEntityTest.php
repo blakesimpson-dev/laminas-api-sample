@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LaminasApiSampleTest\Unit\Domains\Profile;
 
-use LaminasApiSample\Domains\Profile\Embedded\StreamEmbeddable;
 use LaminasApiSample\Domains\Profile\Embedded\TwitchEmbeddable;
 use LaminasApiSample\Domains\Profile\ProfileEntity;
 use LaminasApiSampleTest\Support\FixedTime;
@@ -25,14 +24,7 @@ final class ProfileEntityTest extends TestCase
             createdAt: FixedTime::getForCreate(),
             name: 'Profile name',
             locale: 'Profile locale',
-            twitch: new TwitchEmbeddable(
-                name: 'Twitch name',
-                stream: new StreamEmbeddable(
-                    name: 'Stream name',
-                    image: 'Stream image',
-                    status: 'Stream status',
-                ),
-            ),
+            twitch: new TwitchEmbeddable(name: 'Twitch name'),
         );
 
         $twitch = $entity->getTwitch();
@@ -40,17 +32,9 @@ final class ProfileEntityTest extends TestCase
             static::fail('twitch should be set');
         }
 
-        $stream = $twitch->getStream();
-        if ($stream === null) {
-            static::fail('stream should be set');
-        }
-
         static::assertSame('Profile name', $entity->getName());
         static::assertSame('Profile locale', $entity->getLocale());
         static::assertSame('Twitch name', $twitch->getName());
-        static::assertSame('Stream name', $stream->getName());
-        static::assertSame('Stream image', $stream->getImage());
-        static::assertSame('Stream status', $stream->getStatus());
         static::assertTrue(Uuid::isValid($entity->getId()));
 
         static::assertEquals(
