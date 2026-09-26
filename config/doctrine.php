@@ -11,7 +11,7 @@ return [
             'orm_default' => [
                 'driver_class' => Driver::class,
                 'params' => [
-                    'host' => 'localhost',
+                    'host' => $_ENV['DB_HOST'] ?? 'localhost',
                     'port' => 5432,
                     'dbname' => $_ENV['DB_NAME'],
                     'user' => $_ENV['DB_USER'],

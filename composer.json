@@ -57,7 +57,9 @@
         "migrations:diff": "php bin/migrations/generate-diff.php",
         "migrations:migrate": "php bin/migrations/migrate.php",
         "fixtures:load": "php bin/fixtures/load.php",
-        "db:reset": "docker compose down -v && docker compose up -d --wait && php bin/migrations/migrate.php"
+        "reset": "docker compose down -v && docker compose up -d --wait && php bin/migrations/migrate.php",
+        "up": "docker compose up -d --build --wait",
+        "down": "docker compose down"
     },
     "scripts-descriptions": {
         "analyze": "Run Mago's static analyzer.",
@@ -69,7 +71,9 @@
         "migrations:diff": "Generate a new migration from differences between the entity mapping and the database schema.",
         "migrations:migrate": "Apply all pending migrations to the database.",
         "fixtures:load": "Purge the database and load all fixtures from test/Fixtures.",
-        "db:reset": "Wipe and rebuild the local database: drops volumes, recreates containers, applies migrations."
+        "reset": "Wipe, rebuild and start Postgres, php-fpm and Nginx in Docker: drops volumes, recreates containers, applies migrations.",
+        "up": "Build and start Postgres, php-fpm and Nginx in Docker",
+        "down": "Stop all Docker services (volume is kept)"
     },
     "config": {
         "sort-packages": true,

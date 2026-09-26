@@ -1,32 +1,38 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
-  pull_request:
+    push:
+        branches: [main]
+    pull_request:
 
 jobs:
-  checks:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    checks:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
 
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.5'
-          extensions: pdo_pgsql
-          ini-file: development
-          coverage: none
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: "8.5"
+                  extensions: pdo_pgsql
+                  ini-file: development
+                  coverage: none
 
-      - name: Cache Composer
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/composer
-          key: composer-${{ hashFiles('composer.lock') }}
+            - name: Cache Composer
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/composer
+                  key: composer-${{ hashFiles('composer.lock') }}
 
-      - run: composer install --no-interaction --no-progress --prefer-dist
+            - run: composer install --no-interaction --no-progress --prefer-dist
 
-      - run: composer format:check
-      - run: composer lint
-      - run: composer analyze
-      - run: composer test
+            - run: composer format:check
+            - run: composer lint
+            - run: composer analyze
+            - run: composer test
+
+    docker:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - run: docker build docker/php
