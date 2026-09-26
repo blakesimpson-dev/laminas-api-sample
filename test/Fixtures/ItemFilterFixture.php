@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasApiSampleTest\Fixtures;
 
+use DateTimeImmutable;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
@@ -42,6 +43,7 @@ final class ItemFilterFixture implements FixtureInterface
             ]);
 
             $manager->persist(new ItemFilterEntity(
+                createdAt: new DateTimeImmutable('2026-01-01T00:00:00Z'),
                 name: basename($path),
                 realm: 'pc',
                 filter: $content,
