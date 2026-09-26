@@ -6,6 +6,7 @@ namespace LaminasApiSample\Http;
 
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 
+// @mago-expect lint:too-many-methods
 final class JsonResponseFactory
 {
     /** @param array<string, mixed> $data */
@@ -30,6 +31,28 @@ final class JsonResponseFactory
             code: 5,
             message: 'Unexpected content type',
         );
+    }
+
+    public static function unauthorized(): HttpResponse
+    {
+        $response = self::error(status: 401, code: 8, message: 'Unauthorized');
+        $response->getHeaders()->addHeaderLine(
+            'WWW-Authenticate',
+            'Bearer error="invalid_token"',
+        );
+
+        return $response;
+    }
+
+    public static function forbidden(string $scope): HttpResponse
+    {
+        $response = self::error(status: 403, code: 6, message: 'Forbidden');
+        $response->getHeaders()->addHeaderLine(
+            'WWW-Authenticate',
+            "Bearer error=\"insufficient_scope\", scope=\"{$scope}\"",
+        );
+
+        return $response;
     }
 
     public static function notFound(): HttpResponse

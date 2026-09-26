@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Domains\ItemFilter;
 
-final class ItemFilterPatch
+final readonly class ItemFilterPatch
 {
     // @mago-expect lint:excessive-parameter-list
     public function __construct(

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Laminas\Http\PhpEnvironment\Request as HttpRequest;
 use Laminas\Router\Http\TreeRouteStack;
 use Laminas\ServiceManager\ServiceManager;
+use LaminasApiSample\Http\Auth\AuthenticatorInterface;
 use LaminasApiSample\Http\JsonResponseFactory;
 use LaminasApiSample\Http\Router;
 use Psr\Container\ContainerExceptionInterface;
@@ -25,8 +26,10 @@ function handle_request(): void
     $routeStack = require dirname(__DIR__) . '/config/route-stack.php';
     /** @var ServiceManager $serviceManager */
     $serviceManager = require dirname(__DIR__) . '/config/service-manager.php';
+    /** @var AuthenticatorInterface $authenticator */
+    $authenticator = $serviceManager->get(AuthenticatorInterface::class);
 
-    $router = new Router($routeStack, $serviceManager);
+    $router = new Router($routeStack, $serviceManager, $authenticator);
     $response = $router->dispatch(new HttpRequest());
 
     $response->send();

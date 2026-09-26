@@ -16,6 +16,7 @@ final class Router
     public function __construct(
         private TreeRouteStack $routeStack,
         private ServiceManager $serviceManager,
+        private Auth\AuthenticatorInterface $authenticator,
     ) {}
 
     /** @throws ContainerExceptionInterface */
@@ -31,12 +32,31 @@ final class Router
         /** @var array<string, string> $handlers */
         $handlers = $allParams['handlers'] ?? [];
 
-        /** @var array<string, string> $params */
-        $params = array_diff_key($allParams, ['handlers' => true]);
-
         $serviceName = $handlers[$request->getMethod()] ?? null;
         if ($serviceName === null) {
             return JsonResponseFactory::methodNotAllowed(array_keys($handlers));
+        }
+
+        /** @var array<string, string> $params */
+        $params = array_diff_key($allParams, [
+            'handlers' => true,
+            'scope' => true,
+        ]);
+
+        /** @var null|string $scope */
+        $scope = $allParams['scope'] ?? null;
+        if (!is_string($scope)) {
+            return JsonResponseFactory::serverError();
+        }
+
+        try {
+            $token = $this->authenticator->authenticate($request);
+        } catch (Auth\AuthenticationFailedException) {
+            return JsonResponseFactory::unauthorized();
+        }
+
+        if (!$token->hasScope($scope)) {
+            return JsonResponseFactory::forbidden($scope);
         }
 
         try {
@@ -48,6 +68,10 @@ final class Router
             return JsonResponseFactory::notImplemented();
         }
 
-        return $handler($request, $params);
+        return $handler(
+            $request,
+            $params,
+            new Auth\AuthContext($token->getProfile(), $token->getScopes()),
+        );
     }
 }

@@ -8,6 +8,7 @@ use Laminas\Http\PhpEnvironment\Request as HttpRequest;
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 use LaminasApiSample\Domains\Profile\ProfileAdapter;
 use LaminasApiSample\Domains\Profile\ProfileRepository;
+use LaminasApiSample\Http\Auth\AuthContext;
 use LaminasApiSample\Http\HandlerInterface;
 use LaminasApiSample\Http\JsonResponseFactory;
 use Override;
@@ -21,8 +22,11 @@ final class ProfileReadHandler implements HandlerInterface
 
     /** @param array<string, string> $params */
     #[Override]
-    public function __invoke(HttpRequest $request, array $params): HttpResponse
-    {
+    public function __invoke(
+        HttpRequest $request,
+        array $params,
+        AuthContext $auth,
+    ): HttpResponse {
         $entity = $this->repository->findOneBy([]);
         if ($entity === null) {
             return JsonResponseFactory::notFound();

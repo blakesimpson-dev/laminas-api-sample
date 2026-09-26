@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace LaminasApiSampleTest\Unit\Http;
 
+use ArrayIterator;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
+use LaminasApiSample\Domains\Auth\Scope;
 use LaminasApiSample\Http\JsonResponseFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -22,8 +24,15 @@ final class JsonResponseFactoryTest extends TestCase
         string $name,
     ): string {
         $header = $response->getHeaders()->get($name);
-        static::assertInstanceOf(HeaderInterface::class, $header);
-        /** @var HeaderInterface $header */
+        if ($header instanceof ArrayIterator) {
+            /** @var HeaderInterface|null $current */
+            $current = $header->current();
+            $header = $current;
+        }
+
+        if (!$header instanceof HeaderInterface) {
+            static::fail("Missing {$name} header");
+        }
 
         return $header->getFieldValue();
     }
@@ -54,6 +63,20 @@ final class JsonResponseFactoryTest extends TestCase
             400,
             5,
             'Unexpected content type',
+        ];
+
+        yield 'unauthorized' => [
+            JsonResponseFactory::unauthorized(),
+            401,
+            8,
+            'Unauthorized',
+        ];
+
+        yield 'forbidden' => [
+            JsonResponseFactory::forbidden(Scope::AccountItemFilter->value),
+            403,
+            6,
+            'Forbidden',
         ];
 
         yield 'not found' => [
@@ -136,5 +159,28 @@ final class JsonResponseFactoryTest extends TestCase
             'Content-Type',
         ));
         static::assertSame($data, self::decodeBody($response));
+    }
+
+    /** @throws PHPUnitException */
+    #[Test]
+    public function authErrorsCarryWwwAuthenticate(): void
+    {
+        $message = <<<EOT
+        Bearer error="invalid_token"
+        EOT;
+
+        static::assertSame($message, self::getHeaderValueByName(
+            JsonResponseFactory::unauthorized(),
+            'WWW-Authenticate',
+        ));
+
+        $message = <<<EOT
+        Bearer error="insufficient_scope", scope="account:item_filter"
+        EOT;
+
+        static::assertSame($message, self::getHeaderValueByName(
+            JsonResponseFactory::forbidden(Scope::AccountItemFilter->value),
+            'WWW-Authenticate',
+        ));
     }
 }

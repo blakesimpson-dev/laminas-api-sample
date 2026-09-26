@@ -10,6 +10,7 @@ use Laminas\InputFilter\Exception\RuntimeException;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterAdapter;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterRepository;
 use LaminasApiSample\Domains\ItemFilter\Validation\ItemFilterUpdateValidator;
+use LaminasApiSample\Http\Auth\AuthContext;
 use LaminasApiSample\Http\Exceptions\MalformedJsonException;
 use LaminasApiSample\Http\Exceptions\UnsupportedContentTypeException;
 use LaminasApiSample\Http\HandlerInterface;
@@ -32,8 +33,11 @@ final class ItemFilterUpdateHandler implements HandlerInterface
      * @throws RuntimeException
      */
     #[Override]
-    public function __invoke(HttpRequest $request, array $params): HttpResponse
-    {
+    public function __invoke(
+        HttpRequest $request,
+        array $params,
+        AuthContext $auth,
+    ): HttpResponse {
         $id = $params['id'] ?? null;
         if ($id === null) {
             return JsonResponseFactory::badRequest();

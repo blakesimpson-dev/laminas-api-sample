@@ -9,7 +9,7 @@ try {
     require dirname(__DIR__, 2) . '/bootstrap.php';
     generate_diff();
 } catch (NoChangesDetected) {
-    fwrite(STDOUT, 'No changes detected.\n');
+    fwrite(STDOUT, "No changes detected.\n");
     exit(0);
 } catch (Throwable $e) {
     $detail = implode(' - ', [$e::class, $e->getMessage()]);
@@ -96,7 +96,7 @@ function tidy_migration(string $path): void
         $contents,
     );
 
-    if (!file_put_contents($path, $contents)) {
+    if (file_put_contents($path, $contents) === false) {
         throw new RuntimeException("Could not write {$path}.");
     }
 }
@@ -108,7 +108,9 @@ function format_migration(string $path): void
         fwrite(STDERR, "Mago not found; {$path} left unformatted.\n");
         return;
     }
-    /** @var array<array-key, mixed>|null $output */
+
+    /** @var list<string> $output */
+    $output = [];
     $exitCode = 0;
     exec(
         escapeshellarg($mago) . ' format ' . escapeshellarg($path) . ' 2>&1',

@@ -11,6 +11,7 @@ use LaminasApiSample\Domains\ItemFilter\ItemFilterAdapter;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterRepository;
 use LaminasApiSample\Domains\ItemFilter\Validation\ItemFilterCreateValidator;
+use LaminasApiSample\Http\Auth\AuthContext;
 use LaminasApiSample\Http\Exceptions\MalformedJsonException;
 use LaminasApiSample\Http\Exceptions\UnsupportedContentTypeException;
 use LaminasApiSample\Http\HandlerInterface;
@@ -33,8 +34,11 @@ final class ItemFilterCreateHandler implements HandlerInterface
      * @throws RuntimeException
      */
     #[Override]
-    public function __invoke(HttpRequest $request, array $params): HttpResponse
-    {
+    public function __invoke(
+        HttpRequest $request,
+        array $params,
+        AuthContext $auth,
+    ): HttpResponse {
         try {
             $data = JsonBody::parse($request);
 
