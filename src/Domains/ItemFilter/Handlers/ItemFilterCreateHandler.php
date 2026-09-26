@@ -17,6 +17,7 @@ use LaminasApiSample\Http\HandlerInterface;
 use LaminasApiSample\Http\JsonBody;
 use LaminasApiSample\Http\JsonResponseFactory;
 use Override;
+use Psr\Clock\ClockInterface;
 
 final class ItemFilterCreateHandler implements HandlerInterface
 {
@@ -24,6 +25,7 @@ final class ItemFilterCreateHandler implements HandlerInterface
         private readonly ItemFilterRepository $repository,
         private readonly ItemFilterAdapter $adapter,
         private readonly ItemFilterCreateValidator $validation,
+        private readonly ClockInterface $clock,
     ) {}
 
     /**
@@ -50,6 +52,7 @@ final class ItemFilterCreateHandler implements HandlerInterface
 
         $validatedData = $this->validation->getValues();
         $entity = new ItemFilterEntity(
+            createdAt: $this->clock->now(),
             name: $validatedData['filter_name'],
             realm: $validatedData['realm'],
             filter: $validatedData['filter'],

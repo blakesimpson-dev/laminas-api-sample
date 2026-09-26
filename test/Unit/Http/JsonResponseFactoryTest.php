@@ -10,13 +10,13 @@ use LaminasApiSample\Http\JsonResponseFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception as PHPUnitException;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 #[CoversClass(JsonResponseFactory::class)]
 final class JsonResponseFactoryTest extends TestCase
 {
-    /** @throws RuntimeException */
+    /** @throws PHPUnitException */
     private static function getHeaderValueByName(
         HttpResponse $response,
         string $name,
@@ -92,7 +92,7 @@ final class JsonResponseFactoryTest extends TestCase
         ];
     }
 
-    /** @throws RuntimeException */
+    /** @throws PHPUnitException */
     #[Test, DataProvider('getErrorResponses')]
     public function errorMatchesDocumentedShape(
         HttpResponse $response,
@@ -111,7 +111,7 @@ final class JsonResponseFactoryTest extends TestCase
         );
     }
 
-    /** @throws RuntimeException */
+    /** @throws PHPUnitException */
     #[Test]
     public function methodNotAllowedListsAllowedMethods(): void
     {
@@ -123,7 +123,7 @@ final class JsonResponseFactoryTest extends TestCase
         ));
     }
 
-    /** @throws RuntimeException */
+    /** @throws PHPUnitException */
     #[Test]
     public function assertOkResponseEncoded(): void
     {

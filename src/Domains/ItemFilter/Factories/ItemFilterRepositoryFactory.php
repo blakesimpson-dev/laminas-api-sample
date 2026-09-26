@@ -6,9 +6,9 @@ namespace LaminasApiSample\Domains\ItemFilter\Factories;
 
 use Doctrine\ORM\EntityManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use LaminasApiSample\DoctrineEntityManagerFactory as DoctrineEMF;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterRepository;
+use LaminasApiSample\Infrastructure\DoctrineEntityManagerFactory as DoctrineEMF;
 use Override;
 use Psr\Container\ContainerInterface;
 

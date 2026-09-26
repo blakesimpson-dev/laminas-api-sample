@@ -6,9 +6,9 @@ namespace LaminasApiSample\Domains\Profile\Factories;
 
 use Doctrine\ORM\EntityManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use LaminasApiSample\DoctrineEntityManagerFactory as DoctrineEMF;
 use LaminasApiSample\Domains\Profile\ProfileEntity;
 use LaminasApiSample\Domains\Profile\ProfileRepository;
+use LaminasApiSample\Infrastructure\DoctrineEntityManagerFactory as DoctrineEMF;
 use Override;
 use Psr\Container\ContainerInterface;
 

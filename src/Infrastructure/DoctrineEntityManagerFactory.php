@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample;
+namespace LaminasApiSample\Infrastructure;
 
 use ArgumentCountError;
 use Doctrine\ORM\EntityManager;

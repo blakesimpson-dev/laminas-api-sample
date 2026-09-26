@@ -4,18 +4,22 @@ declare(strict_types=1);
 
 namespace LaminasApiSampleTest\Unit\Domains\ItemFilter\Validation;
 
+use Laminas\InputFilter\Exception\RuntimeException as InputFilterException;
 use Laminas\Validator\InArray;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterPatch;
 use LaminasApiSample\Domains\ItemFilter\Validation\ItemFilterUpdateValidator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Exception as PHPUnitException;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 #[CoversClass(ItemFilterUpdateValidator::class)]
 final class ItemFilterUpdateValidatorTest extends TestCase
 {
-    /** @throws RuntimeException */
+    /**
+     * @throws PHPUnitException
+     * @throws InputFilterException
+     */
     #[Test]
     public function updateWithNoChanges(): void
     {
@@ -25,7 +29,10 @@ final class ItemFilterUpdateValidatorTest extends TestCase
         static::assertTrue($validator->isValid());
     }
 
-    /** @throws RuntimeException */
+    /**
+     * @throws PHPUnitException
+     * @throws InputFilterException
+     */
     #[Test]
     public function updateWithNewDescriptionOnly(): void
     {
@@ -35,7 +42,10 @@ final class ItemFilterUpdateValidatorTest extends TestCase
         static::assertTrue($validator->isValid());
     }
 
-    /** @throws RuntimeException */
+    /**
+     * @throws PHPUnitException
+     * @throws InputFilterException
+     */
     #[Test]
     public function makePublic(): void
     {
@@ -45,7 +55,10 @@ final class ItemFilterUpdateValidatorTest extends TestCase
         static::assertTrue($validator->isValid());
     }
 
-    /** @throws RuntimeException */
+    /**
+     * @throws PHPUnitException
+     * @throws InputFilterException
+     */
     #[Test]
     public function failToMakePrivate(): void
     {
@@ -63,7 +76,10 @@ final class ItemFilterUpdateValidatorTest extends TestCase
         );
     }
 
-    /** @throws RuntimeException */
+    /**
+     * @throws PHPUnitException
+     * @throws InputFilterException
+     */
     #[Test]
     public function failToUpdateWithInvalidRealm(): void
     {
@@ -74,7 +90,10 @@ final class ItemFilterUpdateValidatorTest extends TestCase
         static::assertSame(['realm'], array_keys($validator->getMessages()));
     }
 
-    /** @throws RuntimeException */
+    /**
+     * @throws PHPUnitException
+     * @throws InputFilterException
+     */
     #[Test]
     public function patchTranslatesApiNamesAndLeavesUnsentNull(): void
     {
@@ -91,7 +110,10 @@ final class ItemFilterUpdateValidatorTest extends TestCase
         );
     }
 
-    /** @throws RuntimeException */
+    /**
+     * @throws PHPUnitException
+     * @throws InputFilterException
+     */
     #[Test]
     public function publishRequestedOnlyWhenPublicTrue(): void
     {

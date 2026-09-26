@@ -4,45 +4,41 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Domains\ItemFilter;
 
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
+use LaminasApiSample\Domains\TimestampedEntity;
 use Ramsey\Uuid\Uuid;
 
 #[Entity(repositoryClass: ItemFilterRepository::class)]
 #[Table(name: 'item_filter')]
-final class ItemFilterEntity
+final class ItemFilterEntity extends TimestampedEntity
 {
     public const array REALMS = ['pc', 'xbox', 'sony', 'poe2'];
     public const array TYPES = ['Normal', 'Ruthless'];
 
     #[Column(type: 'guid'), Id]
     private readonly string $id;
-
     #[Column(name: 'filter_name')]
     private string $name;
-
     #[Column]
     private string $realm;
-
     #[Column(type: 'text', nullable: true)]
     private ?string $filter;
-
     #[Column]
     private string $description;
-
     #[Column]
     private string $version;
-
     #[Column]
     private string $type;
-
     #[Column]
     private bool $public;
 
     // @mago-expect lint:excessive-parameter-list
     public function __construct(
+        DateTimeImmutable $createdAt,
         string $name,
         string $realm,
         ?string $filter = null,
@@ -51,6 +47,7 @@ final class ItemFilterEntity
         string $type = 'Normal',
         bool $public = false,
     ) {
+        parent::__construct($createdAt);
         $this->id = Uuid::uuid4()->toString();
         $this->name = $name;
         $this->realm = $realm;
@@ -61,19 +58,29 @@ final class ItemFilterEntity
         $this->public = $public;
     }
 
-    public function update(ItemFilterPatch $patch): void
+    public function update(ItemFilterPatch $patch, DateTimeImmutable $now): void
     {
+        $before = get_object_vars($this);
         $this->name = $patch->name ?? $this->name;
         $this->realm = $patch->realm ?? $this->realm;
         $this->filter = $patch->filter ?? $this->filter;
         $this->description = $patch->description ?? $this->description;
         $this->version = $patch->version ?? $this->version;
         $this->type = $patch->type ?? $this->type;
+
+        if (get_object_vars($this) !== $before) {
+            $this->touch($now);
+        }
     }
 
-    public function publish(): void
+    public function publish(DateTimeImmutable $now): void
     {
+        if ($this->public) {
+            return;
+        }
+
         $this->public = true;
+        $this->touch($now);
     }
 
     public function getId(): string
