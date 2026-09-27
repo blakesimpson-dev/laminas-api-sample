@@ -2,43 +2,29 @@
 
 declare(strict_types=1);
 
-use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
-use Doctrine\Common\DataFixtures\Loader;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
 use Laminas\ServiceManager\ServiceManager;
 use LaminasApiSample\Infrastructure\DoctrineEntityManagerFactory as DoctrineEMF;
-use Psr\Container\ContainerExceptionInterface;
+use LaminasApiSampleTest\Fixtures\FixtureLoader;
 
-try {
-    require dirname(__DIR__, 2) . '/bootstrap.php';
-    load_fixtures(build_loader());
-} catch (Throwable $e) {
-    $detail = implode(' - ', [$e::class, $e->getMessage()]);
-    fwrite(STDERR, "Loading fixtures failed: \n{$detail}\n");
-    exit(1);
-}
+(static function (): void {
+    try {
+        require dirname(__DIR__, 2) . '/bootstrap.php';
 
-function build_loader(): Loader
-{
-    $loader = new Loader();
-    $loader->loadFromDirectory(dirname(__DIR__, 2) . '/test/Fixtures');
+        /** @var ServiceManager $serviceManager */
+        $serviceManager = require
+            dirname(__DIR__, 2) . '/config/service-manager.php';
 
-    return $loader;
-}
+        /** @var EntityManager $entityManager */
+        $entityManager = $serviceManager->get(DoctrineEMF::SERVICE_NAME);
 
-/** @throws ContainerExceptionInterface */
-function load_fixtures(Loader $loader): void
-{
-    /** @var ServiceManager $serviceManager */
-    $serviceManager = require
-        dirname(__DIR__, 2) . '/config/service-manager.php';
-
-    /** @var EntityManager $entityManager */
-    $entityManager = $serviceManager->get(DoctrineEMF::SERVICE_NAME);
-
-    // ! Purge is destructive - be careful!
-    $executor = new ORMExecutor($entityManager, new ORMPurger());
-    $executor->execute($loader->getFixtures());
-    echo "Loading fixtures completed.\n";
-}
+        new FixtureLoader($entityManager)->load(
+            dirname(__DIR__, 2) . '/test/Fixtures',
+        );
+        echo "Loading fixtures completed.\n";
+    } catch (Throwable $exception) {
+        $detail = implode(' - ', [$exception::class, $exception->getMessage()]);
+        fwrite(STDERR, "Loading fixtures failed:\n{$detail}\n");
+        exit(1);
+    }
+})();

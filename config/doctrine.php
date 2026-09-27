@@ -15,7 +15,7 @@ return [
                     'port' => 5432,
                     'dbname' => $_ENV['DB_NAME'],
                     'user' => $_ENV['DB_USER'],
-                    'password' => $_ENV['DB_PASSWORD'],
+                    'password' => $_ENV['DB_PASSWORD'] ?? '',
                 ],
             ],
         ],
