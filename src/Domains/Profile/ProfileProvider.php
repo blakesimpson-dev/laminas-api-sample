@@ -20,11 +20,10 @@ final class ProfileProvider
         return [
             'factories' => [
                 ProfileAdapter::class => InvokableFactory::class,
-                Handlers\ProfileReadHandler::class =>
-                    Factories\ProfileReadHandlerFactory::class,
+                ProfileReadHandler::class => ProfileReadHandlerFactory::class,
             ],
             'aliases' => [
-                'profile.read' => Handlers\ProfileReadHandler::class,
+                'profile.read' => ProfileReadHandler::class,
             ],
         ];
     }

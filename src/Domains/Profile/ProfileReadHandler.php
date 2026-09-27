@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample\Domains\Profile\Handlers;
+namespace LaminasApiSample\Domains\Profile;
 
 use Laminas\Http\PhpEnvironment\Request as HttpRequest;
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
-use LaminasApiSample\Domains\Profile\ProfileAdapter;
 use LaminasApiSample\Http\Auth\AuthContext;
 use LaminasApiSample\Http\HandlerInterface;
 use LaminasApiSample\Http\JsonResponseFactory;

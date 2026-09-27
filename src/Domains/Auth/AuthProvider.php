@@ -7,7 +7,7 @@ namespace LaminasApiSample\Domains\Auth;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use LaminasApiSample\Http\Auth\AuthenticatorInterface;
 use LaminasApiSample\Http\Auth\BearerAuthenticator;
-use LaminasApiSample\Http\Auth\Factories\BearerAuthenticatorFactory;
+use LaminasApiSample\Http\Auth\BearerAuthenticatorFactory;
 
 final class AuthProvider
 {
@@ -22,7 +22,7 @@ final class AuthProvider
         return [
             'factories' => [
                 AccessTokenRepository::class =>
-                    Factories\AccessTokenRepositoryFactory::class,
+                    AccessTokenRepositoryFactory::class,
                 BearerAuthenticator::class => BearerAuthenticatorFactory::class,
             ],
             'aliases' => [
