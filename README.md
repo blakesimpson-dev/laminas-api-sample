@@ -18,12 +18,11 @@ for. The commit history follows that progression.
 ## Features
 
 - `GET /profile`, `GET|POST /item-filter`, `GET|POST /item-filter/{id}`, with
-  documented response shapes
+  documented response and error shapes
 - Mocked OAuth 2.1 bearer authentication - route scopes, expire and revoke for
   tokens and per-profile ownership for item filters
 - Create and partial update with validation - actions are recorded as timestamps
   on each entity via an injected system clock
-- Documented error responses
 - Doctrine entities, embeddables, and reviewed migrations
 - Nginx + php-fpm + PostgreSQL in Docker Compose, credentials in shared
   environment from `.env`
@@ -35,9 +34,9 @@ for. The commit history follows that progression.
 
 This replication only covers the resource server (`api.pathofexile.com`). Token
 issuance (`www.pathofexil.com/oauth`) is out of scope. Development tokens are
-seeded as if the authorization server had isued them, and stored onl as SHA-256
+seeded as if the authorization server had isued them, and stored only as SHA-256
 hashes. Like the real API, the token identifies it's owner, so `account:*`
-endpoints do not need an id in the path. 401 and 403 responses carry
+endpoints do not need an `id` in the path. 401 and 403 responses carry
 `WWW-Authenticate` headers (RFC 6750).
 
 | Endpoint                                                | Scope                 |
@@ -45,42 +44,39 @@ endpoints do not need an id in the path. 401 and 403 responses carry
 | `GET /profile`                                          | `account:profile`     |
 | `GET\|POST /item-filter`, `GET\|POST /item-filter/{id}` | `account:item_filter` |
 
-| Dev token                 | Demonstrates                                  |
-| ------------------------- | --------------------------------------------- |
-| `dev-token-full`          | Full access for ProfileOne                    |
-| `dev-token-profile-only`  | 403 (code 6) on `/item-filter`: missing scope |
-| `dev-token-expired`       | 401 (code 8): expired                         |
-| `dev-token-revoked`       | 401 (code 8): revoked                         |
-| `dev-token-other-profile` | ProfileTwo: ProfileOne's filters return 404   |
+| Dev token                 | Demonstrates                                    |
+| ------------------------- | ----------------------------------------------- |
+| `dev-token-full`          | Full access for `ProfileOne`                    |
+| `dev-token-profile-only`  | 403 (code 6) on `/item-filter`: missing scope   |
+| `dev-token-expired`       | 401 (code 8): expired                           |
+| `dev-token-revoked`       | 401 (code 8): revoked                           |
+| `dev-token-other-profile` | `ProfileTwo`. (`ProfileOne` filters return 404) |
 
 ```bash
-curl -H 'Authorization: Bearer dev-token-full' localhost:8000/profile
-curl -i -H 'Authorization: Bearer dev-token-profile-only' localhost:8000/item-filter   # 403
+# 200: Ok
+curl -i -H 'Authorization: Bearer dev-token-full' localhost:8000/profile
+
+# 403: Forbidden
+curl -i -H 'Authorization: Bearer dev-token-profile-only' localhost:8000/item-filter
 ```
-
-## Roadmap
-
-- OpenAPI spec with Swagger UI
-- Lightweight Vite + Vue 3 + TypeScript web client, with Pinia and SASS styling
-- Per-token rate limiting in Redis, with the documented headers
 
 ## How it works
 
 ```mermaid
 flowchart TD
-    C[Client] --> N[Nginx<br/>:8000]
-    N -->|FastCGI| F[php-fpm]
-    F --> I[public/index.php]
-    C -.->|composer serve :8080| I
-    I --> R[Router<br/>route + method map]
-    I --> R[Router<br/>route + method map]
+    C[Client] --> |request| N[Nginx :8000<br/>or composer serve :8080]
+    N --> I[public/index.php]
+    I --> R[Router<br/>route + method]
     R --> Au[BearerAuthenticator<br/>token + scope]
-    R --> H[Handler]
-    H --> V[JsonBody + InputFilter]
-    H --> Rp[Repository]
-    H --> A[Adapter]
-    Rp --> D[(PostgreSQL)]
+    Au --> H[Handler]
+    H --> V[JsonBody + InputFilter<br/>parse + validate]
+    V --> Rp[Repository]
+    Rp --> A[Adapter<br/>entity → documented shape]
     A --> J[JsonResponseFactory]
+    J --> |response| C
+
+    Au -.->|token lookup| D[(PostgreSQL)]
+    Rp -.->|read / write| D
 ```
 
 ## Build and run
@@ -92,9 +88,9 @@ Composer scripts, tests and `composer serve`.
 git clone https://github.com/blakesimpson-dev/laminas-api-sample.git
 cd laminas-api-sample
 composer install
-cp .env.example .env                    # local dev defaults, adjust if needed
-composer reset                          # fresh Postgres + migrations
-composer fixtures:load                  # seeding
+cp .env.example .env                                # local dev defaults, adjust if needed
+composer reset                                      # fresh Postgres + migrations
+composer fixtures:load                              # seeding
 ```
 
 ### Run via Nginx (prod style)
@@ -145,6 +141,12 @@ Both can run at the same time against the same database.
 | `docker`             | php-fpm image and Nginx site config                                      |
 | `migrations`         | Reviewed Doctrine migrations                                             |
 | `test`               | Unit tests, fixtures and fixture data                                    |
+
+## Roadmap
+
+- OpenAPI spec with Swagger UI
+- Lightweight Vite + Vue 3 + TypeScript web client, with Pinia and SASS styling
+- Per-token rate limiting in Redis, with the documented headers
 
 ## Credits
 
