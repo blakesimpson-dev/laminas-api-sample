@@ -27,7 +27,7 @@ final class ProfileAdapterTest extends TestCase
     public function assertResponseContract(): void
     {
         $entity = new ProfileEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             name: 'Profile name',
             locale: 'Profile locale',
             twitch: new TwitchEmbeddable(name: 'Twitch name'),
@@ -63,7 +63,7 @@ final class ProfileAdapterTest extends TestCase
     public function assertLocaleOmission(): void
     {
         $entity = new ProfileEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             name: 'Profile name',
         );
 
@@ -88,7 +88,7 @@ final class ProfileAdapterTest extends TestCase
     public function assertTwitchOmission(?TwitchEmbeddable $twitch): void
     {
         $response = new ProfileAdapter()->mapResponse(new ProfileEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             name: 'Profile name',
             locale: 'Profile locale',
             twitch: $twitch,
@@ -116,7 +116,7 @@ final class ProfileAdapterTest extends TestCase
         array $expected,
     ): void {
         $response = new ProfileAdapter()->mapResponse(new ProfileEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             name: 'Profile name',
             locale: 'Profile locale',
             twitch: $twitch,

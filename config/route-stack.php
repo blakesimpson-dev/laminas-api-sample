@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
 use Laminas\Router\Http\TreeRouteStack;
-use LaminasApiSample\Domains\Auth\Scope;
+use LaminasApiSample\Domains\Auth\AuthScope;
 use Ramsey\Uuid\Validator\GenericValidator;
 
 $uuidPattern = str_replace(
@@ -18,7 +18,7 @@ $itemFilterRoute = new Segment(
     route: '/item-filter/:id',
     constraints: ['id' => $uuidPattern],
     defaults: [
-        'scope' => Scope::AccountItemFilter->value,
+        'scope' => AuthScope::AccountItemFilter->value,
         'handlers' => [
             'GET' => 'item-filter.read',
             'POST' => 'item-filter.update',
@@ -27,7 +27,7 @@ $itemFilterRoute = new Segment(
 );
 
 $itemFilterListRoute = new Literal(route: '/item-filter', defaults: [
-    'scope' => Scope::AccountItemFilter->value,
+    'scope' => AuthScope::AccountItemFilter->value,
     'handlers' => [
         'GET' => 'item-filter.read-many',
         'POST' => 'item-filter.create',
@@ -35,7 +35,7 @@ $itemFilterListRoute = new Literal(route: '/item-filter', defaults: [
 ]);
 
 $profileRoute = new Literal(route: '/profile', defaults: [
-    'scope' => Scope::AccountProfile->value,
+    'scope' => AuthScope::AccountProfile->value,
     'handlers' => ['GET' => 'profile.read'],
 ]);
 

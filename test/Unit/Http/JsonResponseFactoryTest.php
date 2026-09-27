@@ -7,7 +7,7 @@ namespace LaminasApiSampleTest\Unit\Http;
 use ArrayIterator;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
-use LaminasApiSample\Domains\Auth\Scope;
+use LaminasApiSample\Domains\Auth\AuthScope;
 use LaminasApiSample\Http\JsonResponseFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -73,7 +73,7 @@ final class JsonResponseFactoryTest extends TestCase
         ];
 
         yield 'forbidden' => [
-            JsonResponseFactory::forbidden(Scope::AccountItemFilter->value),
+            JsonResponseFactory::forbidden(AuthScope::AccountItemFilter->value),
             403,
             6,
             'Forbidden',
@@ -179,7 +179,7 @@ final class JsonResponseFactoryTest extends TestCase
         EOT;
 
         static::assertSame($message, self::getHeaderValueByName(
-            JsonResponseFactory::forbidden(Scope::AccountItemFilter->value),
+            JsonResponseFactory::forbidden(AuthScope::AccountItemFilter->value),
             'WWW-Authenticate',
         ));
     }

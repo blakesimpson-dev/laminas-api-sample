@@ -9,7 +9,7 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use LaminasApiSample\Domains\Auth\AccessTokenEntity;
-use LaminasApiSample\Domains\Auth\Scope;
+use LaminasApiSample\Domains\Auth\AuthScope;
 use LaminasApiSample\Domains\Profile\ProfileEntity;
 use Override;
 
@@ -33,68 +33,61 @@ final class AccessTokenFixtures extends AbstractFixture implements
             ProfileFixtures::FIXTURE_TWO_KEY,
             ProfileEntity::class,
         );
-        $createdAt = new DateTimeImmutable('2026-01-02T00:00:00Z');
+
+        $fullScope = [
+            AuthScope::AccountProfile->value,
+            AuthScope::AccountItemFilter->value,
+        ];
+        $limitedScope = [
+            AuthScope::AccountProfile->value,
+        ];
+
+        $fixedCreatedAt = new DateTimeImmutable('2026-01-02T00:00:00Z');
+        $fixedExpiresAt = new DateTimeImmutable('2099-01-01T00:00:00Z');
 
         $devTokenFull = new AccessTokenEntity(
-            createdAt: $createdAt,
+            createdAt: $fixedCreatedAt,
             profile: $profileOne,
-            // @mago-expect lint:no-literal-password
-            plainToken: 'dev-token-full',
-            scopes: [
-                Scope::AccountProfile->value,
-                Scope::AccountItemFilter->value,
-            ],
-            expiresAt: new DateTimeImmutable('2099-01-01T00:00:00Z'),
+            plainToken: DevToken::DevTokenFull->value,
+            scopes: $fullScope,
+            expiresAt: $fixedExpiresAt,
         );
         $manager->persist($devTokenFull);
 
         $devTokenProfileOnly = new AccessTokenEntity(
-            createdAt: $createdAt,
+            createdAt: $fixedCreatedAt,
             profile: $profileOne,
-            // @mago-expect lint:no-literal-password
-            plainToken: 'dev-token-profile-only',
-            scopes: [Scope::AccountProfile->value],
-            expiresAt: new DateTimeImmutable('2099-01-01T00:00:00Z'),
+            plainToken: DevToken::DevTokenProfileOnly->value,
+            scopes: $limitedScope,
+            expiresAt: $fixedExpiresAt,
         );
         $manager->persist($devTokenProfileOnly);
 
         $devTokenExpired = new AccessTokenEntity(
-            createdAt: $createdAt,
+            createdAt: $fixedCreatedAt,
             profile: $profileOne,
-            // @mago-expect lint:no-literal-password
-            plainToken: 'dev-token-expired',
-            scopes: [
-                Scope::AccountProfile->value,
-                Scope::AccountItemFilter->value,
-            ],
+            plainToken: DevToken::DevTokenExpired->value,
+            scopes: $fullScope,
             expiresAt: new DateTimeImmutable('2026-02-01T00:00:00Z'),
         );
         $manager->persist($devTokenExpired);
 
         $devTokenRevoked = new AccessTokenEntity(
-            createdAt: $createdAt,
+            createdAt: $fixedCreatedAt,
             profile: $profileOne,
-            // @mago-expect lint:no-literal-password
-            plainToken: 'dev-token-revoked',
-            scopes: [
-                Scope::AccountProfile->value,
-                Scope::AccountItemFilter->value,
-            ],
-            expiresAt: new DateTimeImmutable('2099-01-01T00:00:00Z'),
+            plainToken: DevToken::DevTokenRevoked->value,
+            scopes: $fullScope,
+            expiresAt: $fixedExpiresAt,
             revokedAt: new DateTimeImmutable('2026-03-01T00:00:00Z'),
         );
         $manager->persist($devTokenRevoked);
 
         $devTokenOther = new AccessTokenEntity(
-            createdAt: $createdAt,
+            createdAt: $fixedCreatedAt,
             profile: $profileTwo,
-            // @mago-expect lint:no-literal-password
-            plainToken: 'dev-token-other-profile',
-            scopes: [
-                Scope::AccountProfile->value,
-                Scope::AccountItemFilter->value,
-            ],
-            expiresAt: new DateTimeImmutable('2099-01-01T00:00:00Z'),
+            plainToken: DevToken::DevTokenOtherProfile->value,
+            scopes: $fullScope,
+            expiresAt: $fixedExpiresAt,
         );
         $manager->persist($devTokenOther);
 

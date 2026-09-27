@@ -17,6 +17,7 @@ use LaminasApiSample\Http\HandlerInterface;
 use LaminasApiSample\Http\JsonResponseFactory;
 use LaminasApiSample\Http\Router;
 use LaminasApiSampleTest\Support\FixedTime;
+use LaminasApiSampleTest\Support\TestProfile;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
@@ -88,15 +89,12 @@ final class RouterTest extends TestCase
     ]): AccessTokenEntity
     {
         return new AccessTokenEntity(
-            createdAt: FixedTime::getForCreate(),
-            profile: new ProfileEntity(
-                createdAt: FixedTime::getForCreate(),
-                name: 'Test',
-            ),
+            createdAt: FixedTime::inThePast(),
+            profile: TestProfile::new(),
             // @mago-expect lint:no-literal-password
             plainToken: 'test-token',
             scopes: $scopes,
-            expiresAt: FixedTime::getForUpdate(),
+            expiresAt: FixedTime::now(),
         );
     }
 

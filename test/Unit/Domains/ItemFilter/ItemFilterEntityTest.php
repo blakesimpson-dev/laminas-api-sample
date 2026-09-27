@@ -25,7 +25,7 @@ final class ItemFilterEntityTest extends TestCase
         $profile = TestProfile::new();
 
         $entity = new ItemFilterEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             profile: $profile,
             name: 'TestFilter.filter',
             realm: 'pc',
@@ -42,9 +42,9 @@ final class ItemFilterEntityTest extends TestCase
         static::assertTrue(Uuid::isValid($entity->getId()));
 
         static::assertEquals(
-            FixedTime::getForCreate(),
+            FixedTime::inThePast(),
             $entity->getCreatedAt(),
-            'created timestap should be set',
+            'created timestamp should be set',
         );
         static::assertSame(
             null,
@@ -114,16 +114,16 @@ final class ItemFilterEntityTest extends TestCase
         array $expected,
     ): void {
         $entity = new ItemFilterEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             profile: TestProfile::new(),
             name: 'TestFilter.filter',
             realm: 'pc',
         );
         $before = self::getEntitySnapshot($entity);
-        $entity->update($patch, FixedTime::getForUpdate());
+        $entity->update($patch, FixedTime::now());
 
         static::assertSame(array_replace($before, $expected, [
-            'updatedAt' => FixedTime::getForUpdate()->format(DATE_ATOM),
+            'updatedAt' => FixedTime::now()->format(DATE_ATOM),
         ]), self::getEntitySnapshot($entity));
     }
 
@@ -132,13 +132,13 @@ final class ItemFilterEntityTest extends TestCase
     public function emptyPatchHasNoEffect(): void
     {
         $entity = new ItemFilterEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             profile: TestProfile::new(),
             name: 'TestFilter.filter',
             realm: 'pc',
         );
         $before = self::getEntitySnapshot($entity);
-        $entity->update(new ItemFilterPatch(), FixedTime::getForUpdate());
+        $entity->update(new ItemFilterPatch(), FixedTime::now());
 
         static::assertSame($before, self::getEntitySnapshot($entity));
         static::assertSame(
@@ -153,16 +153,16 @@ final class ItemFilterEntityTest extends TestCase
     public function publish(): void
     {
         $entity = new ItemFilterEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             profile: TestProfile::new(),
             name: 'TestFilter.filter',
             realm: 'pc',
         );
-        $entity->publish(FixedTime::getForUpdate());
+        $entity->publish(FixedTime::now());
 
         static::assertTrue($entity->isPublic());
         static::assertEquals(
-            FixedTime::getForUpdate(),
+            FixedTime::now(),
             $entity->getUpdatedAt(),
             'updated timestamp should change',
         );
@@ -173,14 +173,14 @@ final class ItemFilterEntityTest extends TestCase
     public function publishWhenAlreadyPublicHasNoEffect(): void
     {
         $entity = new ItemFilterEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             profile: TestProfile::new(),
             name: 'TestFilter.filter',
             realm: 'pc',
             public: true,
         );
         $before = self::getEntitySnapshot($entity);
-        $entity->publish(FixedTime::getForUpdate());
+        $entity->publish(FixedTime::now());
 
         static::assertTrue($entity->isPublic());
         static::assertSame(

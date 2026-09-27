@@ -9,11 +9,13 @@ use Laminas\Http\Headers;
 use Laminas\Http\PhpEnvironment\Request as HttpRequest;
 use LaminasApiSample\Domains\Auth\AccessTokenEntity;
 use LaminasApiSample\Domains\Auth\AccessTokenLookupInterface;
-use LaminasApiSample\Domains\Auth\Scope;
+use LaminasApiSample\Domains\Auth\AuthScope;
 use LaminasApiSample\Domains\Profile\ProfileEntity;
 use LaminasApiSample\Http\Auth\AuthenticationFailedException;
 use LaminasApiSample\Http\Auth\BearerAuthenticator;
+use LaminasApiSampleTest\Fixtures\DevToken;
 use LaminasApiSampleTest\Support\FixedTime;
+use LaminasApiSampleTest\Support\TestProfile;
 use Override;
 use PHPUnit\Event\NoPreviousThrowableException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -32,16 +34,13 @@ use Psr\Clock\ClockInterface;
 ]
 final class BearerAuthenticatorTest extends TestCase
 {
-    // @mago-expect lint:no-literal-password
-    private const string KNOWN_TOKEN = 'dev-token';
-    private const string EXPIRES_AT = '2099-01-01T00:00:00Z';
-
     /**
      * @throws NoPreviousThrowableException
      * @throws PHPUnitException
      * @throws PHPUnitMockObjectException
+     * @mago-expect lint:sensitive-parameter
      */
-    private function authenticator(AccessTokenEntity $known): BearerAuthenticator
+    private function authenticator(AccessTokenEntity $knownToken): BearerAuthenticator
     {
         $lookup = $this->createStub(AccessTokenLookupInterface::class);
         $lookup
@@ -50,8 +49,8 @@ final class BearerAuthenticatorTest extends TestCase
                 // @mago-expect lint:sensitive-parameter
                 static fn(string $token): ?AccessTokenEntity => $token
                     // @mago-expect lint:no-insecure-comparison
-                    === self::KNOWN_TOKEN
-                        ? $known
+                    === DevToken::DevTokenFull->value
+                        ? $knownToken
                         : null,
             );
 
@@ -59,24 +58,21 @@ final class BearerAuthenticatorTest extends TestCase
             #[Override]
             public function now(): DateTimeImmutable
             {
-                return FixedTime::getForUpdate();
+                return FixedTime::now();
             }
         };
 
         return new BearerAuthenticator($lookup, $clock);
     }
 
-    private static function token(?string $expiresAt = null): AccessTokenEntity
+    private static function token(?DateTimeImmutable $expiresAt = null): AccessTokenEntity
     {
         return new AccessTokenEntity(
-            createdAt: FixedTime::getForCreate(),
-            profile: new ProfileEntity(
-                createdAt: FixedTime::getForCreate(),
-                name: 'Test',
-            ),
-            plainToken: self::KNOWN_TOKEN,
-            scopes: [Scope::AccountProfile->value],
-            expiresAt: new DateTimeImmutable($expiresAt ?? self::EXPIRES_AT),
+            createdAt: FixedTime::inThePast(),
+            profile: TestProfile::new(),
+            plainToken: DevToken::DevTokenFull->value,
+            scopes: [AuthScope::AccountProfile->value],
+            expiresAt: $expiresAt ?? FixedTime::inTheFuture(),
         );
     }
 
@@ -132,9 +128,10 @@ final class BearerAuthenticatorTest extends TestCase
     {
         $this->expectException(AuthenticationFailedException::class);
 
-        $this->authenticator(self::token(
-            expiresAt: '2026-01-01T06:00:00Z',
-        ))->authenticate(self::request('Bearer ' . self::KNOWN_TOKEN));
+        $this->authenticator(
+            self::token(expiresAt: FixedTime::ofEvent()),
+        )->authenticate(self::request('Bearer '
+        . DevToken::DevTokenFull->value));
     }
 
     /**
@@ -147,12 +144,12 @@ final class BearerAuthenticatorTest extends TestCase
     public function rejectsRevokedToken(): void
     {
         $token = self::token();
-        $token->revoke(FixedTime::getForCreate());
+        $token->revoke(FixedTime::ofEvent());
 
         $this->expectException(AuthenticationFailedException::class);
 
         $this->authenticator($token)->authenticate(self::request('Bearer '
-        . self::KNOWN_TOKEN));
+        . DevToken::DevTokenFull->value));
     }
 
     /**
@@ -169,7 +166,7 @@ final class BearerAuthenticatorTest extends TestCase
         static::assertSame(
             $token,
             $this->authenticator($token)->authenticate(self::request('Bearer '
-            . self::KNOWN_TOKEN)),
+            . DevToken::DevTokenFull->value)),
         );
     }
 }

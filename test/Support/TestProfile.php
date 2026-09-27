@@ -6,12 +6,12 @@ namespace LaminasApiSampleTest\Support;
 
 use LaminasApiSample\Domains\Profile\ProfileEntity;
 
-final class TestProfile
+final readonly class TestProfile
 {
     public static function new(): ProfileEntity
     {
         return new ProfileEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             name: 'TestProfile',
         );
     }

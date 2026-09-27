@@ -23,7 +23,7 @@ final class ItemFilterAdapterTest extends TestCase
     {
         $adapter = new ItemFilterAdapter();
         $response = $adapter->mapResponse(new ItemFilterEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             profile: TestProfile::new(),
             name: 'TestFilter.filter',
             realm: 'pc',
@@ -59,7 +59,7 @@ final class ItemFilterAdapterTest extends TestCase
     public function assertResponseContract(): void
     {
         $entity = new ItemFilterEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             profile: TestProfile::new(),
             name: 'TestFilter.filter',
             realm: 'pc',
@@ -105,7 +105,7 @@ final class ItemFilterAdapterTest extends TestCase
     {
         $adapter = new ItemFilterAdapter();
         $response = $adapter->mapListResponseItem(new ItemFilterEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             profile: TestProfile::new(),
             name: 'TestFilter.filter',
             realm: 'pc',

@@ -21,7 +21,7 @@ final class ProfileEntityTest extends TestCase
     public function constructWithValidParamsAndDefaults(): void
     {
         $entity = new ProfileEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             name: 'Profile name',
             locale: 'Profile locale',
             twitch: new TwitchEmbeddable(name: 'Twitch name'),
@@ -38,7 +38,7 @@ final class ProfileEntityTest extends TestCase
         static::assertTrue(Uuid::isValid($entity->getId()));
 
         static::assertEquals(
-            FixedTime::getForCreate(),
+            FixedTime::inThePast(),
             $entity->getCreatedAt(),
             'created timestamp should be set',
         );
