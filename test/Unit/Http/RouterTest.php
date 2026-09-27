@@ -15,8 +15,16 @@ use LaminasApiSample\Http\Auth\AuthContext;
 use LaminasApiSample\Http\Auth\AuthenticatorInterface;
 use LaminasApiSample\Http\HandlerInterface;
 use LaminasApiSample\Http\JsonResponseFactory;
+use LaminasApiSample\Http\RateLimiting\CounterStoreInterface;
+use LaminasApiSample\Http\RateLimiting\InMemoryCounterStore;
+use LaminasApiSample\Http\RateLimiting\RateLimiter;
+use LaminasApiSample\Http\RateLimiting\RateLimitRule;
 use LaminasApiSample\Http\Router;
 use LaminasApiSampleTest\Support\FixedTime;
+use LaminasApiSampleTest\Support\GetHeaderValue;
+use LaminasApiSampleTest\Support\MutableClock;
+use LaminasApiSampleTest\Support\StubAuthenticator;
+use LaminasApiSampleTest\Support\StubHandler;
 use LaminasApiSampleTest\Support\TestProfile;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -28,8 +36,8 @@ use Psr\Container\ContainerExceptionInterface;
 #[
     CoversClass(Router::class),
     UsesClass(JsonResponseFactory::class),
-    UsesClass(MockHandler::class),
-    UsesClass(MockAuthenticator::class),
+    UsesClass(StubHandler::class),
+    UsesClass(StubAuthenticator::class),
     UsesClass(AccessTokenEntity::class),
     UsesClass(ProfileEntity::class),
     UsesClass(AuthContext::class),
@@ -39,9 +47,29 @@ final class RouterTest extends TestCase
 {
     public const string TEST_SCOPE = 'test:scope';
 
+    private static function stubCounterStore(): CounterStoreInterface
+    {
+        return new InMemoryCounterStore(new MutableClock(FixedTime::now()));
+    }
+
+    private static function stubRateLimiter(?RateLimitRule $rule = null): RateLimiter
+    {
+        return new RateLimiter(
+            store: self::stubCounterStore(),
+            policy: 'api',
+            rule: $rule ?? new RateLimitRule(
+                name: 'client',
+                maxHits: 10,
+                periodSeconds: 5,
+                restrictSeconds: 10,
+            ),
+        );
+    }
+
     private static function stubRouter(
         HandlerInterface $handler,
         AuthenticatorInterface $authenticator,
+        ?RateLimiter $rateLimiter = null,
         ?string $scope = self::TEST_SCOPE,
     ): Router {
         $defaults = ['handlers' => [
@@ -63,12 +91,15 @@ final class RouterTest extends TestCase
             route: $testRoute,
         );
 
+        $serviceManager = new ServiceManager(['services' => [
+            'character.read' => $handler,
+        ]]);
+
         return new Router(
             $routeStack,
-            new ServiceManager(['services' => [
-                'character.read' => $handler,
-            ]]),
+            $serviceManager,
             $authenticator,
+            $rateLimiter ?? self::stubRateLimiter(),
         );
     }
 
@@ -103,11 +134,159 @@ final class RouterTest extends TestCase
      * @throws PHPUnitException
      */
     #[Test]
+    public function requestCarriesRateLimitingHeaders(): void
+    {
+        $response = self::stubRouter(
+            handler: new StubHandler(),
+            authenticator: new StubAuthenticator(self::stubToken()),
+        )
+            ->dispatch(self::buildStubRequest('GET', '/character/1'));
+
+        static::assertSame(200, $response->getStatusCode());
+        static::assertSame('api', GetHeaderValue::byName(
+            $response,
+            'X-Rate-Limit-Policy',
+        ));
+        static::assertSame('client', GetHeaderValue::byName(
+            $response,
+            'X-Rate-Limit-Rules',
+        ));
+        static::assertSame('10:5:10', GetHeaderValue::byName(
+            $response,
+            'X-Rate-Limit-Client',
+        ));
+        static::assertSame('1:5:0', GetHeaderValue::byName(
+            $response,
+            'X-Rate-Limit-Client-State',
+        ));
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws PHPUnitException
+     */
+    #[Test]
+    public function requestLimitedAfterFirstHit(): void
+    {
+        $rateLimiterRule = new RateLimitRule(
+            name: 'client',
+            maxHits: 1,
+            periodSeconds: 5,
+            restrictSeconds: 10,
+        );
+        $rateLimiter = self::stubRateLimiter($rateLimiterRule);
+
+        $router = self::stubRouter(
+            handler: new StubHandler(),
+            authenticator: new StubAuthenticator(self::stubToken()),
+            rateLimiter: $rateLimiter,
+        );
+
+        $request = self::buildStubRequest('GET', '/character/1');
+        $router->dispatch($request);
+
+        $secondResponse = $router->dispatch($request);
+
+        static::assertSame(429, $secondResponse->getStatusCode());
+        static::assertSame('10', GetHeaderValue::byName(
+            $secondResponse,
+            'Retry-After',
+        ));
+        static::assertSame(
+            ['error' => ['code' => 3, 'message' => 'Rate limit exceeded']],
+            json_decode(
+                $secondResponse->getBody(),
+                true,
+                flags: JSON_THROW_ON_ERROR,
+            ),
+        );
+
+        static::assertSame('api', GetHeaderValue::byName(
+            $secondResponse,
+            'X-Rate-Limit-Policy',
+        ));
+        static::assertSame('client', GetHeaderValue::byName(
+            $secondResponse,
+            'X-Rate-Limit-Rules',
+        ));
+        static::assertSame('1:5:10', GetHeaderValue::byName(
+            $secondResponse,
+            'X-Rate-Limit-Client',
+        ));
+        static::assertSame('2:5:10', GetHeaderValue::byName(
+            $secondResponse,
+            'X-Rate-Limit-Client-State',
+        ));
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws PHPUnitException
+     */
+    #[Test]
+    public function rateLimitHeadersOmittedOn401(): void
+    {
+        $response = self::stubRouter(
+            handler: new StubHandler(),
+            authenticator: new StubAuthenticator(null),
+        )
+            ->dispatch(self::buildStubRequest('GET', '/character/1'));
+
+        static::assertSame(401, $response->getStatusCode());
+
+        $headers = $response->getHeaders();
+        foreach ([
+            'X-Rate-Limit-Policy',
+            'X-Rate-Limit-Rules',
+            'X-Rate-Limit-Client',
+            'X-Rate-Limit-Client-State',
+        ] as $name) {
+            static::assertFalse(
+                $headers->has($name),
+                "{$name} should not be set on a 401",
+            );
+        }
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws PHPUnitException
+     */
+    #[Test]
+    public function rateLimitHeadersOmittedOn403(): void
+    {
+        $response = self::stubRouter(
+            handler: new StubHandler(),
+            authenticator: new StubAuthenticator(self::stubToken([])),
+        )
+            ->dispatch(self::buildStubRequest('GET', '/character/1'));
+
+        static::assertSame(403, $response->getStatusCode());
+
+        $headers = $response->getHeaders();
+        foreach ([
+            'X-Rate-Limit-Policy',
+            'X-Rate-Limit-Rules',
+            'X-Rate-Limit-Client',
+            'X-Rate-Limit-Client-State',
+        ] as $name) {
+            static::assertFalse(
+                $headers->has($name),
+                "{$name} should not be set on a 403",
+            );
+        }
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws PHPUnitException
+     */
+    #[Test]
     public function unknownPathIsNotFound(): void
     {
         $response = self::stubRouter(
-            new MockHandler(),
-            new MockAuthenticator(self::stubToken()),
+            new StubHandler(),
+            new StubAuthenticator(self::stubToken()),
         )
             ->dispatch(self::buildStubRequest('GET', '/stash'));
 
@@ -122,8 +301,8 @@ final class RouterTest extends TestCase
     public function paramFailingConstraintIsNotFound(): void
     {
         $response = self::stubRouter(
-            new MockHandler(),
-            new MockAuthenticator(self::stubToken()),
+            new StubHandler(),
+            new StubAuthenticator(self::stubToken()),
         )
             ->dispatch(self::buildStubRequest('GET', '/character/abc'));
 
@@ -138,8 +317,8 @@ final class RouterTest extends TestCase
     public function unmappedMethodIsNotAllowed(): void
     {
         $response = self::stubRouter(
-            new MockHandler(),
-            new MockAuthenticator(self::stubToken()),
+            new StubHandler(),
+            new StubAuthenticator(self::stubToken()),
         )
             ->dispatch(self::buildStubRequest('DELETE', '/character/1'));
 
@@ -158,8 +337,8 @@ final class RouterTest extends TestCase
     public function unregisteredHandlerIsNotImplemented(): void
     {
         $response = self::stubRouter(
-            new MockHandler(),
-            new MockAuthenticator(self::stubToken()),
+            new StubHandler(),
+            new StubAuthenticator(self::stubToken()),
         )
             ->dispatch(self::buildStubRequest('POST', '/character/1'));
 
@@ -173,10 +352,10 @@ final class RouterTest extends TestCase
     #[Test]
     public function matchedRouteCallsHandlerWithParamsOnly(): void
     {
-        $handler = new MockHandler();
+        $handler = new StubHandler();
         $response = self::stubRouter(
             $handler,
-            new MockAuthenticator(self::stubToken()),
+            new StubAuthenticator(self::stubToken()),
         )
             ->dispatch(self::buildStubRequest('GET', '/character/1'));
 
@@ -192,8 +371,8 @@ final class RouterTest extends TestCase
     public function failedAuthenticationIsUnauthorized(): void
     {
         $response = self::stubRouter(
-            new MockHandler(),
-            new MockAuthenticator(null),
+            new StubHandler(),
+            new StubAuthenticator(null),
         )
             ->dispatch(self::buildStubRequest('GET', '/character/1'));
 
@@ -208,8 +387,8 @@ final class RouterTest extends TestCase
     public function tokenWithoutRouteScopeIsForbidden(): void
     {
         $response = self::stubRouter(
-            new MockHandler(),
-            new MockAuthenticator(self::stubToken(['other:scope'])),
+            new StubHandler(),
+            new StubAuthenticator(self::stubToken(['other:scope'])),
         )
             ->dispatch(self::buildStubRequest('GET', '/character/1'));
 
@@ -224,8 +403,8 @@ final class RouterTest extends TestCase
     public function routeWithoutScopeFailsClosed(): void
     {
         $response = self::stubRouter(
-            new MockHandler(),
-            new MockAuthenticator(self::stubToken()),
+            new StubHandler(),
+            new StubAuthenticator(self::stubToken()),
             scope: null,
         )
             ->dispatch(self::buildStubRequest('GET', '/character/1'));
@@ -240,10 +419,10 @@ final class RouterTest extends TestCase
     #[Test]
     public function handlerReceivesAuthContextForTokenProfile(): void
     {
-        $handler = new MockHandler();
+        $handler = new StubHandler();
         $token = self::stubToken();
 
-        self::stubRouter($handler, new MockAuthenticator($token))
+        self::stubRouter($handler, new StubAuthenticator($token))
             ->dispatch(self::buildStubRequest('GET', '/character/1'));
 
         $auth = $handler->receivedAuth;
@@ -263,8 +442,8 @@ final class RouterTest extends TestCase
     public function methodIsCheckedBeforeAuthentication(): void
     {
         $response = self::stubRouter(
-            new MockHandler(),
-            new MockAuthenticator(null),
+            new StubHandler(),
+            new StubAuthenticator(null),
         )
             ->dispatch(self::buildStubRequest('DELETE', '/character/1'));
 
