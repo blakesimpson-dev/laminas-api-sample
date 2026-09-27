@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample\Http\Auth\Factories;
+namespace LaminasApiSample\Http\Auth;
 
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use LaminasApiSample\Domains\Auth\AccessTokenLookupInterface;
-use LaminasApiSample\Http\Auth\BearerAuthenticator;
 use Override;
 use Psr\Clock\ClockInterface;
 use Psr\Container\ContainerInterface;

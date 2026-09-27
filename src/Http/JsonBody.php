@@ -32,8 +32,11 @@ final class JsonBody
         try {
             // @mago-expect analysis:mixed-assignment
             $data = json_decode($content, true, flags: JSON_THROW_ON_ERROR);
-        } catch (JsonException $e) {
-            throw new MalformedJsonException($e->getMessage(), previous: $e);
+        } catch (JsonException $exception) {
+            throw new MalformedJsonException(
+                $exception->getMessage(),
+                previous: $exception,
+            );
         }
 
         if (!is_array($data) || !str_starts_with(ltrim($content), '{')) {

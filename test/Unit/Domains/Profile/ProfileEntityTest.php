@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace LaminasApiSampleTest\Unit\Domains\Profile;
 
-use LaminasApiSample\Domains\Profile\Embedded\TwitchEmbeddable;
 use LaminasApiSample\Domains\Profile\ProfileEntity;
+use LaminasApiSample\Domains\Profile\TwitchEmbeddable;
 use LaminasApiSampleTest\Support\FixedTime;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;

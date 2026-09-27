@@ -1,5 +1,4 @@
 [
-
     {
         "label": "analyze",
         "command": "composer analyze",
@@ -31,6 +30,13 @@
     {
         "label": "test",
         "command": "compose test",
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "shell": "system",
+        "reveal": "always",
+    },
+    {
+        "label": "lint:spec",
+        "command": "composer lint:spec",
         "cwd": "$ZED_WORKTREE_ROOT",
         "shell": "system",
         "reveal": "always",

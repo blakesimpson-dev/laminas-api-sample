@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample\Domains\Auth\Factories;
+namespace LaminasApiSample\Domains\Auth;
 
 use Doctrine\ORM\EntityManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use LaminasApiSample\Domains\Auth\AccessTokenEntity;
-use LaminasApiSample\Domains\Auth\AccessTokenRepository;
 use LaminasApiSample\Infrastructure\DoctrineEntityManagerFactory as DoctrineEMF;
 use Override;
 use Psr\Container\ContainerInterface;

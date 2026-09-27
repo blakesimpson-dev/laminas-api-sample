@@ -25,6 +25,7 @@
         "laminas/laminas-router": "^3.19",
         "laminas/laminas-servicemanager": "^3.24",
         "laminas/laminas-validator": "^2.65",
+        "predis/predis": "^3.6",
         "psr/clock": "^1.0",
         "ramsey/uuid": "^4.9",
         "roave/psr-container-doctrine": "^6.2",
@@ -49,6 +50,7 @@
         "lint": "mago lint --minimum-fail-level=warning",
         "format": "mago format",
         "format:check": "mago format --dry-run",
+        "lint:spec": "docker run --rm -v \"$PWD/docs:/spec\" redocly/cli lint /spec/openapi.json",
         "test": "phpunit",
         "serve": [
             "Composer\\Config::disableProcessTimeout",
@@ -67,6 +69,7 @@
         "format:check": "Check formatting with Mago without writing changes.",
         "lint": "Run Mago's linter.",
         "test": "Run the PHPUnit unit tests.",
+        "lint:spec": "Run redocly/cli linter targeting the OpenApi 3.1 spec",
         "serve": "Start the built-in PHP web server and serve the API sample.",
         "migrations:diff": "Generate a new migration from differences between the entity mapping and the database schema.",
         "migrations:migrate": "Apply all pending migrations to the database.",

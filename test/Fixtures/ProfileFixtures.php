@@ -7,8 +7,8 @@ namespace LaminasApiSampleTest\Fixtures;
 use DateTimeImmutable;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Persistence\ObjectManager;
-use LaminasApiSample\Domains\Profile\Embedded\TwitchEmbeddable;
 use LaminasApiSample\Domains\Profile\ProfileEntity;
+use LaminasApiSample\Domains\Profile\TwitchEmbeddable;
 use Override;
 
 final class ProfileFixtures extends AbstractFixture

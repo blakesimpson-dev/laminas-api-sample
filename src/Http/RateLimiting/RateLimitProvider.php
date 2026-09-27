@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample\Domains\Profile;
+namespace LaminasApiSample\Http\RateLimiting;
 
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Laminas\ServiceManager\Factory\InvokableFactory;
+use LaminasApiSample\Infrastructure\RedisCounterStore;
 
-final class ProfileProvider
+final class RateLimitProvider
 {
     /**
      * @return array{
@@ -19,11 +19,12 @@ final class ProfileProvider
     {
         return [
             'factories' => [
-                ProfileAdapter::class => InvokableFactory::class,
-                ProfileReadHandler::class => ProfileReadHandlerFactory::class,
+                RateLimiter::class => Factories\RateLimiterFactory::class,
+                RedisCounterStore::class =>
+                    Factories\RedisCounterStoreFactory::class,
             ],
             'aliases' => [
-                'profile.read' => ProfileReadHandler::class,
+                CounterStoreInterface::class => RedisCounterStore::class,
             ],
         ];
     }

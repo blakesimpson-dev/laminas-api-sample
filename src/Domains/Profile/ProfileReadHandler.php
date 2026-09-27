@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSampleTest\Unit\Http;
+namespace LaminasApiSample\Domains\Profile;
 
 use Laminas\Http\PhpEnvironment\Request as HttpRequest;
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
@@ -11,11 +11,11 @@ use LaminasApiSample\Http\HandlerInterface;
 use LaminasApiSample\Http\JsonResponseFactory;
 use Override;
 
-final class MockHandler implements HandlerInterface
+final class ProfileReadHandler implements HandlerInterface
 {
-    /** @var array<string, string>|null */
-    public ?array $receivedParams = null;
-    public ?AuthContext $receivedAuth = null;
+    public function __construct(
+        private readonly ProfileAdapter $adapter,
+    ) {}
 
     /** @param array<string, string> $params */
     #[Override]
@@ -24,9 +24,7 @@ final class MockHandler implements HandlerInterface
         array $params,
         AuthContext $auth,
     ): HttpResponse {
-        $this->receivedParams = $params;
-        $this->receivedAuth = $auth;
-
-        return JsonResponseFactory::ok([]);
+        $profile = $this->adapter->mapResponse($auth->profile);
+        return JsonResponseFactory::ok($profile);
     }
 }

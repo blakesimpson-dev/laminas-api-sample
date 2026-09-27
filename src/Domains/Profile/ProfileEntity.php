@@ -6,12 +6,11 @@ namespace LaminasApiSample\Domains\Profile;
 
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types as DoctrineDBTypes;
+use Doctrine\ORM\Mapping;
 use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
-use LaminasApiSample\Domains\Profile\Embedded\TwitchEmbeddable;
 use LaminasApiSample\Domains\TimestampedEntity;
 use Ramsey\Uuid\Uuid;
 
@@ -28,7 +27,7 @@ final class ProfileEntity extends TimestampedEntity
     #[Column(nullable: true)]
     private readonly ?string $locale;
 
-    #[Embedded(class: TwitchEmbeddable::class)]
+    #[Mapping\Embedded(class: TwitchEmbeddable::class)]
     private readonly ?TwitchEmbeddable $twitch;
 
     public function __construct(

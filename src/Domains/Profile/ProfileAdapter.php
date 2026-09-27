@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Domains\Profile;
 
-use LaminasApiSample\Domains\Profile\Embedded\TwitchEmbeddable;
-
 final class ProfileAdapter
 {
     /**

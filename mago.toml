@@ -1,6 +1,4 @@
 #:schema https://mago.carthage.software/1.50.0/schema.json
-# Welcome to Mago!
-# For full documentation, see https://mago.carthage.software/1.50.0/en/tools/overview/
 version = "1"
 php-version = "8.5.0"
 
@@ -13,36 +11,119 @@ excludes = []
 [source.glob]
 literal-separator = true
 
-[formatter]
-preset = "default"
-print-width = 80
-indent-heredoc = false
-
 [linter]
-integrations = ["phpunit"]
 excludes = ["migrations/"]
+integrations = ["phpunit"]
+baseline-variant = "loose"
+minimum-fail-level = "Error"
 
 [linter.rules]
 ambiguous-function-call = { enabled = false }
 literal-named-argument = { enabled = false }
 halstead = { effort-threshold = 7000 }
+prefer-self-return-type = { enabled = true }
+require-namespace = { enabled = true }
+property-name = { enabled = true }
+no-side-effects-with-declarations = { enabled = true }
+no-inline = { enabled = true }
+variable-name = { enabled = true }
+validated-sanitized-input = { enabled = true }
+prefer-test-attribute = { enabled = true }
+prefer-early-return = { enabled = true }
+
+[linter.rules.missing-docs]
+enabled = false
+level = "Help"
+functions = true
+classes = false
+interfaces = false
+traits = false
+enums = false
+enum-cases = true
+constants = true
+statics = true
+methods = true
+properties = true
+
+[linter.rules.missing-docs.exclusions]
+functions = []
+classes = []
+interfaces = []
+traits = []
+enums = []
+enum-cases = []
+constants = []
+statics = []
+methods = []
+properties = []
+
+[parser]
+enable-short-tags = true
+
+[formatter]
+preset = "default"
+print-width = 80
+indent-heredoc = false
+expand-use-groups = false
 
 [analyzer]
 excludes = ["migrations/"]
+ignore = []
+baseline-variant = "loose"
+minimum-fail-level = "Error"
+disable-default-plugins = false
 plugins = []
 find-unused-definitions = true
 find-unused-expressions = true
+find-overly-wide-return-types = false
 analyze-dead-code = true
 memoize-properties = true
-allow-possibly-undefined-array-keys = true
 check-throws = true
 unchecked-exceptions = ["Error", "LogicException"]
 unchecked-exception-classes = []
-check-missing-override = true
-find-unused-parameters = true
 strict-list-index-checks = true
 strict-array-index-existence = true
 allow-array-truthy-operand = true
 no-boolean-literal-comparison = true
 check-missing-type-hints = true
+check-closure-missing-type-hints = false
+check-arrow-function-missing-type-hints = false
+allow-implicit-pipe-callable-types = false
 register-super-globals = true
+check-missing-override = true
+find-unused-parameters = true
+trust-existence-checks = true
+class-initializers = []
+check-property-initialization = false
+check-use-statements = true
+check-experimental = false
+check-name-casing = false
+enforce-class-finality = false
+require-api-or-internal = false
+allow-side-effects-in-conditions = true
+
+[analyzer.performance]
+saturation-complexity-threshold = 8192
+disjunction-complexity-threshold = 4096
+negation-complexity-threshold = 4096
+consensus-limit-threshold = 256
+formula-size-threshold = 512
+string-combination-threshold = 128
+integer-combination-threshold = 128
+array-combination-threshold = 32
+loop-assignment-depth-threshold = 1
+
+[guard]
+excludes = []
+baseline-variant = "loose"
+minimum-fail-level = "Error"
+mode = "default"
+
+[guard.perimeter]
+layers = {}
+layering = []
+rules = []
+restrictions = []
+
+[guard.structural]
+rules = []

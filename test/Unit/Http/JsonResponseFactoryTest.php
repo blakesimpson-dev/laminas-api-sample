@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace LaminasApiSampleTest\Unit\Http;
 
-use ArrayIterator;
-use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 use LaminasApiSample\Domains\Auth\AuthScope;
 use LaminasApiSample\Http\JsonResponseFactory;
+use LaminasApiSampleTest\Support\GetHeaderValue;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -18,25 +17,6 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(JsonResponseFactory::class)]
 final class JsonResponseFactoryTest extends TestCase
 {
-    /** @throws PHPUnitException */
-    private static function getHeaderValueByName(
-        HttpResponse $response,
-        string $name,
-    ): string {
-        $header = $response->getHeaders()->get($name);
-        if ($header instanceof ArrayIterator) {
-            /** @var HeaderInterface|null $current */
-            $current = $header->current();
-            $header = $current;
-        }
-
-        if (!$header instanceof HeaderInterface) {
-            static::fail("Missing {$name} header");
-        }
-
-        return $header->getFieldValue();
-    }
-
     /** @return array<string, mixed> */
     private static function decodeBody(HttpResponse $response): array
     {
@@ -124,7 +104,7 @@ final class JsonResponseFactoryTest extends TestCase
         string $message,
     ): void {
         static::assertSame($status, $response->getStatusCode());
-        static::assertSame('application/json', self::getHeaderValueByName(
+        static::assertSame('application/json', GetHeaderValue::byName(
             $response,
             'Content-Type',
         ));
@@ -140,7 +120,7 @@ final class JsonResponseFactoryTest extends TestCase
     {
         $response = JsonResponseFactory::methodNotAllowed(['GET', 'POST']);
 
-        static::assertSame('GET, POST', self::getHeaderValueByName(
+        static::assertSame('GET, POST', GetHeaderValue::byName(
             $response,
             'Allow',
         ));
@@ -154,7 +134,7 @@ final class JsonResponseFactoryTest extends TestCase
         $response = JsonResponseFactory::ok($data);
 
         static::assertSame(200, $response->getStatusCode());
-        static::assertSame('application/json', self::getHeaderValueByName(
+        static::assertSame('application/json', GetHeaderValue::byName(
             $response,
             'Content-Type',
         ));
@@ -169,7 +149,7 @@ final class JsonResponseFactoryTest extends TestCase
         Bearer error="invalid_token"
         EOT;
 
-        static::assertSame($message, self::getHeaderValueByName(
+        static::assertSame($message, GetHeaderValue::byName(
             JsonResponseFactory::unauthorized(),
             'WWW-Authenticate',
         ));
@@ -178,7 +158,7 @@ final class JsonResponseFactoryTest extends TestCase
         Bearer error="insufficient_scope", scope="account:item_filter"
         EOT;
 
-        static::assertSame($message, self::getHeaderValueByName(
+        static::assertSame($message, GetHeaderValue::byName(
             JsonResponseFactory::forbidden(AuthScope::AccountItemFilter->value),
             'WWW-Authenticate',
         ));

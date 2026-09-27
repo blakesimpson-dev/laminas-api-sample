@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace LaminasApiSample\Http;
 
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
+use LaminasApiSample\Http\RateLimiting\RateLimitHeaders;
+use LaminasApiSample\Http\RateLimiting\RateLimitResult;
 
 // @mago-expect lint:too-many-methods
 final class JsonResponseFactory
@@ -80,6 +82,14 @@ final class JsonResponseFactory
     public static function unprocessable(string $message): HttpResponse
     {
         return self::error(status: 422, code: 10, message: $message);
+    }
+
+    public static function rateLimited(RateLimitResult $result): HttpResponse
+    {
+        return RateLimitHeaders::apply(
+            self::error(status: 429, code: 3, message: 'Rate limit exceeded'),
+            $result,
+        );
     }
 
     public static function serverError(): HttpResponse

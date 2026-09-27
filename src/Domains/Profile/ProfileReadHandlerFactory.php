@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LaminasApiSample\Domains\Profile\Factories;
+namespace LaminasApiSample\Domains\Profile;
 
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use LaminasApiSample\Domains\Profile\Handlers\ProfileReadHandler;
-use LaminasApiSample\Domains\Profile\ProfileAdapter;
 use Override;
 use Psr\Container\ContainerInterface;
 
