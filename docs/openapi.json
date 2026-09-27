@@ -9,6 +9,10 @@
         },
         "description": "Backend modelled on a slice of the Path of Exile public API."
     },
+    "externalDocs": {
+        "description": "OpenAPI 3.1 specification",
+        "url": "https://swagger.io/specification/v3.2"
+    },
     "servers": [
         {
             "url": "/",
@@ -320,6 +324,61 @@
                         }
                     }
                 }
+            },
+            "TooManyRequests": {
+                "description": "Rate limit exceeded (code 3). Wait Retry-After seconds before retrying.",
+                "headers": {
+                    "X-Rate-Limit-Policy": {
+                        "$ref": "#/components/headers/X-Rate-Limit-Policy"
+                    },
+                    "X-Rate-Limit-Rules": {
+                        "$ref": "#/components/headers/X-Rate-Limit-Rules"
+                    },
+                    "X-Rate-Limit-Client": {
+                        "$ref": "#/components/headers/X-Rate-Limit-Client"
+                    },
+                    "X-Rate-Limit-Client-State": {
+                        "$ref": "#/components/headers/X-Rate-Limit-Client-State"
+                    },
+                    "Retry-After": {
+                        "$ref": "#/components/headers/Retry-After"
+                    }
+                },
+                "content": {
+                    "application/json": {
+                        "schema": { "$ref": "#/components/schemas/Error" }
+                    }
+                }
+            }
+        },
+        "headers": {
+            "X-Rate-Limit-Policy": {
+                "description": "The rate-limit policy that applies to this request.",
+                "schema": { "type": "string", "example": "api" }
+            },
+            "X-Rate-Limit-Rules": {
+                "description": "Comma-separated list of the rules that apply, e.g. client.",
+                "schema": { "type": "string", "example": "client" }
+            },
+            "X-Rate-Limit-Client": {
+                "description": "The client rule, as <max hits>:<period seconds>:<restricted seconds>.",
+                "schema": {
+                    "type": "string",
+                    "pattern": "^\\d+:\\d+:\\d+$",
+                    "example": "10:5:10"
+                }
+            },
+            "X-Rate-Limit-Client-State": {
+                "description": "Current state of the client rule, as <hits>:<period seconds>:<active restriction seconds>.",
+                "schema": {
+                    "type": "string",
+                    "pattern": "^\\d+:\\d+:\\d+$",
+                    "example": "1:5:0"
+                }
+            },
+            "Retry-After": {
+                "description": "Seconds to wait before retrying. Sent only on 429.",
+                "schema": { "type": "integer", "example": 10 }
             }
         }
     },
@@ -339,6 +398,20 @@
                                     "$ref": "#/components/schemas/Profile"
                                 }
                             }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Policy": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Policy"
+                            },
+                            "X-Rate-Limit-Rules": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Rules"
+                            },
+                            "X-Rate-Limit-Client": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Client"
+                            },
+                            "X-Rate-Limit-Client-State": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Client-State"
+                            }
                         }
                     },
                     "401": {
@@ -346,6 +419,9 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/Forbidden"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/TooManyRequests"
                     },
                     "500": {
                         "$ref": "#/components/responses/ServerError"
@@ -378,6 +454,20 @@
                                     }
                                 }
                             }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Policy": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Policy"
+                            },
+                            "X-Rate-Limit-Rules": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Rules"
+                            },
+                            "X-Rate-Limit-Client": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Client"
+                            },
+                            "X-Rate-Limit-Client-State": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Client-State"
+                            }
                         }
                     },
                     "401": {
@@ -385,6 +475,9 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/Forbidden"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/TooManyRequests"
                     },
                     "500": {
                         "$ref": "#/components/responses/ServerError"
@@ -422,6 +515,20 @@
                                     }
                                 }
                             }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Policy": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Policy"
+                            },
+                            "X-Rate-Limit-Rules": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Rules"
+                            },
+                            "X-Rate-Limit-Client": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Client"
+                            },
+                            "X-Rate-Limit-Client-State": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Client-State"
+                            }
                         }
                     },
                     "400": {
@@ -432,6 +539,9 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/Forbidden"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/TooManyRequests"
                     },
                     "422": {
                         "$ref": "#/components/responses/Unprocessable"
@@ -469,6 +579,20 @@
                                     }
                                 }
                             }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Policy": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Policy"
+                            },
+                            "X-Rate-Limit-Rules": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Rules"
+                            },
+                            "X-Rate-Limit-Client": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Client"
+                            },
+                            "X-Rate-Limit-Client-State": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Client-State"
+                            }
                         }
                     },
                     "401": {
@@ -476,6 +600,9 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/Forbidden"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/TooManyRequests"
                     },
                     "404": {
                         "$ref": "#/components/responses/NotFound"
@@ -516,6 +643,20 @@
                                     }
                                 }
                             }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Policy": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Policy"
+                            },
+                            "X-Rate-Limit-Rules": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Rules"
+                            },
+                            "X-Rate-Limit-Client": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Client"
+                            },
+                            "X-Rate-Limit-Client-State": {
+                                "$ref": "#/components/headers/X-Rate-Limit-Client-State"
+                            }
                         }
                     },
                     "400": {
@@ -526,6 +667,9 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/Forbidden"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/TooManyRequests"
                     },
                     "404": {
                         "$ref": "#/components/responses/NotFound"
