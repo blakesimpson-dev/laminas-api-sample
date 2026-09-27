@@ -7,7 +7,7 @@ namespace LaminasApiSample\Http\RateLimiting;
 use Override;
 use Psr\Clock\ClockInterface;
 
-final class InMemoryCounterStore implements CounterStore
+final class InMemoryCounterStore implements CounterStoreInterface
 {
     /**
      * @var array<string, array{

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Http\RateLimiting;
 
-interface CounterStore
+interface CounterStoreInterface
 {
     public function hit(string $key, int $periodSeconds): int;
 

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace LaminasApiSample\Infrastructure;
 
-use LaminasApiSample\Http\RateLimiting\CounterStore;
+use LaminasApiSample\Http\RateLimiting\CounterStoreInterface;
 use Override;
 use Predis\Client;
 use Predis\Transaction\MultiExec;
 
-final readonly class RedisCounterStore implements CounterStore
+final readonly class RedisCounterStore implements CounterStoreInterface
 {
     public function __construct(
         private Client $redis,

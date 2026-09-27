@@ -7,7 +7,7 @@ namespace LaminasApiSample\Http\RateLimiting;
 final readonly class RateLimiter
 {
     public function __construct(
-        private CounterStore $store,
+        private CounterStoreInterface $store,
         private string $policy,
         private RateLimitRule $rule,
     ) {}
