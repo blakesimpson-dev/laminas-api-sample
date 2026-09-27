@@ -52,7 +52,7 @@ final class RateLimiterTest extends TestCase
 
     /** @throws PHPUnitException */
     #[Test]
-    public function resultRuleIsValid(): void
+    public function ruleHeaderUsesDocumentedFormat(): void
     {
         $limiter = self::limiter(new MutableClock(FixedTime::now()));
         $result = self::hitTimes($limiter, 1);
@@ -85,7 +85,7 @@ final class RateLimiterTest extends TestCase
     {
         $clock = new MutableClock(FixedTime::now());
         $limiter = self::limiter($clock);
-        $result = self::hitTimes($limiter, 11);
+        self::hitTimes($limiter, 11);
 
         $clock->advance(6);
         $result = $limiter->check('client:a');
@@ -100,7 +100,7 @@ final class RateLimiterTest extends TestCase
     {
         $clock = new MutableClock(FixedTime::now());
         $limiter = self::limiter($clock);
-        $result = self::hitTimes($limiter, 11);
+        self::hitTimes($limiter, 11);
 
         $clock->advance(10);
         $result = $limiter->check('client:a');
@@ -114,9 +114,8 @@ final class RateLimiterTest extends TestCase
     public function keysAreIndependent(): void
     {
         $limiter = self::limiter(new MutableClock(FixedTime::now()));
-        $result = self::hitTimes($limiter, 11);
 
-        $result = $limiter->check('client:a');
+        $result = self::hitTimes($limiter, 11);
         $otherResult = $limiter->check('client:b');
 
         static::assertTrue($result->isLimited());
