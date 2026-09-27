@@ -25,6 +25,7 @@
         "laminas/laminas-router": "^3.19",
         "laminas/laminas-servicemanager": "^3.24",
         "laminas/laminas-validator": "^2.65",
+        "predis/predis": "^3.6",
         "psr/clock": "^1.0",
         "ramsey/uuid": "^4.9",
         "roave/psr-container-doctrine": "^6.2",
