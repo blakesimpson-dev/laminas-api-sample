@@ -137,7 +137,7 @@ curl -H "$AUTH" localhost:8000/item-filter/<id>
 - **`composer serve` (:8080)** is the quick local alternative; both can run
   against the same database.
 
-### API docs
+## API docs
 
 `docs/openapi.json` is the contract, written by hand 😭 Open Swagger UI at
 <http://localhost:8000/docs>, click **Authorize**, paste a dev token, then **Try
