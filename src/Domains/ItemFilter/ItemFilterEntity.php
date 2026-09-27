@@ -9,7 +9,10 @@ use Doctrine\DBAL\Types\Types as DoctrineDBTypes;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
+use LaminasApiSample\Domains\Profile\ProfileEntity;
 use LaminasApiSample\Domains\TimestampedEntity;
 use Ramsey\Uuid\Uuid;
 
@@ -19,6 +22,14 @@ final class ItemFilterEntity extends TimestampedEntity
 {
     public const array REALMS = ['pc', 'xbox', 'sony', 'poe2'];
     public const array TYPES = ['Normal', 'Ruthless'];
+
+    #[ManyToOne(targetEntity: ProfileEntity::class)]
+    #[JoinColumn(
+        name: 'profile_id',
+        referencedColumnName: 'uuid',
+        nullable: false,
+    )]
+    private readonly ProfileEntity $profile;
 
     #[Column(type: DoctrineDBTypes::GUID), Id]
     private readonly string $id;
@@ -47,6 +58,7 @@ final class ItemFilterEntity extends TimestampedEntity
     // @mago-expect lint:excessive-parameter-list
     public function __construct(
         DateTimeImmutable $createdAt,
+        ProfileEntity $profile,
         string $name,
         string $realm,
         ?string $filter = null,
@@ -57,6 +69,7 @@ final class ItemFilterEntity extends TimestampedEntity
     ) {
         parent::__construct($createdAt);
         $this->id = Uuid::uuid4()->toString();
+        $this->profile = $profile;
         $this->name = $name;
         $this->realm = $realm;
         $this->filter = $filter;
@@ -94,6 +107,11 @@ final class ItemFilterEntity extends TimestampedEntity
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getProfile(): ProfileEntity
+    {
+        return $this->profile;
     }
 
     public function getName(): string

@@ -24,6 +24,14 @@ final class AccessTokenEntity extends TimestampedEntity
 {
     private const string HASH_ALGO = 'sha256';
 
+    #[ManyToOne(targetEntity: ProfileEntity::class)]
+    #[JoinColumn(
+        name: 'profile_id',
+        referencedColumnName: 'uuid',
+        nullable: false,
+    )]
+    private readonly ProfileEntity $profile;
+
     #[Column(type: DoctrineDBTypes::GUID), Id]
     private readonly string $id;
 
@@ -45,14 +53,6 @@ final class AccessTokenEntity extends TimestampedEntity
     )]
     private ?DateTimeImmutable $revokedAt = null;
 
-    #[ManyToOne(targetEntity: ProfileEntity::class)]
-    #[JoinColumn(
-        name: 'profile_id',
-        referencedColumnName: 'uuid',
-        nullable: false,
-    )]
-    private readonly ProfileEntity $profile;
-
     public static function hashToken(
         #[SensitiveParameter]
         string $plainToken,
@@ -66,10 +66,10 @@ final class AccessTokenEntity extends TimestampedEntity
      */
     public function __construct(
         DateTimeImmutable $createdAt,
+        ProfileEntity $profile,
         #[SensitiveParameter]
         string $plainToken,
         array $scopes,
-        ProfileEntity $profile,
         DateTimeImmutable $expiresAt,
         ?DateTimeImmutable $revokedAt = null,
     ) {
@@ -81,11 +81,11 @@ final class AccessTokenEntity extends TimestampedEntity
 
         parent::__construct($createdAt);
         $this->id = Uuid::uuid4()->toString();
+        $this->profile = $profile;
         $this->tokenHash = self::hashToken($plainToken);
         $this->scopes = $scopes;
         $this->expiresAt = $expiresAt;
         $this->revokedAt = $revokedAt;
-        $this->profile = $profile;
     }
 
     public function hasScope(string $scope): bool

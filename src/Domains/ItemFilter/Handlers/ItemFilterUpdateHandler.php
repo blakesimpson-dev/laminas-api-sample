@@ -43,7 +43,7 @@ final class ItemFilterUpdateHandler implements HandlerInterface
             return JsonResponseFactory::badRequest();
         }
 
-        $entity = $this->repository->find($id);
+        $entity = $this->repository->findOneByProfile($auth->profile, $id);
         if ($entity === null) {
             return JsonResponseFactory::notFound();
         }

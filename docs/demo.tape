@@ -13,9 +13,9 @@ Set TypingSpeed 20ms
 Hide
 Type `set +m; export PS1='\n$ '; rm -f /tmp/demo-body /tmp/demo-code`
 Enter
-Type `curl() { if [ -t 1 ]; then command curl -s -o /tmp/demo-body -w '%{http_code}' -H 'Content-Type: application/json' "$@" > /tmp/demo-code; jq . /tmp/demo-body; read -r code < /tmp/demo-code; printf '\033[2mHTTP %s\033[0m\n' "$code"; else command curl -s "$@"; fi; }`
+Type `curl() { if [ -t 1 ]; then command curl -s -o /tmp/demo-body -w '%{http_code}' -H 'Content-Type: application/json' -H 'Authorization: Bearer dev-token-full' "$@" > /tmp/demo-code; jq . /tmp/demo-body; read -r code < /tmp/demo-code; printf '\033[2mHTTP %s\033[0m\n' "$code"; else command curl -s -H 'Authorization: Bearer dev-token-full' "$@"; fi; }`
 Enter
-Type `ID=$(command curl -s localhost:8080/item-filter | jq -r '.filters[0].id')`
+Type `ID=$(command curl -s -H 'Authorization: Bearer dev-token-full' localhost:8080/item-filter | jq -r '.filters[0].id')`
 Enter
 Sleep 1s
 Type `clear`

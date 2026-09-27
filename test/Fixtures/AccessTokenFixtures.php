@@ -37,49 +37,49 @@ final class AccessTokenFixtures extends AbstractFixture implements
 
         $devTokenFull = new AccessTokenEntity(
             createdAt: $createdAt,
+            profile: $profileOne,
             // @mago-expect lint:no-literal-password
             plainToken: 'dev-token-full',
             scopes: [
                 Scope::AccountProfile->value,
                 Scope::AccountItemFilter->value,
             ],
-            profile: $profileOne,
             expiresAt: new DateTimeImmutable('2099-01-01T00:00:00Z'),
         );
         $manager->persist($devTokenFull);
 
         $devTokenProfileOnly = new AccessTokenEntity(
             createdAt: $createdAt,
+            profile: $profileOne,
             // @mago-expect lint:no-literal-password
             plainToken: 'dev-token-profile-only',
             scopes: [Scope::AccountProfile->value],
-            profile: $profileOne,
             expiresAt: new DateTimeImmutable('2099-01-01T00:00:00Z'),
         );
         $manager->persist($devTokenProfileOnly);
 
         $devTokenExpired = new AccessTokenEntity(
             createdAt: $createdAt,
+            profile: $profileOne,
             // @mago-expect lint:no-literal-password
             plainToken: 'dev-token-expired',
             scopes: [
                 Scope::AccountProfile->value,
                 Scope::AccountItemFilter->value,
             ],
-            profile: $profileOne,
             expiresAt: new DateTimeImmutable('2026-02-01T00:00:00Z'),
         );
         $manager->persist($devTokenExpired);
 
         $devTokenRevoked = new AccessTokenEntity(
             createdAt: $createdAt,
+            profile: $profileOne,
             // @mago-expect lint:no-literal-password
             plainToken: 'dev-token-revoked',
             scopes: [
                 Scope::AccountProfile->value,
                 Scope::AccountItemFilter->value,
             ],
-            profile: $profileOne,
             expiresAt: new DateTimeImmutable('2099-01-01T00:00:00Z'),
             revokedAt: new DateTimeImmutable('2026-03-01T00:00:00Z'),
         );
@@ -87,13 +87,13 @@ final class AccessTokenFixtures extends AbstractFixture implements
 
         $devTokenOther = new AccessTokenEntity(
             createdAt: $createdAt,
+            profile: $profileTwo,
             // @mago-expect lint:no-literal-password
             plainToken: 'dev-token-other-profile',
             scopes: [
                 Scope::AccountProfile->value,
                 Scope::AccountItemFilter->value,
             ],
-            profile: $profileTwo,
             expiresAt: new DateTimeImmutable('2099-01-01T00:00:00Z'),
         );
         $manager->persist($devTokenOther);

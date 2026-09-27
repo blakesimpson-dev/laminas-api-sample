@@ -7,7 +7,6 @@ namespace LaminasApiSample\Domains\Profile\Factories;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use LaminasApiSample\Domains\Profile\Handlers\ProfileReadHandler;
 use LaminasApiSample\Domains\Profile\ProfileAdapter;
-use LaminasApiSample\Domains\Profile\ProfileRepository;
 use Override;
 use Psr\Container\ContainerInterface;
 
@@ -19,11 +18,9 @@ final class ProfileReadHandlerFactory implements FactoryInterface
         $requestedName,
         ?array $options = null,
     ): ProfileReadHandler {
-        /** @var ProfileRepository $repository */
-        $repository = $container->get(ProfileRepository::class);
         /** @var ProfileAdapter $adapter */
         $adapter = $container->get(ProfileAdapter::class);
 
-        return new ProfileReadHandler($repository, $adapter);
+        return new ProfileReadHandler($adapter);
     }
 }

@@ -7,6 +7,7 @@ namespace LaminasApiSampleTest\Unit\Domains\ItemFilter;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterAdapter;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
 use LaminasApiSampleTest\Support\FixedTime;
+use LaminasApiSampleTest\Support\TestProfile;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
@@ -23,6 +24,7 @@ final class ItemFilterAdapterTest extends TestCase
         $adapter = new ItemFilterAdapter();
         $response = $adapter->mapResponse(new ItemFilterEntity(
             createdAt: FixedTime::getForCreate(),
+            profile: TestProfile::new(),
             name: 'TestFilter.filter',
             realm: 'pc',
         ));
@@ -58,6 +60,7 @@ final class ItemFilterAdapterTest extends TestCase
     {
         $entity = new ItemFilterEntity(
             createdAt: FixedTime::getForCreate(),
+            profile: TestProfile::new(),
             name: 'TestFilter.filter',
             realm: 'pc',
             filter: 'Filter content',
@@ -103,6 +106,7 @@ final class ItemFilterAdapterTest extends TestCase
         $adapter = new ItemFilterAdapter();
         $response = $adapter->mapListResponseItem(new ItemFilterEntity(
             createdAt: FixedTime::getForCreate(),
+            profile: TestProfile::new(),
             name: 'TestFilter.filter',
             realm: 'pc',
         ));

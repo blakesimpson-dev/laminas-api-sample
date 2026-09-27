@@ -89,14 +89,14 @@ final class RouterTest extends TestCase
     {
         return new AccessTokenEntity(
             createdAt: FixedTime::getForCreate(),
-            // @mago-expect lint:no-literal-password
-            plainToken: 'test-token',
-            scopes: $scopes,
-            expiresAt: FixedTime::getForUpdate(),
             profile: new ProfileEntity(
                 createdAt: FixedTime::getForCreate(),
                 name: 'Test',
             ),
+            // @mago-expect lint:no-literal-password
+            plainToken: 'test-token',
+            scopes: $scopes,
+            expiresAt: FixedTime::getForUpdate(),
         );
     }
 

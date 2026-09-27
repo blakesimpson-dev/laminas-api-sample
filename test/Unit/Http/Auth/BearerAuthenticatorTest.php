@@ -70,13 +70,13 @@ final class BearerAuthenticatorTest extends TestCase
     {
         return new AccessTokenEntity(
             createdAt: FixedTime::getForCreate(),
-            plainToken: self::KNOWN_TOKEN,
-            scopes: [Scope::AccountProfile->value],
-            expiresAt: new DateTimeImmutable($expiresAt ?? self::EXPIRES_AT),
             profile: new ProfileEntity(
                 createdAt: FixedTime::getForCreate(),
                 name: 'Test',
             ),
+            plainToken: self::KNOWN_TOKEN,
+            scopes: [Scope::AccountProfile->value],
+            expiresAt: new DateTimeImmutable($expiresAt ?? self::EXPIRES_AT),
         );
     }
 

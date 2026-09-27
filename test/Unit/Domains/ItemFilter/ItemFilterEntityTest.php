@@ -7,6 +7,7 @@ namespace LaminasApiSampleTest\Unit\Domains\ItemFilter;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterPatch;
 use LaminasApiSampleTest\Support\FixedTime;
+use LaminasApiSampleTest\Support\TestProfile;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -21,12 +22,16 @@ final class ItemFilterEntityTest extends TestCase
     #[Test]
     public function constructWithValidParamsAndDefaults(): void
     {
+        $profile = TestProfile::new();
+
         $entity = new ItemFilterEntity(
             createdAt: FixedTime::getForCreate(),
+            profile: $profile,
             name: 'TestFilter.filter',
             realm: 'pc',
         );
 
+        static::assertSame($profile, $entity->getProfile());
         static::assertSame('TestFilter.filter', $entity->getName());
         static::assertSame('pc', $entity->getRealm());
         static::assertNull($entity->getFilter());
@@ -110,6 +115,7 @@ final class ItemFilterEntityTest extends TestCase
     ): void {
         $entity = new ItemFilterEntity(
             createdAt: FixedTime::getForCreate(),
+            profile: TestProfile::new(),
             name: 'TestFilter.filter',
             realm: 'pc',
         );
@@ -127,6 +133,7 @@ final class ItemFilterEntityTest extends TestCase
     {
         $entity = new ItemFilterEntity(
             createdAt: FixedTime::getForCreate(),
+            profile: TestProfile::new(),
             name: 'TestFilter.filter',
             realm: 'pc',
         );
@@ -147,6 +154,7 @@ final class ItemFilterEntityTest extends TestCase
     {
         $entity = new ItemFilterEntity(
             createdAt: FixedTime::getForCreate(),
+            profile: TestProfile::new(),
             name: 'TestFilter.filter',
             realm: 'pc',
         );
@@ -166,6 +174,7 @@ final class ItemFilterEntityTest extends TestCase
     {
         $entity = new ItemFilterEntity(
             createdAt: FixedTime::getForCreate(),
+            profile: TestProfile::new(),
             name: 'TestFilter.filter',
             realm: 'pc',
             public: true,

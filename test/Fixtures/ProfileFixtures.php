@@ -29,7 +29,7 @@ final class ProfileFixtures extends AbstractFixture
         $this->addReference(self::FIXTURE_ONE_KEY, $profileOne);
 
         $profileTwo = new ProfileEntity(
-            createdAt: new DateTimeImmutable('2026-01-01T00:00:00Z'),
+            createdAt: new DateTimeImmutable('2026-01-01T12:00:00Z'),
             name: 'ProfileTwo',
             locale: 'en_AU',
         );

@@ -32,5 +32,14 @@ function handle_request(): void
     $router = new Router($routeStack, $serviceManager, $authenticator);
     $response = $router->dispatch(new HttpRequest());
 
-    $response->send();
+    /**
+     * Note: PHP forces a 401 whenever a WWW-Authenticate header is sent...
+     * ... so $response->send(); is dishonest
+     *
+     * Here we reassert the status before sending the response content -
+     * otherwise 401 is returned for 'insufficient scope' instead of 403
+     */
+    $response->sendHeaders();
+    http_response_code($response->getStatusCode());
+    $response->sendContent();
 }

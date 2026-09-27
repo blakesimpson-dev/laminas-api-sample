@@ -57,6 +57,7 @@ final class ItemFilterCreateHandler implements HandlerInterface
         $validatedData = $this->validation->getValues();
         $entity = new ItemFilterEntity(
             createdAt: $this->clock->now(),
+            profile: $auth->profile,
             name: $validatedData['filter_name'],
             realm: $validatedData['realm'],
             filter: $validatedData['filter'],
