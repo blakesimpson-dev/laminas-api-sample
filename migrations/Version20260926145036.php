@@ -8,10 +8,10 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
 /**
- * Migration Version20260924104628
+ * Migration Version20260926145036
  * This runner was auto-generated with Doctrine
  */
-final class Version20260924104628 extends AbstractMigration
+final class Version20260926145036 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
@@ -23,9 +23,9 @@ final class Version20260924104628 extends AbstractMigration
             "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQL120Platform'.",
         );
 
-        $this->addSql(
-            'CREATE TABLE item_filter (id UUID NOT NULL, filter_name VARCHAR(255) NOT NULL, realm VARCHAR(255) NOT NULL, filter TEXT DEFAULT NULL, description VARCHAR(255) NOT NULL, version VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, public BOOLEAN NOT NULL, PRIMARY KEY (id))',
-        );
+        $this->addSql('ALTER TABLE profile DROP twitch_stream_name');
+        $this->addSql('ALTER TABLE profile DROP twitch_stream_image');
+        $this->addSql('ALTER TABLE profile DROP twitch_stream_status');
     }
 
     public function down(Schema $schema): void
@@ -38,6 +38,14 @@ final class Version20260924104628 extends AbstractMigration
             "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQL120Platform'.",
         );
 
-        $this->addSql('DROP TABLE item_filter');
+        $this->addSql(
+            'ALTER TABLE profile ADD twitch_stream_name VARCHAR(255) DEFAULT NULL',
+        );
+        $this->addSql(
+            'ALTER TABLE profile ADD twitch_stream_image VARCHAR(255) DEFAULT NULL',
+        );
+        $this->addSql(
+            'ALTER TABLE profile ADD twitch_stream_status VARCHAR(255) DEFAULT NULL',
+        );
     }
 }

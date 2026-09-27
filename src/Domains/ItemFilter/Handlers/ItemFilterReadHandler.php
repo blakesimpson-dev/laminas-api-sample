@@ -8,6 +8,7 @@ use Laminas\Http\PhpEnvironment\Request as HttpRequest;
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterAdapter;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterRepository;
+use LaminasApiSample\Http\Auth\AuthContext;
 use LaminasApiSample\Http\HandlerInterface;
 use LaminasApiSample\Http\JsonResponseFactory;
 use Override;
@@ -21,15 +22,18 @@ final class ItemFilterReadHandler implements HandlerInterface
 
     /** @param array<string, string> $params */
     #[Override]
-    public function __invoke(HttpRequest $request, array $params): HttpResponse
-    {
+    public function __invoke(
+        HttpRequest $request,
+        array $params,
+        AuthContext $auth,
+    ): HttpResponse {
         $id = $params['id'] ?? null;
-        if (!$id) {
+        if ($id === null) {
             return JsonResponseFactory::badRequest();
         }
 
-        $entity = $this->repository->find($id);
-        if (!$entity) {
+        $entity = $this->repository->findOneByProfile($auth->profile, $id);
+        if ($entity === null) {
             return JsonResponseFactory::notFound();
         }
 

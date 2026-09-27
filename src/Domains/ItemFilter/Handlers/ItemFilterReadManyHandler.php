@@ -8,9 +8,11 @@ use Laminas\Http\PhpEnvironment\Request as HttpRequest;
 use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterAdapter;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterRepository;
+use LaminasApiSample\Http\Auth\AuthContext;
 use LaminasApiSample\Http\HandlerInterface;
 use LaminasApiSample\Http\JsonResponseFactory;
 use Override;
+use UnexpectedValueException;
 
 final class ItemFilterReadManyHandler implements HandlerInterface
 {
@@ -19,11 +21,17 @@ final class ItemFilterReadManyHandler implements HandlerInterface
         private readonly ItemFilterAdapter $adapter,
     ) {}
 
-    /** @param array<string, string> $params */
+    /**
+     * @param array<string, string> $params
+     * @throws UnexpectedValueException
+     */
     #[Override]
-    public function __invoke(HttpRequest $request, array $params): HttpResponse
-    {
-        $entities = $this->repository->findAll();
+    public function __invoke(
+        HttpRequest $request,
+        array $params,
+        AuthContext $auth,
+    ): HttpResponse {
+        $entities = $this->repository->findAllByProfile($auth->profile);
         return JsonResponseFactory::ok([
             'filters' => array_map(
                 $this->adapter->mapListResponseItem(...),

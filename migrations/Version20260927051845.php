@@ -8,10 +8,10 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
 /**
- * Migration Version20260924104628
+ * Migration Version20260927051845
  * This runner was auto-generated with Doctrine
  */
-final class Version20260924104628 extends AbstractMigration
+final class Version20260927051845 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
@@ -24,7 +24,17 @@ final class Version20260924104628 extends AbstractMigration
         );
 
         $this->addSql(
-            'CREATE TABLE item_filter (id UUID NOT NULL, filter_name VARCHAR(255) NOT NULL, realm VARCHAR(255) NOT NULL, filter TEXT DEFAULT NULL, description VARCHAR(255) NOT NULL, version VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, public BOOLEAN NOT NULL, PRIMARY KEY (id))',
+            'ALTER TABLE item_filter ADD profile_id UUID DEFAULT NULL',
+        );
+        $this->addSql(
+            'UPDATE item_filter SET profile_id = (SELECT uuid FROM profile ORDER BY created_at, uuid LIMIT 1)',
+        );
+        $this->addSql('ALTER TABLE item_filter ALTER profile_id SET NOT NULL');
+        $this->addSql(
+            'ALTER TABLE item_filter ADD CONSTRAINT FK_F93D2AD2CCFA12B8 FOREIGN KEY (profile_id) REFERENCES profile (uuid) NOT DEFERRABLE',
+        );
+        $this->addSql(
+            'CREATE INDEX IDX_F93D2AD2CCFA12B8 ON item_filter (profile_id)',
         );
     }
 
@@ -38,6 +48,10 @@ final class Version20260924104628 extends AbstractMigration
             "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQL120Platform'.",
         );
 
-        $this->addSql('DROP TABLE item_filter');
+        $this->addSql(
+            'ALTER TABLE item_filter DROP CONSTRAINT FK_F93D2AD2CCFA12B8',
+        );
+        $this->addSql('DROP INDEX IDX_F93D2AD2CCFA12B8');
+        $this->addSql('ALTER TABLE item_filter DROP profile_id');
     }
 }

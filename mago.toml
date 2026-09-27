@@ -8,7 +8,7 @@ php-version = "8.5.0"
 workspace = "."
 paths = ["src/", "test/", "public/", "bin/", "config/", "bootstrap.php"]
 includes = ["vendor/"]
-excludes = ["migrations/"]
+excludes = []
 
 [source.glob]
 literal-separator = true
@@ -16,9 +16,11 @@ literal-separator = true
 [formatter]
 preset = "default"
 print-width = 80
+indent-heredoc = false
 
 [linter]
 integrations = ["phpunit"]
+excludes = ["migrations/"]
 
 [linter.rules]
 ambiguous-function-call = { enabled = false }
@@ -26,6 +28,7 @@ literal-named-argument = { enabled = false }
 halstead = { effort-threshold = 7000 }
 
 [analyzer]
+excludes = ["migrations/"]
 plugins = []
 find-unused-definitions = true
 find-unused-expressions = true

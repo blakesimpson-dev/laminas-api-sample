@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace LaminasApiSample\Domains;
 
 use DateTimeImmutable;
-use Doctrine\DBAL\Types\Types;
+use Doctrine\DBAL\Types\Types as DoctrineDBTypes;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\MappedSuperclass;
 
 #[MappedSuperclass]
 abstract class TimestampedEntity
 {
-    #[Column(name: 'created_at', type: Types::DATETIMETZ_IMMUTABLE)]
+    #[Column(name: 'created_at', type: DoctrineDBTypes::DATETIMETZ_IMMUTABLE)]
     private readonly DateTimeImmutable $createdAt;
 
     #[Column(
         name: 'updated_at',
-        type: Types::DATETIMETZ_IMMUTABLE,
+        type: DoctrineDBTypes::DATETIMETZ_IMMUTABLE,
         nullable: true,
     )]
     private ?DateTimeImmutable $updatedAt = null;

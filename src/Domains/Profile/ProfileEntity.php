@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LaminasApiSample\Domains\Profile;
 
 use DateTimeImmutable;
+use Doctrine\DBAL\Types\Types as DoctrineDBTypes;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\Entity;
@@ -18,12 +19,15 @@ use Ramsey\Uuid\Uuid;
 #[Table(name: 'profile')]
 final class ProfileEntity extends TimestampedEntity
 {
-    #[Column(name: 'uuid', type: 'guid'), Id]
+    #[Column(name: 'uuid', type: DoctrineDBTypes::GUID), Id]
     private readonly string $id;
+
     #[Column]
     private readonly string $name;
+
     #[Column(nullable: true)]
     private readonly ?string $locale;
+
     #[Embedded(class: TwitchEmbeddable::class)]
     private readonly ?TwitchEmbeddable $twitch;
 

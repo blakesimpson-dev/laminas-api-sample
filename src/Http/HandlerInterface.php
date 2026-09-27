@@ -10,5 +10,9 @@ use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 interface HandlerInterface
 {
     /** @param array<string, string> $params */
-    public function __invoke(HttpRequest $request, array $params): HttpResponse;
+    public function __invoke(
+        HttpRequest $request,
+        array $params,
+        Auth\AuthContext $auth,
+    ): HttpResponse;
 }

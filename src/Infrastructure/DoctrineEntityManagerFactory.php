@@ -28,16 +28,16 @@ final class DoctrineEntityManagerFactory implements FactoryInterface
         $requestedName,
         ?array $options = null,
     ): EntityManager {
-        $entity_manager = (new RoaveEMF())($container);
+        $entityManager = (new RoaveEMF())($container);
 
-        if (!$entity_manager instanceof EntityManager) {
+        if (!$entityManager instanceof EntityManager) {
             throw new RuntimeException(sprintf(
                 'Expected %s, got %s.',
                 EntityManager::class,
-                get_debug_type($entity_manager),
+                get_debug_type($entityManager),
             ));
         }
 
-        return $entity_manager;
+        return $entityManager;
     }
 }

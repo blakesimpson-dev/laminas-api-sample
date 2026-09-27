@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LaminasApiSampleTest\Unit\Domains\Profile;
 
-use LaminasApiSample\Domains\Profile\Embedded\StreamEmbeddable;
 use LaminasApiSample\Domains\Profile\Embedded\TwitchEmbeddable;
 use LaminasApiSample\Domains\Profile\ProfileAdapter;
 use LaminasApiSample\Domains\Profile\ProfileEntity;
@@ -20,7 +19,6 @@ use PHPUnit\Framework\TestCase;
     CoversClass(ProfileAdapter::class),
     UsesClass(ProfileEntity::class),
     UsesClass(TwitchEmbeddable::class),
-    UsesClass(StreamEmbeddable::class),
 ]
 final class ProfileAdapterTest extends TestCase
 {
@@ -29,17 +27,10 @@ final class ProfileAdapterTest extends TestCase
     public function assertResponseContract(): void
     {
         $entity = new ProfileEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             name: 'Profile name',
             locale: 'Profile locale',
-            twitch: new TwitchEmbeddable(
-                name: 'Twitch name',
-                stream: new StreamEmbeddable(
-                    name: 'Stream name',
-                    image: 'Stream image',
-                    status: 'Stream status',
-                ),
-            ),
+            twitch: new TwitchEmbeddable(name: 'Twitch name'),
         );
 
         $adapter = new ProfileAdapter();
@@ -61,14 +52,7 @@ final class ProfileAdapterTest extends TestCase
                 'uuid' => $entity->getId(),
                 'name' => 'Profile name',
                 'locale' => 'Profile locale',
-                'twitch' => [
-                    'name' => 'Twitch name',
-                    'stream' => [
-                        'name' => 'Stream name',
-                        'image' => 'Stream image',
-                        'status' => 'Stream status',
-                    ],
-                ],
+                'twitch' => ['name' => 'Twitch name'],
             ],
             $response,
         );
@@ -79,7 +63,7 @@ final class ProfileAdapterTest extends TestCase
     public function assertLocaleOmission(): void
     {
         $entity = new ProfileEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             name: 'Profile name',
         );
 
@@ -95,12 +79,8 @@ final class ProfileAdapterTest extends TestCase
         yield 'twitch object omitted' => [null];
         yield 'twitch object name field omitted' => [new TwitchEmbeddable(
             name: null,
-            stream: null,
         )];
-        yield 'twitch object name empty' => [new TwitchEmbeddable(
-            name: '',
-            stream: null,
-        )];
+        yield 'twitch object name empty' => [new TwitchEmbeddable(name: '')];
     }
 
     /** @throws PHPUnitException */
@@ -108,7 +88,7 @@ final class ProfileAdapterTest extends TestCase
     public function assertTwitchOmission(?TwitchEmbeddable $twitch): void
     {
         $response = new ProfileAdapter()->mapResponse(new ProfileEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             name: 'Profile name',
             locale: 'Profile locale',
             twitch: $twitch,
@@ -120,44 +100,9 @@ final class ProfileAdapterTest extends TestCase
     /** @return iterable<string, array{TwitchEmbeddable, array<string, mixed>}> */
     public static function getDiscreteTwitchInclusion(): iterable
     {
-        yield 'twitch object included with stream object omitted' => [
-            new TwitchEmbeddable(name: 'Twitch name', stream: null),
+        yield 'twitch object included' => [
+            new TwitchEmbeddable(name: 'Twitch name'),
             ['name' => 'Twitch name'],
-        ];
-
-        yield 'twitch object included with empty stream object omitted' => [
-            new TwitchEmbeddable(
-                name: 'Twitch name',
-                stream: new StreamEmbeddable(null, null, null),
-            ),
-            ['name' => 'Twitch name'],
-        ];
-
-        yield 'twitch object included with partial stream object included' => [
-            new TwitchEmbeddable(
-                name: 'Twitch name',
-                stream: new StreamEmbeddable(null, null, 'live'),
-            ),
-            ['name' => 'Twitch name', 'stream' => ['status' => 'live']],
-        ];
-
-        yield 'full stream' => [
-            new TwitchEmbeddable(
-                name: 'Twitch name',
-                stream: new StreamEmbeddable(
-                    'Stream name',
-                    'Stream image',
-                    'Stream status',
-                ),
-            ),
-            [
-                'name' => 'Twitch name',
-                'stream' => [
-                    'name' => 'Stream name',
-                    'image' => 'Stream image',
-                    'status' => 'Stream status',
-                ],
-            ],
         ];
     }
 
@@ -171,7 +116,7 @@ final class ProfileAdapterTest extends TestCase
         array $expected,
     ): void {
         $response = new ProfileAdapter()->mapResponse(new ProfileEntity(
-            createdAt: FixedTime::getForCreate(),
+            createdAt: FixedTime::inThePast(),
             name: 'Profile name',
             locale: 'Profile locale',
             twitch: $twitch,
