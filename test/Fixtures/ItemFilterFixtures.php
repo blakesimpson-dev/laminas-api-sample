@@ -5,13 +5,21 @@ declare(strict_types=1);
 namespace LaminasApiSampleTest\Fixtures;
 
 use DateTimeImmutable;
-use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use LaminasApiSample\Domains\ItemFilter\ItemFilterEntity;
 use Override;
 
-final class ItemFilterFixture implements FixtureInterface
+final class ItemFilterFixtures extends AbstractFixture implements
+    DependentFixtureInterface
 {
+    #[Override]
+    public function getDependencies(): array
+    {
+        return [ProfileFixtures::class];
+    }
+
     #[Override]
     public function load(ObjectManager $manager): void
     {

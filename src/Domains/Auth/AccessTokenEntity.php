@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
+use InvalidArgumentException;
 use LaminasApiSample\Domains\Profile\ProfileEntity;
 use LaminasApiSample\Domains\TimestampedEntity;
 use Ramsey\Uuid\Uuid;
@@ -59,20 +60,31 @@ final class AccessTokenEntity extends TimestampedEntity
         return hash(self::HASH_ALGO, $plainToken);
     }
 
-    /** @param list<string> $scopes */
+    /**
+     * @param list<string> $scopes
+     * @mago-expect lint:excessive-parameter-list
+     */
     public function __construct(
         DateTimeImmutable $createdAt,
         #[SensitiveParameter]
         string $plainToken,
         array $scopes,
-        DateTimeImmutable $expiresAt,
         ProfileEntity $profile,
+        DateTimeImmutable $expiresAt,
+        ?DateTimeImmutable $revokedAt = null,
     ) {
+        if ($plainToken === '') {
+            throw new InvalidArgumentException(
+                'Access token must not be empty.',
+            );
+        }
+
         parent::__construct($createdAt);
         $this->id = Uuid::uuid4()->toString();
         $this->tokenHash = self::hashToken($plainToken);
         $this->scopes = $scopes;
         $this->expiresAt = $expiresAt;
+        $this->revokedAt = $revokedAt;
         $this->profile = $profile;
     }
 
