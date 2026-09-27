@@ -7,9 +7,9 @@ modelled on a slice of the
 [Path of Exile developer API](https://www.pathofexile.com/developer/docs/reference).
 
 Whilst paths, response shapes and error codes all follow the published docs, the
-application serves its own data and does not call GGG's API.
+API serves its own data and does not call GGG's API.
 
-The app is hand-wired from Laminas components, rather than a full framework or
+The API is hand-wired from Laminas components, rather than a full framework or
 starter template. This way each part can be understood, explained, and reasoned
 for. The commit history follows that progression.
 
@@ -19,6 +19,8 @@ for. The commit history follows that progression.
 
 - `GET /profile`, `GET|POST /item-filter`, `GET|POST /item-filter/{id}`, with
   documented response shapes
+- Mocked OAuth 2.1 bearer authentication - route scopes, expire and revoke for
+  tokens and per-profile ownership for item filters
 - Create and partial update with validation - actions are recorded as timestamps
   on each entity via an injected system clock
 - Documented error responses
@@ -29,15 +31,37 @@ for. The commit history follows that progression.
 - PHPUnit testing for entities, input validation, adapters and the HTTP layer
 - Written with adherence to modern PHP conventions using strict static analysis
 
-> _**Auth is not implemented yet.** Every request is treated as already
-> authorised with the scope the real API requires: `account:profile` for
-> `/profile` and `account:item_filter` for `/item-filter`._
+## Auth
+
+This replication only covers the resource server (`api.pathofexile.com`). Token
+issuance (`www.pathofexil.com/oauth`) is out of scope. Development tokens are
+seeded as if the authorization server had isued them, and stored onl as SHA-256
+hashes. Like the real API, the token identifies it's owner, so `account:*`
+endpoints do not need an id in the path. 401 and 403 responses carry
+`WWW-Authenticate` headers (RFC 6750).
+
+| Endpoint                                                | Scope                 |
+| ------------------------------------------------------- | --------------------- |
+| `GET /profile`                                          | `account:profile`     |
+| `GET\|POST /item-filter`, `GET\|POST /item-filter/{id}` | `account:item_filter` |
+
+| Dev token                 | Demonstrates                                  |
+| ------------------------- | --------------------------------------------- |
+| `dev-token-full`          | Full access for ProfileOne                    |
+| `dev-token-profile-only`  | 403 (code 6) on `/item-filter`: missing scope |
+| `dev-token-expired`       | 401 (code 8): expired                         |
+| `dev-token-revoked`       | 401 (code 8): revoked                         |
+| `dev-token-other-profile` | ProfileTwo: ProfileOne's filters return 404   |
+
+```bash
+curl -H 'Authorization: Bearer dev-token-full' localhost:8000/profile
+curl -i -H 'Authorization: Bearer dev-token-profile-only' localhost:8000/item-filter   # 403
+```
 
 ## Roadmap
 
-- Lightweight Vite + Vue 3 + TypeScript web client, with Pinia and SASS styling
-- Mocked OAuth bearer tokens with route scopes and ownership
 - OpenAPI spec with Swagger UI
+- Lightweight Vite + Vue 3 + TypeScript web client, with Pinia and SASS styling
 - Per-token rate limiting in Redis, with the documented headers
 
 ## How it works
@@ -49,6 +73,8 @@ flowchart TD
     F --> I[public/index.php]
     C -.->|composer serve :8080| I
     I --> R[Router<br/>route + method map]
+    I --> R[Router<br/>route + method map]
+    R --> Au[BearerAuthenticator<br/>token + scope]
     R --> H[Handler]
     H --> V[JsonBody + InputFilter]
     H --> Rp[Repository]
@@ -74,29 +100,25 @@ composer fixtures:load                  # seeding
 ### Run via Nginx (prod style)
 
 ```bash
-composer up                             # build + start Postgres, php-fpm, Nginx
-curl localhost:8000/profile
+composer up                                         # Postgres, php-fpm, Nginx on :8000
+export AUTH='Authorization: Bearer dev-token-full'
+curl -H "$AUTH" localhost:8000/profile              # get account profile
+curl -H "$AUTH" localhost:8000/item-filter          # list item filters
+curl -H "$AUTH" localhost:8000/item-filter/<id>     # get one item filter
 ```
 
-Nginx serves `public/`, passes `index.php` to php-fpm over FastCGI, and returns
-404 for any other `.php` path. JSON responses are gzipped and headers are
-sanitized (server and PHP versions are stripped).
+Nginx serves `public/`, passes `index.php` to php-fpm over FastCGI and returns
+404 for any other `.php` path. JSON responses are gzipped and server and PHP
+versions are stripped from headers.
 
 ### Run via built-in server
 
 ```bash
-curl localhost:8080/profile             # get account profile
-curl localhost:8080/item-filter         # get a list of item filters
-curl localhost:8080/item-filter/<id>    # get one item filter
+composer serve                                       # http://localhost:8080
+curl -H "$AUTH" localhost:8080/profile
 ```
 
 Both can run at the same time against the same database.
-
-```bash
-curl localhost:8000/profile             # get account profile
-curl localhost:8000/item-filter         # get a list of item filters
-curl localhost:8000/item-filter/<id>    # get one item filter
-```
 
 ## Scripts
 
