@@ -89,7 +89,7 @@ final class AccessTokenEntityTest extends TestCase
         );
     }
 
-    private static function buildStubToken(
+    private static function stubToken(
         ?DateTimeImmutable $expiresAt = null,
         ?DateTimeImmutable $revokedAt = null,
     ): AccessTokenEntity {
@@ -107,7 +107,7 @@ final class AccessTokenEntityTest extends TestCase
     #[Test]
     public function isActiveBeforeExpiresAt(): void
     {
-        $entity = self::buildStubToken();
+        $entity = self::stubToken();
         static::assertTrue($entity->isActive(FixedTime::ofEvent()));
     }
 
@@ -115,7 +115,7 @@ final class AccessTokenEntityTest extends TestCase
     #[Test]
     public function isNotActiveAtExpiresAt(): void
     {
-        $entity = self::buildStubToken(expiresAt: FixedTime::ofEvent());
+        $entity = self::stubToken(expiresAt: FixedTime::ofEvent());
         static::assertFalse($entity->isActive(FixedTime::ofEvent()));
     }
 
@@ -123,7 +123,7 @@ final class AccessTokenEntityTest extends TestCase
     #[Test]
     public function isNotActiveAfterExpiresAt(): void
     {
-        $entity = self::buildStubToken(expiresAt: FixedTime::ofEvent());
+        $entity = self::stubToken(expiresAt: FixedTime::ofEvent());
         static::assertFalse($entity->isActive(FixedTime::now()));
     }
 
@@ -131,7 +131,7 @@ final class AccessTokenEntityTest extends TestCase
     #[Test]
     public function isNotActiveAfterRevokedAt(): void
     {
-        $entity = self::buildStubToken(revokedAt: FixedTime::ofEvent());
+        $entity = self::stubToken(revokedAt: FixedTime::ofEvent());
         static::assertFalse($entity->isActive(FixedTime::now()));
     }
 
@@ -139,7 +139,7 @@ final class AccessTokenEntityTest extends TestCase
     #[Test]
     public function canRevokeToken(): void
     {
-        $entity = self::buildStubToken();
+        $entity = self::stubToken();
         $entity->revoke(FixedTime::ofEvent());
         static::assertFalse($entity->isActive(FixedTime::now()));
     }
