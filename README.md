@@ -116,6 +116,8 @@ composer serve                                       # http://localhost:8080
 curl -H "$AUTH" localhost:8080/profile
 ```
 
+Both can run at the same time against the same database.
+
 ### API docs
 
 The API contract is a hand-written OpenAPI 3.1 spec, `docs/openapi.json`, served
@@ -124,8 +126,6 @@ through Nginx with Swagger UI:
 ```bash
 composer up                                          # then open http://localhost:8000/docs
 ```
-
-Both can run at the same time against the same database.
 
 ## Scripts
 
