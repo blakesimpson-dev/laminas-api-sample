@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
+use Laminas\Http\Header\HeaderInterface;
+use Laminas\Http\Header\MultipleHeaderInterface;
 use Laminas\Http\PhpEnvironment\Request as HttpRequest;
+use Laminas\Http\PhpEnvironment\Response as HttpResponse;
 use Laminas\Router\Http\TreeRouteStack;
 use Laminas\ServiceManager\ServiceManager;
 use LaminasApiSample\Http\Auth\AuthenticatorInterface;
@@ -16,7 +19,7 @@ try {
 } catch (Throwable $e) {
     $detail = implode(' - ', [$e::class, $e->getMessage()]);
     error_log($detail);
-    JsonResponseFactory::serverError()->send();
+    send_response(JsonResponseFactory::serverError());
 }
 
 /** @throws ContainerExceptionInterface */
@@ -32,14 +35,26 @@ function handle_request(): void
     $router = new Router($routeStack, $serviceManager, $authenticator);
     $response = $router->dispatch(new HttpRequest());
 
-    /**
-     * Note: PHP forces a 401 whenever a WWW-Authenticate header is sent...
-     * ... so $response->send(); is dishonest
-     *
-     * Here we reassert the status before sending the response content -
-     * otherwise 401 is returned for 'insufficient scope' instead of 403
-     */
-    $response->sendHeaders();
+    send_response($response);
+}
+
+/**
+ * Note: PHP forces a 401 whenever a WWW-Authenticate header is sent...
+ * ... so $response->send(); is dishonest
+ *
+ * Here we reassert the status before sending the response content -
+ * otherwise 401 is returned for 'insufficient scope' instead of 403
+ */
+function send_response(HttpResponse $response): void
+{
+    /** @var HeaderInterface $header */
+    foreach ($response->getHeaders() as $header) {
+        header(
+            $header->toString(),
+            !$header instanceof MultipleHeaderInterface,
+        );
+    }
+
     http_response_code($response->getStatusCode());
-    $response->sendContent();
+    echo $response->getBody();
 }
