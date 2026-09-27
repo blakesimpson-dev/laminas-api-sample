@@ -155,7 +155,6 @@ Both can run at the same time against the same database.
 
 ## Roadmap
 
-- OpenAPI spec with Swagger UI
 - Lightweight Vite + Vue 3 + TypeScript web client, with Pinia and SASS styling
 - Per-token rate limiting in Redis, with the documented headers
 
