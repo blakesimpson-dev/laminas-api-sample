@@ -21,11 +21,13 @@ for. The commit history follows that progression.
   documented response and error shapes
 - Mocked OAuth 2.1 bearer authentication - route scopes, expire and revoke for
   tokens and per-profile ownership for item filters
+- OpenAPI 3.1 spec (`docs/openapi.json`) with Swagger UI available at `/docs`. A
+  contract test keeps the model synchronized.
 - Create and partial update with validation - actions are recorded as timestamps
   on each entity via an injected system clock
 - Doctrine entities, embeddables, and reviewed migrations
-- Nginx + php-fpm + PostgreSQL in Docker Compose, credentials in shared
-  environment from `.env`
+- Nginx + php-fpm + PostgreSQL + Swagger UI in Docker Compose, credentials in
+  shared environment from `.env`
 - Fixtures seeded from real data
 - PHPUnit testing for entities, input validation, adapters and the HTTP layer
 - Written with adherence to modern PHP conventions using strict static analysis
@@ -114,6 +116,15 @@ composer serve                                       # http://localhost:8080
 curl -H "$AUTH" localhost:8080/profile
 ```
 
+### API docs
+
+The API contract is a hand-written OpenAPI 3.1 spec, `docs/openapi.json`, served
+through Nginx with Swagger UI:
+
+```bash
+composer up                                          # then open http://localhost:8000/docs
+```
+
 Both can run at the same time against the same database.
 
 ## Scripts
@@ -167,4 +178,7 @@ way.
 - [Doctrine ORM](https://www.doctrine-project.org/projects/orm.html),
   [Migrations](https://www.doctrine-project.org/projects/migrations.html),
   [Data Fixtures](https://www.doctrine-project.org/projects/data-fixtures.html)
+- [OpenAPI 3.1](https://spec.openapis.org/oas/v3.1.0),
+  [Swagger UI](https://swagger.io/tools/swagger-ui/),
+  [Redocly CLI](https://redocly.com/docs/cli/)
 - [Mago](https://mago.carthage.software/)

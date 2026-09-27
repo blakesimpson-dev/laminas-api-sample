@@ -7,12 +7,12 @@
             "name": "MIT",
             "identifier": "MIT"
         },
-        "description": "Fictitious backend modelled on a slice of the Path of Exile public API. Not affiliated with or endorsed by Grinding Gear Games. Unsupported methods on a known path return 405 (code 9) with an Allow header."
+        "description": "Backend modelled on a slice of the Path of Exile public API."
     },
     "servers": [
         {
             "url": "/",
-            "description": "Same origin as Swagger UI (Nginx on :8000)"
+            "description": "Nginx on :8000"
         }
     ],
     "security": [
@@ -25,7 +25,7 @@
             "bearer": {
                 "type": "http",
                 "scheme": "bearer",
-                "description": "Mocked resource-server auth. Paste a dev token: dev-token-full (all scopes), dev-token-profile-only (403 on /item-filter), dev-token-expired (401), dev-token-revoked (401), dev-token-other-profile (ProfileTwo; ProfileOne's filters are 404). Each operation's scope is in its description and x-required-scope."
+                "description": "dev-token-full, dev-token-profile-only, dev-token-expired, dev-token-revoked, dev-token-other-profile."
             }
         },
         "parameters": {
@@ -326,13 +326,13 @@
     "paths": {
         "/profile": {
             "get": {
-                "operationId": "getProfile",
+                "operationId": "profile.read",
                 "summary": "Get the token owner's profile",
                 "description": "Requires scope `account:profile`.",
                 "x-required-scope": "account:profile",
                 "responses": {
                     "200": {
-                        "description": "The profile.",
+                        "description": "The token owner's profile.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -355,13 +355,13 @@
         },
         "/item-filter": {
             "get": {
-                "operationId": "listItemFilters",
-                "summary": "List the token owner's item filters",
-                "description": "Requires scope `account:item_filter`. List items omit the `filter` content.",
+                "operationId": "item-filter.read-many",
+                "summary": "List all of the token owner's item filters",
+                "description": "Requires scope `account:item_filter`. `filter` content not present when listing all filters.",
                 "x-required-scope": "account:item_filter",
                 "responses": {
                     "200": {
-                        "description": "The owner's filters.",
+                        "description": "All of the token owner's filters.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -392,7 +392,7 @@
                 }
             },
             "post": {
-                "operationId": "createItemFilter",
+                "operationId": "item-filter.create",
                 "summary": "Create an item filter",
                 "description": "Requires scope `account:item_filter`.",
                 "x-required-scope": "account:item_filter",
@@ -449,13 +449,13 @@
                 }
             ],
             "get": {
-                "operationId": "getItemFilter",
-                "summary": "Get one item filter",
+                "operationId": "item-filter.read",
+                "summary": "Get one item filter.",
                 "description": "Requires scope `account:item_filter`.",
                 "x-required-scope": "account:item_filter",
                 "responses": {
                     "200": {
-                        "description": "The filter, including its content.",
+                        "description": "The filter, including its `filter` content.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -486,7 +486,7 @@
                 }
             },
             "post": {
-                "operationId": "updateItemFilter",
+                "operationId": "item-filter.update",
                 "summary": "Update an item filter (partial)",
                 "description": "Requires scope `account:item_filter`. Uses POST for updates, as the documented API does.",
                 "x-required-scope": "account:item_filter",
