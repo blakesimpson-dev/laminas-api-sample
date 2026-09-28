@@ -5,7 +5,7 @@
 ![OpenAPI 3.1](https://img.shields.io/badge/OpenAPI-3.1-6ba539?logo=openapiinitiative&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-A small REST backend in PHP 8.5, Laminas and Doctrine, replicating a slice of
+A REST backend sample in PHP 8.5, Laminas and Doctrine, replicating a slice of
 the
 [Path of Exile developer API](https://www.pathofexile.com/developer/docs/reference).
 Paths, response shapes, error codes, auth and rate limiting follow the published
