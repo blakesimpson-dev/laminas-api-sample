@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-declare(strict_types=1);
-
 use Laminas\Http\PhpEnvironment\Request as HttpRequest;
 use Laminas\Router\Http\TreeRouteStack;
 use Laminas\ServiceManager\ServiceManager;
